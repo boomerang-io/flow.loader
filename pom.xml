@@ -10,7 +10,7 @@
     </parent>
 
 	<groupId>net.boomerangplatform</groupId>
-	<artifactId>util-mongo</artifactId>
+	<artifactId>flow-loader</artifactId>
 	<version>${version.name}</version>
 	<packaging>jar</packaging>
 	<name>util-mongo</name>
