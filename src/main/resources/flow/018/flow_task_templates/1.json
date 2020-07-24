@@ -1,0 +1,32 @@
+{
+    "_id" : ObjectId("5e1bcd210351fdc9e42fe4e0"),
+    "config" : [ 
+        {
+            "key" : "url",
+            "label" : "URL",
+            "type" : "text",
+            "helperText" : "The Slack Webhook URL to call. Needs to be a fully qualified URL or property containing URL.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "message",
+            "label" : "Message Payload",
+            "type" : "texteditor",
+            "helperText" : "Full message payload formatted as per Slack documentation.",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Send custom slack message",
+    "key" : "slackSendCustomMessage",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Send Custom Slack Message",
+    "type" : "ValuesList",
+    "category" : "communication",
+    "arguments" : [ 
+        "slack", 
+        "sendCustomMessage"
+    ],
+    "nodetype" : "templateTask"
+}

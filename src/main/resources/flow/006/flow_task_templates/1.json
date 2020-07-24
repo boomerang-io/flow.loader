@@ -1,0 +1,40 @@
+{
+    "_id" : ObjectId("5d1ed216988e7b6b6f7b3c1c"),
+    "config" : [ 
+        {
+            "description" : "The path to file including file.",
+            "key" : "path",
+            "label" : "Path",
+            "type" : "text"
+        }, 
+        {
+            "description" : "String or regular regular expression to search for in file.",
+            "key" : "expression",
+            "label" : "Regular Expression",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Regular expression flags.",
+            "key" : "flags",
+            "label" : "Flags",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Fail task if not found otherwise continue.",
+            "key" : "failIfNotFound",
+            "label" : "Fail If Not Found",
+            "type" : "boolean"
+        }
+    ],
+    "description" : "Check file contains string.",
+    "key" : "checkFileContainsString",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Check File Contains String",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "checkFileContainsString"
+    ],
+    "nodetype" : "custom"
+}

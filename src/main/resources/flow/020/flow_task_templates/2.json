@@ -1,0 +1,80 @@
+{
+    "_id" : ObjectId("5e1bf6ca0351fdc9e4319c3b"),
+    "config" : [ 
+        {
+            "key" : "token",
+            "label" : "Token",
+            "type" : "text",
+            "helperText" : "The Slack App token.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "channel",
+            "label" : "Channel",
+            "type" : "text",
+            "helperText" : "The name of the channel or user as a destination for the messages",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "icon",
+            "label" : "Icon",
+            "type" : "text",
+            "helperText" : "The emoji to set as the icon",
+            "description" : "If left blank, defaults to :boomerang:",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "username",
+            "label" : "Username",
+            "type" : "text",
+            "helperText" : "Larger, bold text near the top of a message",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "message",
+            "label" : "Message",
+            "type" : "textarea",
+            "helperText" : "The text to appear above the file.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "fileName",
+            "label" : "File Name",
+            "type" : "textarea",
+            "helperText" : "The file name to use when download or opening the file.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "fileContent",
+            "label" : "File Content",
+            "type" : "textarea",
+            "helperText" : "The flow property or text containing the file content.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "encoded",
+            "label" : "Decode File Content",
+            "type" : "boolean",
+            "helperText" : "Decode the file content from base64. This is useful if an encoded Flow output property is used as the File Content.",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Send slack message with file",
+    "key" : "slackUploadFileMessage",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Upload Slack File with Message",
+    "type" : "ValuesList",
+    "category" : "communication",
+    "arguments" : [ 
+        "slack", 
+        "uploadFileMessage"
+    ],
+    "nodetype" : "templateTask"
+}

@@ -1,0 +1,46 @@
+{
+    "_id" : ObjectId("5d1ed36a988e7b6b6f7b470b"),
+    "config" : [ 
+        {
+            "description" : "The path to file including file.",
+            "key" : "path",
+            "label" : "Path",
+            "type" : "text"
+        }, 
+        {
+            "description" : "String or regular regular expression to search for in file.",
+            "key" : "expression",
+            "label" : "Regular Expression",
+            "type" : "text"
+        }, 
+        {
+            "description" : "String to replace with.",
+            "key" : "replaceString",
+            "label" : "Replacement String",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Regular expression flags.",
+            "key" : "flags",
+            "label" : "Flags",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Fail task if not found otherwise continue.",
+            "key" : "failIfNotFound",
+            "label" : "Fail If Not Found",
+            "type" : "boolean"
+        }
+    ],
+    "description" : "Replace String in File.",
+    "key" : "replaceStringInFile",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Replace String in File",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "replaceStringInFile"
+    ],
+    "nodetype" : "custom"
+}

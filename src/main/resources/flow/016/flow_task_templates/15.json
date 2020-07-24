@@ -1,0 +1,48 @@
+{
+    "_id" : ObjectId("5d1ed216988e7b6b6f7b3c1c"),
+    "config" : [ 
+        {
+            "key" : "path",
+            "label" : "Path",
+            "type" : "text",
+            "helperText" : "The path to file including file",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "expression",
+            "label" : "Regular Expression",
+            "type" : "text",
+            "helperText" : "String or regular regular expression to search for in file",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "flags",
+            "label" : "Flags",
+            "type" : "text",
+            "helperText" : "Regular expression flags",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "failIfNotFound",
+            "label" : "Fail If Not Found",
+            "type" : "boolean",
+            "helperText" : "Fail task if not found otherwise continue",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Check file contains string.",
+    "key" : "checkFileContainsString",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Check File Contains String",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "checkFileContainsString"
+    ],
+    "nodetype" : "templateTask"
+}

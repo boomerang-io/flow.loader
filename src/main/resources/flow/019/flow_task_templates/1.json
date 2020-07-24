@@ -1,0 +1,80 @@
+{
+    "_id" : ObjectId("5e2866c8612203650e389491"),
+    "config" : [ 
+        {
+            "key" : "url",
+            "label" : "URL",
+            "type" : "text",
+            "helperText" : "The Slack Webhook URL to call. Needs to be a fully qualified URL or property containing URL.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "channel",
+            "label" : "Channel",
+            "type" : "text",
+            "helperText" : "The name of the channel or user as a destination for the messages",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "icon",
+            "label" : "Icon",
+            "type" : "text",
+            "helperText" : "The emoji to set as the icon",
+            "description" : "If left blank, defaults to :boomerang:",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "username",
+            "label" : "Username",
+            "type" : "text",
+            "helperText" : "Larger, bold text near the top of a message",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "message",
+            "label" : "Message",
+            "type" : "textarea",
+            "helperText" : "The text to appear above the file and also in the fallback.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "content",
+            "label" : "File Content",
+            "type" : "textarea",
+            "helperText" : "The flow property or text containing the file content.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "encoded",
+            "label" : "Decode File Content",
+            "type" : "boolean",
+            "helperText" : "Decode the file content from base64. This is useful if an encoded Flow output property is used as the file content.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "context",
+            "label" : "Context",
+            "type" : "text",
+            "helperText" : "Provide a message context at the base of the response.",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Send slack message and contents of file",
+    "key" : "slackSendFileMessage",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Send Slack Message with File Contents",
+    "type" : "ValuesList",
+    "category" : "communication",
+    "arguments" : [ 
+        "slack", 
+        "sendFileMessage"
+    ],
+    "nodetype" : "templateTask"
+}

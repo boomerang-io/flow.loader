@@ -1,0 +1,82 @@
+{
+    "_id" : ObjectId("5c6939c620cfafa2eaeef2ad"),
+    "config" : [ 
+        {
+            "key" : "instance",
+            "label" : "Instance ID",
+            "type" : "text",
+            "helperText" : "The ServiceNow instance ID",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "username",
+            "label" : "Username",
+            "type" : "text",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "password",
+            "label" : "Password",
+            "type" : "password",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "state",
+            "label" : "Incident State",
+            "type" : "select",
+            "options" : [ 
+                {
+                    "key" : "New",
+                    "value" : "New"
+                }, 
+                {
+                    "key" : "In Progress",
+                    "value" : "In Progress"
+                }, 
+                {
+                    "key" : "On Hold",
+                    "value" : "On Hold"
+                }, 
+                {
+                    "key" : "Resolved",
+                    "value" : "Resolved"
+                }, 
+                {
+                    "key" : "Closed",
+                    "value" : "Closed"
+                }, 
+                {
+                    "key" : "Canceled",
+                    "value" : "Canceled"
+                }
+            ],
+            "helperText" : "The state to to update the incidents to",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "incidents",
+            "label" : "Incidents List",
+            "type" : "textarea",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Update Incidents from ServiceNow",
+    "key" : "servicenowUpdateIncidents",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Update Incidents",
+    "type" : "ValuesList",
+    "category" : "ServiceNow",
+    "arguments" : [ 
+        "servicenow", 
+        "updateIncidents"
+    ],
+    "nodetype" : "templateTask"
+}

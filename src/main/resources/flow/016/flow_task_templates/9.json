@@ -1,0 +1,40 @@
+{
+    "_id" : ObjectId("5bd98b105a5df954ad599bc2"),
+    "config" : [ 
+        {
+            "key" : "to",
+            "label" : "To",
+            "type" : "text",
+            "helperText" : "The email address to send mail to",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "subject",
+            "label" : "Subject",
+            "type" : "text",
+            "helperText" : "The email subject",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "message",
+            "label" : "Message",
+            "type" : "textarea",
+            "helperText" : "The message inside the email",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Send Email to Member with Subject and Message",
+    "key" : "mail",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Send Platform Email",
+    "type" : "ValuesList",
+    "category" : "boomerang",
+    "arguments" : [ 
+        "mail", 
+        "sendMailToMember"
+    ],
+    "nodetype" : "templateTask"
+}

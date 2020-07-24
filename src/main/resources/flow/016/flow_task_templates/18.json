@@ -1,0 +1,48 @@
+{
+    "_id" : ObjectId("5d3145ee988e7b6b6f24d870"),
+    "config" : [ 
+        {
+            "key" : "url",
+            "label" : "URL",
+            "type" : "text",
+            "helperText" : "The base URL including API version",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "token",
+            "label" : "Token",
+            "type" : "password",
+            "helperText" : "The API or Personal Token",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "org",
+            "label" : "Org",
+            "type" : "text",
+            "helperText" : "GitHub Org to search in",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "repos",
+            "label" : "Repositories",
+            "type" : "textarea",
+            "helperText" : "Repositories to make private.",
+            "description" : "New line delimited list.",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Make Repositories Private.",
+    "key" : "makeReposInOrgPrivate",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Make Repositories Private",
+    "type" : "ValuesList",
+    "category" : "GitHub",
+    "arguments" : [ 
+        "github", 
+        "makeReposInOrgPrivate"
+    ],
+    "nodetype" : "templateTask"
+}

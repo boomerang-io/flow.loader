@@ -1,0 +1,15 @@
+{
+    "_id" : ObjectId("5bd9b4115a5df954ad5ad8db"),
+    "config" : [],
+    "description" : "Artifactory File Download",
+    "key" : "artifactoryDownload",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Artifactory File Download",
+    "type" : "ValuesList",
+    "category" : "artifactory",
+    "arguments" : [ 
+        "artifactory", 
+        "downloadFile"
+    ],
+    "nodetype" : "templateTask"
+}

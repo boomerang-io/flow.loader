@@ -1,0 +1,46 @@
+{
+    "_id" : ObjectId("5c3d0401352b1b514150545b"),
+    "config" : [ 
+        {
+            "description" : "The URL endpoint to call.",
+            "key" : "url",
+            "label" : "URL",
+            "type" : "url"
+        }, 
+        {
+            "description" : "The HTTP method for the call",
+            "key" : "method",
+            "label" : "Method",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The HTTP Header for the call",
+            "key" : "header",
+            "label" : "Headers",
+            "type" : "textarea"
+        }, 
+        {
+            "description" : "The HTTP Content Type for the call",
+            "key" : "contentType",
+            "label" : "Content Type",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The HTTP Body or Payload for the call",
+            "key" : "body",
+            "label" : "Body",
+            "type" : "textarea"
+        }
+    ],
+    "description" : "Execute a HTTP Call",
+    "key" : "httpExecute",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Execute HTTP Call",
+    "type" : "ValuesList",
+    "category" : "utilities",
+    "arguments" : [ 
+        "http", 
+        "execute"
+    ],
+    "nodetype": "custom"
+}

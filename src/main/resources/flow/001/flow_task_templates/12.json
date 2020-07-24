@@ -1,0 +1,28 @@
+{
+    "_id" : ObjectId("5c3fbc92352b1b51416952d1"),
+    "config" : [ 
+        {
+            "description" : "The working directory path",
+            "key" : "path",
+            "label" : "Path",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Regular expression to search for files or folders within the specified path",
+            "key" : "expression",
+            "label" : "Regular Expression",
+            "type" : "text"
+        }
+    ],
+    "description" : "Check file or folder exists and fail if not found.",
+    "key" : "checkFileOrFolderExists",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Check File or Folder Exists",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "checkFileOrFolderExists"
+    ],
+    "nodetype": "custom"
+}

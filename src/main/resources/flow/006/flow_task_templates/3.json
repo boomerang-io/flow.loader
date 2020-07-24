@@ -1,0 +1,40 @@
+{
+    "_id" : ObjectId("5d25414c988e7b6b6fb3d5f7"),
+    "config" : [ 
+        {
+            "description" : "The base URL including API version.",
+            "key" : "url",
+            "label" : "URL",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The API or Personal Token.",
+            "key" : "token",
+            "label" : "Token",
+            "type" : "secured"
+        }, 
+        {
+            "description" : "GitHub Org to search in",
+            "key" : "org",
+            "label" : "Org",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Repo Names to Skip.",
+            "key" : "skipRepos",
+            "label" : "Repositories to Skip",
+            "type" : "textarea"
+        }
+    ],
+    "description" : "Find Public Repositories in Org.",
+    "key" : "findPublicReposInOrg",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Find Public Repositories in Org",
+    "type" : "ValuesList",
+    "category" : "github",
+    "arguments" : [ 
+        "github", 
+        "findPublicReposInOrg"
+    ],
+    "nodetype" : "custom"
+}

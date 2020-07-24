@@ -1,0 +1,40 @@
+{
+    "_id" : ObjectId("5c3907a1352b1b51412ed079"),
+    "config" : [ 
+        {
+            "key" : "path",
+            "label" : "Directory Path",
+            "type" : "text",
+            "helperText" : "The dir path to run shell command. If left blank, will run in a default location.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "shell",
+            "label" : "Shell Interpreter",
+            "type" : "text",
+            "helperText" : "The path to the shell interpreter such as /bin/bash. Defaults to /bin/sh.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "script",
+            "label" : "Shell Script",
+            "type" : "texteditor::shell",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Execute a shell script",
+    "key" : "executeShell",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Execute Shell",
+    "type" : "ValuesList",
+    "category" : "utilities",
+    "arguments" : [ 
+        "shell", 
+        "execute"
+    ],
+    "nodetype" : "templateTask"
+}

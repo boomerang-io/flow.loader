@@ -1,0 +1,22 @@
+{
+    "_id" : ObjectId("5c37af285616d5f3544568fd"),
+    "config" : [ 
+        {
+            "key" : "value",
+            "label" : "Value",
+            "type" : "text",
+            "helperText" : "Property to be Switched Upon",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Create a Switch Component",
+    "key" : "switch",
+    "name" : "Switch",
+    "type" : "ValuesList",
+    "category" : "workflow",
+    "arguments" : [ 
+        "switch"
+    ],
+    "nodetype" : "decision"
+}

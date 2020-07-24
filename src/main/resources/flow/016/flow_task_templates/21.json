@@ -1,0 +1,82 @@
+{
+    "_id" : ObjectId("5c69365b20cfafa2eaeed89c"),
+    "config" : [ 
+        {
+            "key" : "instance",
+            "label" : "Instance ID",
+            "type" : "text",
+            "helperText" : "The ServiceNow instance ID",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "username",
+            "label" : "Username",
+            "type" : "text",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "password",
+            "label" : "Password",
+            "type" : "password",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "state",
+            "label" : "Incident State",
+            "type" : "select",
+            "options" : [ 
+                {
+                    "key" : "New",
+                    "value" : "New"
+                }, 
+                {
+                    "key" : "In Progress",
+                    "value" : "In Progress"
+                }, 
+                {
+                    "key" : "On Hold",
+                    "value" : "On Hold"
+                }, 
+                {
+                    "key" : "Resolved",
+                    "value" : "Resolved"
+                }, 
+                {
+                    "key" : "Closed",
+                    "value" : "Closed"
+                }, 
+                {
+                    "key" : "Canceled",
+                    "value" : "Canceled"
+                }
+            ],
+            "helperText" : "The state to filter the incidents by",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "tag",
+            "label" : "Tag or Label",
+            "type" : "text",
+            "helperText" : "The Tag or Label to filter the incidents by",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Get Incidents from ServiceNow with optional State",
+    "key" : "servicenowGetIncidents",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Get Incidents",
+    "type" : "ValuesList",
+    "category" : "ServiceNow",
+    "arguments" : [ 
+        "servicenow", 
+        "getIncidents"
+    ],
+    "nodetype" : "templateTask"
+}

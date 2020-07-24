@@ -1,0 +1,58 @@
+{
+    "_id" : ObjectId("5d53016bd83be3cc84bae976"),
+    "config" : [ 
+        {
+            "key" : "type",
+            "label" : "Target",
+            "type" : "select",
+            "options" : [ 
+                {
+                    "key" : "user",
+                    "value" : "user"
+                }, 
+                {
+                    "key" : "group",
+                    "value" : "group"
+                }
+            ],
+            "helperText" : "The platform audience",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "target",
+            "label" : "User or Group",
+            "type" : "text",
+            "helperText" : "The email address or group name to send notification to",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "title",
+            "label" : "Title",
+            "type" : "text",
+            "helperText" : "The title to display",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "message",
+            "label" : "Message",
+            "type" : "textarea",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Send platform notification to user or team",
+    "key" : "mail",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Send Platform Notification",
+    "type" : "ValuesList",
+    "category" : "boomerang",
+    "arguments" : [ 
+        "notifications", 
+        "sendNotification"
+    ],
+    "nodetype" : "templateTask"
+}

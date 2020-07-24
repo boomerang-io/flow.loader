@@ -1,0 +1,28 @@
+{
+    "_id" : ObjectId("5c39015b352b1b51412e9c85"),
+    "config" : [ 
+        {
+            "description" : "The file path incl file name",
+            "key" : "path",
+            "label" : "File Path",
+            "type" : "text"
+        }, 
+        {
+            "description" : "This property will be availabe as an output property",
+            "key" : "propertyName",
+            "label" : "Property Name",
+            "type" : "text"
+        }
+    ],
+    "description" : "Read file and add contents to property",
+    "key" : "readFileToProperty",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Read File to Property",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "readFileToProperty"
+    ],
+    "nodetype": "custom"
+}

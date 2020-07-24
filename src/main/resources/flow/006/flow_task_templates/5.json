@@ -1,0 +1,40 @@
+{
+    "_id" : ObjectId("5d3145ee988e7b6b6f24d870"),
+    "config" : [ 
+        {
+            "description" : "The base URL including API version.",
+            "key" : "url",
+            "label" : "URL",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The API or Personal Token.",
+            "key" : "token",
+            "label" : "Token",
+            "type" : "secured"
+        }, 
+        {
+            "description" : "GitHub Org to search in",
+            "key" : "org",
+            "label" : "Org",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Repositories to make private. New line delimited list.",
+            "key" : "repos",
+            "label" : "Repositories",
+            "type" : "textarea"
+        }
+    ],
+    "description" : "Make Repositories Private.",
+    "key" : "makeReposInOrgPrivate",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Make Repositories Private",
+    "type" : "ValuesList",
+    "category" : "github",
+    "arguments" : [ 
+        "github", 
+        "makeReposInOrgPrivate"
+    ],
+    "nodetype" : "custom"
+}

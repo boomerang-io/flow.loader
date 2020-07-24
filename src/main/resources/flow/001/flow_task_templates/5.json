@@ -1,0 +1,28 @@
+{
+    "_id" : ObjectId("5bd9d03a5a5df954ad5bb3b5"),
+    "config" : [ 
+        {
+            "description" : "The file path incl file name",
+            "key" : "path",
+            "label" : "File Path",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The file content",
+            "key" : "content",
+            "label" : "File Content",
+            "type" : "textarea"
+        }
+    ],
+    "description" : "Create file in worker",
+    "key" : "createFile",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Create File",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "createFile"
+    ],
+    "nodetype": "custom"
+}

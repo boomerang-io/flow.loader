@@ -1,0 +1,32 @@
+{
+    "_id" : ObjectId("5e670a1e2d5e6a302de4f41d"),
+    "config" : [ 
+        {
+            "key" : "token",
+            "label" : "Token",
+            "type" : "text",
+            "helperText" : "The Slack App token.",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "emailAddress",
+            "label" : "Email Address",
+            "type" : "text",
+            "helperText" : "The Slack users associated Email Address",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Look up Slack user by email address",
+    "key" : "slackUploadFileMessage",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Slack User Look Up",
+    "type" : "ValuesList",
+    "category" : "communication",
+    "arguments" : [ 
+        "slack", 
+        "lookUpUser"
+    ],
+    "nodetype" : "templateTask"
+}

@@ -1,0 +1,34 @@
+{
+    "_id" : ObjectId("5bd98b105a5df954ad599bc2"),
+    "config" : [ 
+        {
+            "description" : "The email address to send mail to",
+            "key" : "to",
+            "label" : "To",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The email subject",
+            "key" : "subject",
+            "label" : "Subject",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The message inside the email",
+            "key" : "message",
+            "label" : "Message",
+            "type" : "textarea"
+        }
+    ],
+    "description" : "Send Email to Member with Subject and Message",
+    "key" : "mail",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Send Email",
+    "type" : "ValuesList",
+    "category" : "boomerang",
+    "arguments" : [ 
+        "mail", 
+        "sendMailToMember"
+    ],
+    "nodetype": "custom"
+}

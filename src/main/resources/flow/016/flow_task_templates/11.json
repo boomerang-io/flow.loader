@@ -1,0 +1,32 @@
+{
+    "_id" : ObjectId("5bd9d03a5a5df954ad5bb3b5"),
+    "config" : [ 
+        {
+            "key" : "path",
+            "label" : "File Path",
+            "type" : "text",
+            "helperText" : "The file path incl file name",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "content",
+            "label" : "File Content",
+            "type" : "texteditor",
+            "helperText" : "",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Create file in worker",
+    "key" : "createFile",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Create File",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "createFile"
+    ],
+    "nodetype" : "templateTask"
+}

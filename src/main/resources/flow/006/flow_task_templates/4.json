@@ -1,0 +1,52 @@
+{
+    "_id" : ObjectId("5d25830d988e7b6b6fb631dd"),
+    "config" : [ 
+        {
+            "description" : "The URL endpoint to call.",
+            "key" : "url",
+            "label" : "URL",
+            "type" : "url"
+        }, 
+        {
+            "description" : "The name of the channel or user as a destination for the messages.",
+            "key" : "channel",
+            "label" : "Channel",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The emoji to set as the icon. Defaults to :boomerang:",
+            "key" : "icon",
+            "label" : "Icon",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Larger, bold text near the top of a message.",
+            "key" : "username",
+            "label" : "Username",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Fall back message to show in notifications or areas when rich text cant be shown.",
+            "key" : "fallback",
+            "label" : "Fallback Text",
+            "type" : "text"
+        }, 
+        {
+            "description" : "Add rich layouts by using Slack Blocks provided as a JSON array.",
+            "key" : "blocks",
+            "label" : "Blocks",
+            "type" : "textarea"
+        }
+    ],
+    "description" : "Send rick slack message",
+    "key" : "slackSendRichMessage",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Send Rick Slack Message",
+    "type" : "ValuesList",
+    "category" : "communication",
+    "arguments" : [ 
+        "slack", 
+        "sendRichMessage"
+    ],
+    "nodetype" : "custom"
+}

@@ -1,0 +1,22 @@
+{
+    "_id" : ObjectId("5bd97bea5a5df954ad592c06"),
+    "config" : [ 
+        {
+            "description" : "Duration in milliseconds",
+            "key" : "duration",
+            "label" : "Duration",
+            "type" : "text"
+        }
+    ],
+    "description" : "Sleep for specified duration in milliseconds",
+    "key" : "sleep",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Sleep",
+    "type" : "ValuesList",
+    "category" : "utilities",
+    "arguments" : [ 
+        "sleep", 
+        "sleep"
+    ],
+    "nodetype": "custom"
+}

@@ -1,0 +1,86 @@
+{
+    "_id" : ObjectId("5c3d0401352b1b514150545b"),
+    "config" : [ 
+        {
+            "key" : "url",
+            "label" : "URL",
+            "type" : "url",
+            "helperText" : "The URL endpoint to call",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "method",
+            "label" : "Method",
+            "type" : "select",
+            "options" : [ 
+                {
+                    "key" : "GET",
+                    "value" : "GET"
+                }, 
+                {
+                    "key" : "HEAD",
+                    "value" : "HEAD"
+                }, 
+                {
+                    "key" : "PUT",
+                    "value" : "PUT"
+                }, 
+                {
+                    "key" : "POST",
+                    "value" : "POST"
+                }, 
+                {
+                    "key" : "PATCH",
+                    "value" : "PATCH"
+                }, 
+                {
+                    "key" : "OPTIONS",
+                    "value" : "OPTIONS"
+                }, 
+                {
+                    "key" : "DELETE",
+                    "value" : "DELETE"
+                }
+            ],
+            "helperText" : "The HTTP method for the call",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "header",
+            "label" : "Headers",
+            "type" : "textarea",
+            "helperText" : "The HTTP Header for the call",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "contentType",
+            "label" : "Content Type",
+            "type" : "text",
+            "helperText" : "The HTTP Content Type for the call",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "body",
+            "label" : "Body",
+            "type" : "texteditor",
+            "helperText" : "The HTTP Body or Payload for the call",
+            "description" : "",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Execute a HTTP Call",
+    "key" : "httpExecute",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Execute HTTP Call",
+    "type" : "ValuesList",
+    "category" : "utilities",
+    "arguments" : [ 
+        "http", 
+        "execute"
+    ],
+    "nodetype" : "templateTask"
+}

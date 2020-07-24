@@ -1,0 +1,40 @@
+{
+    "_id" : ObjectId("5bd9d0825a5df954ad5bb5c3"),
+    "config" : [ 
+        {
+            "description" : "The URL to the artifactory repository and directory.",
+            "key" : "url",
+            "label" : "URL",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The file incl file name",
+            "key" : "file",
+            "label" : "File",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The user credential to log into Artifactory",
+            "key" : "username",
+            "label" : "Username",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The user credential to log into Artifactory",
+            "key" : "password",
+            "label" : "Password",
+            "type" : "text"
+        }
+    ],
+    "description" : "Upload file to Artifactory",
+    "key" : "artifactoryUpload",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Artifactory File Upload",
+    "type" : "ValuesList",
+    "category" : "utilities",
+    "arguments" : [ 
+        "artifactory", 
+        "uploadFile"
+    ],
+    "nodetype": "custom"
+}

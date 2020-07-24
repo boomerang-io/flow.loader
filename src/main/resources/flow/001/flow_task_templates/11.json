@@ -1,0 +1,28 @@
+{
+    "_id" : ObjectId("5c3fb7e2352b1b5141692f75"),
+    "config" : [ 
+        {
+            "description" : "The file path incl file name",
+            "key" : "path",
+            "label" : "File Path",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The delimiter value to split on. Defaults to = if blank.",
+            "key" : "delimiter",
+            "label" : "Delimiter",
+            "type" : "text"
+        }
+    ],
+    "description" : "Read properties from file",
+    "key" : "readPropertiesFromFile",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Read Properties From File",
+    "type" : "ValuesList",
+    "category" : "file utilities",
+    "arguments" : [ 
+        "file", 
+        "readPropertiesFromFile"
+    ],
+    "nodetype": "custom"
+}

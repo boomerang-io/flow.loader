@@ -1,0 +1,54 @@
+{
+    "_id" : ObjectId("5c69365b20cfafa2eaeed89c"),
+    "config" : [ 
+        {
+            "description" : "The ServiceNow instance ID",
+            "key" : "instance",
+            "label" : "Instance ID",
+            "type" : "text"
+        }, 
+        {
+            "description" : "",
+            "key" : "username",
+            "label" : "Username",
+            "type" : "text"
+        }, 
+        {
+            "description" : "",
+            "key" : "password",
+            "label" : "Password",
+            "type" : "secured"
+        }, 
+        {
+            "description" : "The state to filter the incidents by",
+            "key" : "state",
+            "label" : "Incident State",
+            "type" : "select",
+            "options" : [ 
+                "New", 
+                "In Progress", 
+                "On Hold", 
+                "Resolved", 
+                "Closed", 
+                "Canceled"
+            ]
+        }, 
+        {
+            "description" : "The Tag / Label to filter the incidents by",
+            "key" : "tag",
+            "label" : "Tag or Label",
+            "type" : "text"
+        }
+    ],
+    "description" : "Get Incidents from ServiceNow with optional State",
+    "key" : "servicenowGetIncidents",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Get Incidents",
+    "type" : "ValuesList",
+    "category" : "ServiceNow",
+    "arguments" : [ 
+        "servicenow", 
+        "getIncidents"
+    ],
+    "nodetype": "custom"
+}

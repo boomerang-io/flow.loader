@@ -1,0 +1,48 @@
+{
+    "_id" : ObjectId("5d25414c988e7b6b6fb3d5f7"),
+    "config" : [ 
+        {
+            "key" : "url",
+            "label" : "URL",
+            "type" : "text",
+            "helperText" : "The base URL including API version",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "token",
+            "label" : "Token",
+            "type" : "password",
+            "helperText" : "The API or Personal Token",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "org",
+            "label" : "Org",
+            "type" : "text",
+            "helperText" : "GitHub Org to search in",
+            "description" : "",
+            "placeholder" : ""
+        }, 
+        {
+            "key" : "skipRepos",
+            "label" : "Repositories to Skip",
+            "type" : "textarea",
+            "helperText" : "Repo Names to Skip",
+            "description" : "Newline delimited list",
+            "placeholder" : ""
+        }
+    ],
+    "description" : "Find Public Repositories in Org.",
+    "key" : "findPublicReposInOrg",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Find Public Repositories in Org",
+    "type" : "ValuesList",
+    "category" : "GitHub",
+    "arguments" : [ 
+        "github", 
+        "findPublicReposInOrg"
+    ],
+    "nodetype" : "templateTask"
+}

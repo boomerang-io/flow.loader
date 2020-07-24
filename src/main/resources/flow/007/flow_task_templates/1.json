@@ -1,0 +1,44 @@
+{
+    "_id" : ObjectId("5d53016bd83be3cc84bae976"),
+    "config" : [ 
+        {
+            "description" : "The audience target",
+            "key" : "type",
+            "label" : "Target",
+            "type" : "select",
+            "options" : [ 
+                "user", 
+                "group"
+            ]
+        }, 
+        {
+            "description" : "The email address or group name to send notification.",
+            "key" : "target",
+            "label" : "User or Group",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The title to display",
+            "key" : "title",
+            "label" : "Title",
+            "type" : "text"
+        }, 
+        {
+            "description" : "The message inside the notification",
+            "key" : "message",
+            "label" : "Message",
+            "type" : "textarea"
+        }
+    ],
+    "description" : "Send platform notification to user or team",
+    "key" : "mail",
+    "lastModiifed" : ISODate("2018-10-09T00:01:00.000Z"),
+    "name" : "Send Platform Notification",
+    "type" : "ValuesList",
+    "category" : "boomerang",
+    "arguments" : [ 
+        "notifications", 
+        "sendNotification"
+    ],
+    "nodetype" : "custom"
+}
