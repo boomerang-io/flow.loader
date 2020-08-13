@@ -379,7 +379,7 @@ public class FlowDatabaseChangeLog {
 
     }
   }
-  
+
   @ChangeSet(order = "023", id = "023", author = "Adrienne Hudson")
   public void taskTemplateUpdate(MongoDatabase db) throws IOException {
 
@@ -395,7 +395,7 @@ public class FlowDatabaseChangeLog {
 
     }
   }
-  
+
   @ChangeSet(order = "024", id = "024", author = "Adrienne Hudson")
   public void addTwilloFlowTaskTemplate(MongoDatabase db) throws IOException {
 
@@ -407,17 +407,30 @@ public class FlowDatabaseChangeLog {
 
     }
   }
-  
+
+
   @ChangeSet(order = "025", id = "025", author = "Adrienne Hudson")
+  public void verifyFlowTaskTemplates(MongoDatabase db) throws IOException {
+    final MongoCollection<Document> flowTaskTemplateCollection =
+        db.getCollection("flow_task_templates");
+
+    final FindIterable<Document> flowTemplates = flowTaskTemplateCollection.find();
+    for (final Document flowTemplate : flowTemplates) {
+      flowTemplate.put("verified", true);
+      flowTaskTemplateCollection.replaceOne(eq("_id", flowTemplate.getObjectId("_id")),
+          flowTemplate);
+    }
+  }
+  
+    @ChangeSet(order = "026", id = "026", author = "Adrienne Hudson")
   public void createFlowSettings(MongoDatabase db) throws IOException {
     db.createCollection("flow_settings");
     
-    final List<String> files = fileloadingService.loadFiles("flow/025/flow_settings/*.json");
+    final List<String> files = fileloadingService.loadFiles("flow/026/flow_settings/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
       final MongoCollection<Document> collection = db.getCollection("flow_settings");
       collection.insertOne(doc);
-
     }
   }
 }
