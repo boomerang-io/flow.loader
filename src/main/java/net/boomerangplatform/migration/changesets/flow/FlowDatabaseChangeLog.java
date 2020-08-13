@@ -408,6 +408,7 @@ public class FlowDatabaseChangeLog {
     }
   }
 
+
   @ChangeSet(order = "025", id = "025", author = "Adrienne Hudson")
   public void verifyFlowTaskTemplates(MongoDatabase db) throws IOException {
     final MongoCollection<Document> flowTaskTemplateCollection =
@@ -418,6 +419,18 @@ public class FlowDatabaseChangeLog {
       flowTemplate.put("verified", true);
       flowTaskTemplateCollection.replaceOne(eq("_id", flowTemplate.getObjectId("_id")),
           flowTemplate);
+    }
+  }
+  
+    @ChangeSet(order = "026", id = "026", author = "Adrienne Hudson")
+  public void createFlowSettings(MongoDatabase db) throws IOException {
+    db.createCollection("flow_settings");
+    
+    final List<String> files = fileloadingService.loadFiles("flow/026/flow_settings/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      final MongoCollection<Document> collection = db.getCollection("flow_settings");
+      collection.insertOne(doc);
     }
   }
 }
