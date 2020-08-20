@@ -1,0 +1,51 @@
+{
+    "_id" : ObjectId("5f32cb19d09662744c0df51d"),
+    "config" : [ 
+        {
+            "description" : "Enable Debug logging for worker logs",
+            "key" : "enable.debug",
+            "label" : "Enable Debug",
+            "type" : "boolean",
+            "value" : "true",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "Default container image to be used by the Worker including version",
+            "key" : "worker.image",
+            "label" : "Default Image Path",
+            "type" : "text",
+            "value" : "boomerangio/worker-flow:2.1.3",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "Deletion Policy",
+            "key" : "job.deletion.policy",
+            "label" : "Defines the completion state that will lead to worker removal",
+            "type" : "select",
+            "minValueLength" : 0,
+            "maxValueLength" : 128,
+            "options" : [ 
+                {
+                    "key" : "Never",
+                    "value" : "Never"
+                }, 
+                {
+                    "key" : "OnSuccess",
+                    "value" : "On Success"
+                }, 
+                {
+                    "key" : "Always",
+                    "value" : "Always"
+                }
+            ],
+            "value" : "Never",
+            "readOnly" : false
+        }
+    ],
+    "description" : "The CICD worker configuration.",
+    "key" : "controller",
+    "lastModiifed" : ISODate("2020-08-20T00:59:19.145Z"),
+    "name" : "Workers",
+    "type" : "ValuesList",
+    "_class" : "net.boomerangplatform.mongo.entity.FlowSettingsEntity"
+}
