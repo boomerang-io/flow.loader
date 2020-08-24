@@ -449,24 +449,4 @@ public class FlowDatabaseChangeLog {
       }
     }
     
-    @ChangeSet(order = "028", id = "028", author = "Adrienne Hudson")
-    public void updateWorkerSetting(MongoDatabase db) throws IOException {
-
-      final MongoCollection<Document> flowCollection = db.getCollection("flow_settings");
-
-      Document workerSettings = flowCollection.find(eq("key", "controller")).first();
-      
-      for (Document config : (List<Document>) workerSettings.get("config")) {
-        if (config.get("key").equals("job.deletion.policy")) {
-           for(Document option: (List<Document>) config.get("options")) {
-             if(option.get("key").equals("On Success")) {
-               option.put("key", "OnSuccess");
-               option.put("value","On Success");
-             }
-           }
-        }
-      }
-      flowCollection.replaceOne(eq("key", "controller"), workerSettings);
-      
-    }
 }
