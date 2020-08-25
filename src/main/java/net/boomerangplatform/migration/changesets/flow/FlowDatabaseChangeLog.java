@@ -480,5 +480,19 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
+  
+  @ChangeSet(order = "030", id = "030", author = "Adrienne Hudson")
+  public void templatesUpdate(MongoDatabase db) throws IOException {
+    BasicDBObject document = new BasicDBObject();
+    final MongoCollection<Document> collection = db.getCollection("flow_task_templates");
+    collection.deleteMany(document);
+
+    final List<String> files = fileloadingService.loadFiles("flow/030/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+
+      collection.insertOne(doc);
+    }
+  }
 
 }
