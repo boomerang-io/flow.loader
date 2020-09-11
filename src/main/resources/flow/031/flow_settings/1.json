@@ -1,0 +1,18 @@
+{
+	"required": null,
+	"placeholder": null,
+	"language": null,
+	"disabled": null,
+	"defaultValue": null,
+	"value": "false",
+	"values": null,
+	"readOnly": false,
+	"description": "When enabled, verified tasks can be edited in the task manager",
+	"key": "enable.tasks",
+	"label": "Enable Verified Tasks to be edited",
+	"type": "boolean",
+	"minValueLength": null,
+	"maxValueLength": null,
+	"options": null,
+	"helperText": null
+}
