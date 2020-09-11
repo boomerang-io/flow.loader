@@ -502,11 +502,11 @@ public class FlowDatabaseChangeLog {
     List<Document> config = (List<Document>) workers.get("config");
     
     Document newConfig = new Document();
-    newConfig.put("value", "false");
+    newConfig.put("description", "When enabled, verified tasks can be edited in the task manager");
     newConfig.put("key", "enable.tasks");
     newConfig.put("label", "Enable Verified Tasks to be edited");
-    newConfig.put("description", "When enabled, verified tasks can be edited in the task manager");
     newConfig.put("type", "boolean");
+    newConfig.put("value", "false");
 
     config.add(newConfig);
 
