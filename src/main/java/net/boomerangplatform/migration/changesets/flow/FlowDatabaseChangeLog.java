@@ -494,5 +494,24 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
+  
+  @ChangeSet(order = "031", id = "031", author = "Dylan Landry")
+  public void updateFlowSettingEnableTasks(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection("flow_settings");
+    Document workers = collection.find(eq("name", "Workers")).first();
+    List<Document> config = (List<Document>) workers.get("config");
+    
+    Document newConfig = new Document();
+    newConfig.put("description", "When enabled, verified tasks can be edited in the task manager");
+    newConfig.put("key", "enable.tasks");
+    newConfig.put("label", "Enable Verified Tasks to be edited");
+    newConfig.put("type", "boolean");
+    newConfig.put("value", "false");
+
+    config.add(newConfig);
+
+    workers.put("config", config);
+    collection.replaceOne(eq("name", "Workers"), workers);
+  }
 
 }
