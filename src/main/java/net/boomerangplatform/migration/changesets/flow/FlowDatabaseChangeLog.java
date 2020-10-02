@@ -465,7 +465,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "029", id = "029", author = "Adrienne Hudson")
   public void taskTemplateUpdates(MongoDatabase db) throws IOException {
 
@@ -480,7 +480,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "030", id = "030", author = "Adrienne Hudson")
   public void templatesUpdate(MongoDatabase db) throws IOException {
     BasicDBObject document = new BasicDBObject();
@@ -494,13 +494,13 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "031", id = "031", author = "Dylan Landry")
   public void updateFlowSettingEnableTasks(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection("flow_settings");
     Document workers = collection.find(eq("name", "Workers")).first();
     List<Document> config = (List<Document>) workers.get("config");
-    
+
     Document newConfig = new Document();
     newConfig.put("description", "When enabled, verified tasks can be edited in the task manager");
     newConfig.put("key", "enable.tasks");
@@ -512,6 +512,20 @@ public class FlowDatabaseChangeLog {
 
     workers.put("config", config);
     collection.replaceOne(eq("name", "Workers"), workers);
+  }
+
+  @ChangeSet(order = "032", id = "032", author = "Adrienne Hudson")
+  public void activityUpdate(MongoDatabase db) throws IOException {
+    final MongoCollection<Document> collection = db.getCollection("flow_workflows_activity");
+
+    final FindIterable<Document> activities = collection.find();
+    for (final Document activity : activities) {
+      if (activity.get("trigger").equals("cron")) {
+        activity.put("trigger", "scheduler");
+        collection.replaceOne(eq("_id", activity.getObjectId("_id")), activity);
+      }
+    }
+
   }
 
 }
