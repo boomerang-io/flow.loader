@@ -533,6 +533,9 @@ public class FlowDatabaseChangeLog {
 
     final MongoCollection<Document> collection = db.getCollection("flow_task_templates");
     collection.deleteOne(eq("name", "Run Custom Task"));
+    collection.deleteOne(eq("name", "Send Platform Notification"));
+    collection.deleteOne(eq("name", "Send Platform Email"));
+    
 
     final List<String> files = fileloadingService.loadFiles("flow/033/flow_task_templates/*.json");
     for (final String fileContents : files) {
