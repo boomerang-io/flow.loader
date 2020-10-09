@@ -1,0 +1,75 @@
+{
+    "_id" : ObjectId("5d53016bd83be3cc84bae976"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Send platform notification to user or team",
+    "lastModified" : ISODate("2020-10-09T16:08:51.597Z"),
+    "name" : "Send Platform Notification",
+    "category" : "IBM Services Essentials",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "boomerang", 
+                "sendNotification"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "type",
+                    "label" : "Target",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "user",
+                            "value" : "user"
+                        }, 
+                        {
+                            "key" : "group",
+                            "value" : "group"
+                        }
+                    ],
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "target",
+                    "label" : "User or Group",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "title",
+                    "label" : "Title",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5ecd2d1d0eb5f000012d0895",
+                "reason" : "updating task category",
+                "date" : ISODate("2020-10-09T16:08:51.597Z"),
+                "userName" : "Benjamin Ruby"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Message",
+    "verified" : true,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

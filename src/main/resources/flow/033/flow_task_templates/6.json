@@ -1,0 +1,57 @@
+{
+    "_id" : ObjectId("5bd98b105a5df954ad599bc2"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Send Email to Member with Subject and Message",
+    "lastModified" : ISODate("2020-10-09T16:08:28.058Z"),
+    "name" : "Send Platform Email",
+    "category" : "IBM Services Essentials",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "boomerang", 
+                "sendMailToMember"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "to",
+                    "label" : "To",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "subject",
+                    "label" : "Subject",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5ecd2d1d0eb5f000012d0895",
+                "reason" : "updating task category",
+                "date" : ISODate("2020-10-09T16:08:28.058Z"),
+                "userName" : "Benjamin Ruby"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Message",
+    "verified" : true,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
