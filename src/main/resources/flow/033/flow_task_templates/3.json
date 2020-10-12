@@ -1,7 +1,7 @@
 {
     "_id" : ObjectId("5f7dcf1ce1d3ce8d52ea45d4"),
     "currentVersion" : NumberLong(1),
-    "description" : "Wait for event from an external system. This can either be via a webhook or Cloud Event.",
+    "description" : "Wait for an event from an external system to resume workflow execution. The event can be a webhook or a Cloud Event.",
     "lastModified" : ISODate("2020-04-30T22:51:53.014Z"),
     "name" : "Wait For Event",
     "category" : "workflow",
