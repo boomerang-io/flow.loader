@@ -2,7 +2,7 @@
     "_id" : ObjectId("5d53016bd83be3cc84bae976"),
     "currentVersion" : NumberLong(1),
     "description" : "Send platform notification to user or team",
-    "lastModified" : ISODate("2020-10-09T16:08:51.597Z"),
+    "lastModified" : ISODate("2020-10-13T16:49:43.255Z"),
     "name" : "Send Platform Notification",
     "category" : "IBM Services Essentials",
     "nodetype" : "templateTask",
@@ -12,7 +12,7 @@
             "image" : "",
             "command" : "",
             "arguments" : [ 
-                "boomerang", 
+                "ibmessentials", 
                 "sendNotification"
             ],
             "config" : [ 
@@ -61,8 +61,8 @@
             ],
             "changelog" : {
                 "userId" : "5ecd2d1d0eb5f000012d0895",
-                "reason" : "updating task category",
-                "date" : ISODate("2020-10-09T16:08:51.597Z"),
+                "reason" : "update arguments",
+                "date" : ISODate("2020-10-13T16:49:43.255Z"),
                 "userName" : "Benjamin Ruby"
             }
         }

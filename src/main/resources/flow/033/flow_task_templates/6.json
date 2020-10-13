@@ -2,7 +2,7 @@
     "_id" : ObjectId("5bd98b105a5df954ad599bc2"),
     "currentVersion" : NumberLong(1),
     "description" : "Send Email to Member with Subject and Message",
-    "lastModified" : ISODate("2020-10-09T16:08:28.058Z"),
+    "lastModified" : ISODate("2020-10-13T16:50:02.170Z"),
     "name" : "Send Platform Email",
     "category" : "IBM Services Essentials",
     "nodetype" : "templateTask",
@@ -12,7 +12,7 @@
             "image" : "",
             "command" : "",
             "arguments" : [ 
-                "boomerang", 
+                "ibmessentials", 
                 "sendMailToMember"
             ],
             "config" : [ 
@@ -43,8 +43,8 @@
             ],
             "changelog" : {
                 "userId" : "5ecd2d1d0eb5f000012d0895",
-                "reason" : "updating task category",
-                "date" : ISODate("2020-10-09T16:08:28.058Z"),
+                "reason" : "update category name",
+                "date" : ISODate("2020-10-13T16:50:02.170Z"),
                 "userName" : "Benjamin Ruby"
             }
         }
