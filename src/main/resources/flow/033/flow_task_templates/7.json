@@ -144,6 +144,6 @@
     "status" : "active",
     "createdDate" : ISODate("2020-10-13T16:53:52.235Z"),
     "icon" : "Message",
-    "verified" : false,
+    "verified" : true,
     "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
 }
