@@ -19,7 +19,7 @@
                     "description" : "",
                     "key" : "instructions",
                     "label" : "Instructions",
-                    "type" : "textarea",
+                    "type" : "texteditor::markdown",
                     "required" : true,
                     "placeholder" : "",
                     "helpertext" : "Steps for end user to follow to perform manual task.",
