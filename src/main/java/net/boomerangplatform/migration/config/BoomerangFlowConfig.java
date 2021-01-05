@@ -20,12 +20,6 @@ public class BoomerangFlowConfig implements BoomerangMigration {
 
   @Value("${spring.data.mongodb.uri}")
   private String mongodbUri;
-  
-  private static String collectionPrefix;
-  
-  public BoomerangFlowConfig() {
-    collectionPrefix = SpringContextBridge.services().getCollectionPrefix();
-  }
 
   @Override
   public Mongock mongock() {
@@ -38,9 +32,16 @@ public class BoomerangFlowConfig implements BoomerangMigration {
 
     MongockBuilder mongockBuilder = new MongockBuilder(mongoclient, uri.getDatabase(),
         "net.boomerangplatform.migration.changesets.flow");
-    mongockBuilder.setChangeLogCollectionName(collectionPrefix + "sys_changelog_flow");
-    mongockBuilder.setLockCollectionName(collectionPrefix + "sys_lock_flow");
+    mongockBuilder.setChangeLogCollectionName(getCollectionPrefix() + "sys_changelog_flow");
+    mongockBuilder.setLockCollectionName(getCollectionPrefix() + "sys_lock_flow");
 
     return mongockBuilder.setLockQuickConfig().build();
   }
+
+  @Override
+  public String getCollectionPrefix() {
+
+    return SpringContextBridge.services().getCollectionPrefix();
+  }
+
 }
