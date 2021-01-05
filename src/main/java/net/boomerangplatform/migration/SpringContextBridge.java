@@ -12,7 +12,7 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
 
   private static ApplicationContext applicationContext;
 
-  @Value("${workflow.mongo.collection.prefix}")
+  @Value("${flow.mongo.collection.prefix}")
   private String workflowCollectionPrefix;
 
   public static SpringContextBridgedServices services() {
