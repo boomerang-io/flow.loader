@@ -10,6 +10,7 @@ import com.github.cloudyrock.mongock.MongockBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import net.boomerangplatform.migration.BoomerangMigration;
+import net.boomerangplatform.migration.SpringContextBridge;
 
 @Configuration
 @Profile("flow")
@@ -31,9 +32,16 @@ public class BoomerangFlowConfig implements BoomerangMigration {
 
     MongockBuilder mongockBuilder = new MongockBuilder(mongoclient, uri.getDatabase(),
         "net.boomerangplatform.migration.changesets.flow");
-    mongockBuilder.setChangeLogCollectionName("sys_changelog_flow");
-    mongockBuilder.setLockCollectionName("sys_lock_flow");
+    mongockBuilder.setChangeLogCollectionName(getCollectionPrefix() + "sys_changelog_flow");
+    mongockBuilder.setLockCollectionName(getCollectionPrefix() + "sys_lock_flow");
 
     return mongockBuilder.setLockQuickConfig().build();
   }
+
+  @Override
+  public String getCollectionPrefix() {
+
+    return SpringContextBridge.services().getCollectionPrefix();
+  }
+
 }
