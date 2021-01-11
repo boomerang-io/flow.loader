@@ -567,9 +567,9 @@ public class FlowDatabaseChangeLog {
     final FindIterable<Document> workflows = collection.find();
     
     for(final Document workflow : workflows) {
-      if(workflow.get("flowTeamId") != null) {
+      if(workflow.get("scope") == null && workflow.get("flowTeamId") != null) {
         workflow.put("scope", "team");
-      } else {
+      } else if(workflow.get("flowTeamId") == null) {
         workflow.put("scope", "system");
       }
       collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
