@@ -567,13 +567,12 @@ public class FlowDatabaseChangeLog {
     final FindIterable<Document> workflows = collection.find();
     
     for(final Document workflow : workflows) {
-      if(workflow.get("scope") == null && workflow.get("flowTeamId") != null) {
+      if(workflow.get("flowTeamId") != null) {
         workflow.put("scope", "team");
-        collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
-      } else if(workflow.get("flowTeamId") == null) {
+      } else {
         workflow.put("scope", "system");
-        collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
       }
+      collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
     }
   }
 
