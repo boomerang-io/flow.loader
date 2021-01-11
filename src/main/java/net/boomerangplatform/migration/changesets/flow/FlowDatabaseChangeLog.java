@@ -560,5 +560,20 @@ public class FlowDatabaseChangeLog {
     }
   }
 
+  @ChangeSet(order = "035", id = "035", author = "Dylan Landry")
+  public void setScopeForWorkflows(MongoDatabase db) throws IOException {
+    
+    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
+    final FindIterable<Document> workflows = collection.find();
+    
+    for(final Document workflow : workflows) {
+      if(workflow.get("scope") == null && workflow.get("flowTeamId") != null) {
+        workflow.put("scope", "team");
+      } else if(workflow.get("flowTeamId") == null) {
+        workflow.put("scope", "system");
+      }
+      collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
+    }
+  }
 
 }
