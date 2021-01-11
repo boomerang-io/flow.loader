@@ -569,8 +569,10 @@ public class FlowDatabaseChangeLog {
     for(final Document workflow : workflows) {
       if(workflow.get("scope") == null && workflow.get("flowTeamId") != null) {
         workflow.put("scope", "team");
+        collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
       } else if(workflow.get("flowTeamId") == null) {
         workflow.put("scope", "system");
+        collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
       }
     }
   }
