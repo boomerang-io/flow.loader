@@ -575,5 +575,17 @@ public class FlowDatabaseChangeLog {
       collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
     }
   }
+  
+  @ChangeSet(order = "036", id = "036", author = "Adrienne Hudson")
+  public void addingTaskTemplate(MongoDatabase db) throws IOException {
+
+    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    
+    final List<String> files = fileloadingService.loadFiles("flow/036/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.insertOne(doc);
+    }
+  }
 
 }
