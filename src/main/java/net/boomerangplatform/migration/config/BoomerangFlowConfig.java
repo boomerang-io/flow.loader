@@ -32,16 +32,26 @@ public class BoomerangFlowConfig implements BoomerangMigration {
 
     MongockBuilder mongockBuilder = new MongockBuilder(mongoclient, uri.getDatabase(),
         "net.boomerangplatform.migration.changesets.flow");
-    mongockBuilder.setChangeLogCollectionName(getCollectionPrefix() + "sys_changelog_flow");
-    mongockBuilder.setLockCollectionName(getCollectionPrefix() + "sys_lock_flow");
+    
+    String prefix = getCollectionPrefix();
+    if (prefix != null) {
+      mongockBuilder.setChangeLogCollectionName( prefix + "sys_changelog_flow");
+      mongockBuilder.setLockCollectionName(prefix + "sys_lock_flow");
+    } else {
+      mongockBuilder.setChangeLogCollectionName("sys_changelog_flow");
+      mongockBuilder.setLockCollectionName("sys_lock_flow");
+    }
 
     return mongockBuilder.setLockQuickConfig().build();
   }
 
   @Override
   public String getCollectionPrefix() {
-
-    return SpringContextBridge.services().getCollectionPrefix();
+    String value = SpringContextBridge.services().getCollectionPrefix();
+    if ("flow_".equals(value) || value.isBlank()) {
+      return null;
+    }
+    return value;
   }
 
 }
