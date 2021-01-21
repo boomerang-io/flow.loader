@@ -581,7 +581,7 @@ public class FlowDatabaseChangeLog {
   
   @ChangeSet(order = "036", id = "036", author = "Marcus Roy")
   public void createLockCollection(MongoDatabase db) throws IOException {
-    String collectionName = collectionPrefix + "locks";
+    String collectionName = collectionPrefix + "tasks_locks";
     db.createCollection(collectionName);
     final MongoCollection<Document> collection = db.getCollection(collectionName);
     collection.createIndex(Indexes.ascending("expireAt"),
