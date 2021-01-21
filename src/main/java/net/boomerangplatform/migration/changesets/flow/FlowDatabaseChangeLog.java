@@ -4,6 +4,7 @@ import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
@@ -15,6 +16,8 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Updates;
 import net.boomerangplatform.migration.FileLoadingService;
 import net.boomerangplatform.migration.SpringContextBridge;
@@ -575,5 +578,14 @@ public class FlowDatabaseChangeLog {
       collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
     }
   }
-
+  
+  @ChangeSet(order = "036", id = "036", author = "Marcus Roy")
+  public void createLockCollection(MongoDatabase db) throws IOException {
+    String collectionName = collectionPrefix + "locks";
+    db.createCollection(collectionName);
+    final MongoCollection<Document> collection = db.getCollection(collectionName);
+    collection.createIndex(Indexes.ascending("expireAt"),
+        new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));     
+  }
+  
 }
