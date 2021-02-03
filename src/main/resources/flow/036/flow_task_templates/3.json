@@ -1,0 +1,88 @@
+{
+    "_id" : ObjectId("5b92f794844d0700016ea217"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Easily configurable slack webhook message. To provide additional parameters, please see our Custom Slack Message task.",
+    "lastModified" : ISODate("2021-02-03T17:53:51.295Z"),
+    "name" : "Send Simple Slack Message",
+    "category" : "communication",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "sendSimpleMessage"
+            ],
+            "config" : [ 
+                {
+                    "description" : "Found within your webhook integration settings",
+                    "key" : "url",
+                    "label" : "Webhook URL",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "https://hooks.slack.com/services/...",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "#channel-name",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If left blank, defaults to :boomerang:",
+                    "key" : "icon",
+                    "label" : "Icon",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : ":boomerang:",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "username",
+                    "label" : "Username",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "Test-Bot",
+                    "helpertext" : "Name displayed as the sender of the slack message",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message",
+                    "type" : "textarea",
+                    "required" : false,
+                    "placeholder" : "Your message here.",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5ecd2d1d0eb5f000012d0895",
+                "reason" : "updated copy for task description and field configurations",
+                "date" : ISODate("2021-02-03T17:53:51.295Z"),
+                "userName" : "Benjamin Ruby"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Message",
+    "verified" : true,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

@@ -580,6 +580,11 @@ public class FlowDatabaseChangeLog {
   public void addingTaskTemplate(MongoDatabase db) throws IOException {
 
     final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    collection.deleteOne(eq("name", "Send Custom Slack Message"));
+    collection.deleteOne(eq("name", "Send Simple Slack Message"));
+    collection.deleteOne(eq("name", "Send Slack Message with File Contents"));
+    collection.deleteOne(eq("name", "Slack User Look Up"));
+    collection.deleteOne(eq("name", "Upload Slack File with Message"));
     
     final List<String> files = fileloadingService.loadFiles("flow/036/flow_task_templates/*.json");
     for (final String fileContents : files) {

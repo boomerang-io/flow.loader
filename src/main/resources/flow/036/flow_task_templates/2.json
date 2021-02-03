@@ -1,0 +1,55 @@
+{
+    "_id" : ObjectId("5e1bcd210351fdc9e42fe4e0"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Send custom JSON payload to a specified Slack webhook URL. For more information on the underlying Slack API and potential configurations: https://api.slack.com/messaging/webhooks",
+    "lastModified" : ISODate("2021-02-03T17:50:43.941Z"),
+    "name" : "Send Custom Slack Message",
+    "category" : "communication",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "sendCustomMessage"
+            ],
+            "config" : [ 
+                {
+                    "description" : "Found within your webhook integration settings",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "https://hooks.slack.com/services/...",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message Payload",
+                    "type" : "texteditor",
+                    "required" : false,
+                    "placeholder" : "{ \"text\": \"My Slack message.\" }",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5ecd2d1d0eb5f000012d0895",
+                "reason" : "updated copy for task description and field descriptions",
+                "date" : ISODate("2021-02-03T17:50:43.941Z"),
+                "userName" : "Benjamin Ruby"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Message",
+    "verified" : true,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
