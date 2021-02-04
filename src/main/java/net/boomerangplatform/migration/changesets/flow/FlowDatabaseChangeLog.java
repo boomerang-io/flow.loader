@@ -28,7 +28,7 @@ public class FlowDatabaseChangeLog {
   private static FileLoadingService fileloadingService;
 
   private static String collectionPrefix;
-  
+
   private final Logger logger = LoggerFactory.getLogger(FlowDatabaseChangeLog.class);
 
   public FlowDatabaseChangeLog() {
@@ -57,7 +57,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/001/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
     }
   }
@@ -65,12 +66,14 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "003", id = "003", author = "Adrienne Hudson")
   public void updateTaskTemplates(MongoDatabase db) throws IOException {
 
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Execute HTTP Call"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Execute HTTP Call"));
 
     final List<String> files = fileloadingService.loadFiles("flow/002/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -79,12 +82,14 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "004", id = "004", author = "Adrienne Hudson")
   public void updateTaskTemplate(MongoDatabase db) throws IOException {
 
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Send Slack Message"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Send Slack Message"));
 
     final List<String> files = fileloadingService.loadFiles("flow/003/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -92,7 +97,8 @@ public class FlowDatabaseChangeLog {
 
   @ChangeSet(order = "005", id = "005", author = "Adrienne Hudson")
   public void updateFlowTemplates(MongoDatabase db) throws IOException {
-    final MongoCollection<Document> modesCollection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> modesCollection =
+        db.getCollection(collectionPrefix + "task_templates");
 
     Bson query1 = Filters.eq("name", "Get Incidents");
     Bson update = Updates.set("nodetype", "custom");
@@ -112,7 +118,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/006/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -124,7 +131,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/007/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -133,7 +141,8 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "008", id = "008", author = "Adrienne Hudson")
   public void updateFlowTaskTemplates(MongoDatabase db) throws IOException {
 
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Make Repositories Private"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Make Repositories Private"));
     db.getCollection(collectionPrefix + "task_templates")
         .deleteOne(eq("name", "Find Public Repositories in Org"));
     db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Update Incidents"));
@@ -142,7 +151,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/008/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -221,7 +231,8 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "011", id = "011", author = "Adrienne Hudson")
   public void renameEnableIAMIntegration(MongoDatabase db) throws IOException {
 
-    final MongoCollection<Document> flowWorkflowsCollection = db.getCollection(collectionPrefix + "workflows");
+    final MongoCollection<Document> flowWorkflowsCollection =
+        db.getCollection(collectionPrefix + "workflows");
     final FindIterable<Document> flowWorkflows = flowWorkflowsCollection.find();
     for (final Document flowWorkflow : flowWorkflows) {
 
@@ -258,7 +269,8 @@ public class FlowDatabaseChangeLog {
 
   @ChangeSet(order = "013", id = "013", author = "Adrienne Hudson")
   public void updateFlowTemplateCategories(MongoDatabase db) throws IOException {
-    final MongoCollection<Document> templateCollection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> templateCollection =
+        db.getCollection(collectionPrefix + "task_templates");
 
     Bson update1 = Updates.set("category", "workflow");
     Bson update2 = Updates.set("category", "artifactory");
@@ -282,7 +294,8 @@ public class FlowDatabaseChangeLog {
 
   @ChangeSet(order = "014", id = "014", author = "Adrienne Hudson")
   public void updateEmailFlowTemplateName(MongoDatabase db) throws IOException {
-    final MongoCollection<Document> templateCollection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> templateCollection =
+        db.getCollection(collectionPrefix + "task_templates");
 
     Bson update1 = Updates.set("name", "Send Platform Email");
 
@@ -296,7 +309,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/009/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -306,7 +320,8 @@ public class FlowDatabaseChangeLog {
   public void updateTemplates(MongoDatabase db) throws IOException {
 
     BasicDBObject document = new BasicDBObject();
-    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
     collection.deleteMany(document);
 
     final List<String> files = fileloadingService.loadFiles("flow/016/flow_task_templates/*.json");
@@ -322,13 +337,16 @@ public class FlowDatabaseChangeLog {
 
     db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Execute Shell"));
     db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Switch"));
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Send Rick Slack Message"));
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Send Simple Slack Message"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Send Rick Slack Message"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Send Simple Slack Message"));
 
     final List<String> files = fileloadingService.loadFiles("flow/017/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -340,7 +358,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/018/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -352,7 +371,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/019/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -361,14 +381,17 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "020", id = "020", author = "Adrienne Hudson")
   public void updateFlowTaskTemplate(MongoDatabase db) throws IOException {
 
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Send Platform Email"));
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Send Slack Log Message"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Send Platform Email"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Send Slack Log Message"));
 
 
     final List<String> files = fileloadingService.loadFiles("flow/020/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -380,7 +403,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/021/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -389,14 +413,17 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "023", id = "023", author = "Adrienne Hudson")
   public void taskTemplateUpdate(MongoDatabase db) throws IOException {
 
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Execute HTTP Call"));
-    db.getCollection(collectionPrefix + "task_templates").deleteOne(eq("name", "Artifactory File Upload"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Execute HTTP Call"));
+    db.getCollection(collectionPrefix + "task_templates")
+        .deleteOne(eq("name", "Artifactory File Upload"));
 
 
     final List<String> files = fileloadingService.loadFiles("flow/023/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -408,7 +435,8 @@ public class FlowDatabaseChangeLog {
     final List<String> files = fileloadingService.loadFiles("flow/024/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
-      final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
 
     }
@@ -458,7 +486,8 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "028", id = "028", author = "Adrienne Hudson")
   public void taskTemplateUpdatrs(MongoDatabase db) throws IOException {
 
-    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
     collection.deleteOne(eq("name", "Execute HTTP Call"));
     collection.deleteOne(eq("name", "Artifactory File Upload"));
     collection.deleteOne(eq("name", "Send Twilio SMS"));
@@ -475,7 +504,8 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "029", id = "029", author = "Adrienne Hudson")
   public void taskTemplateUpdates(MongoDatabase db) throws IOException {
 
-    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
     collection.deleteOne(eq("name", "Execute Shell"));
     collection.deleteOne(eq("name", "Find Issues and Label"));
 
@@ -490,7 +520,8 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "030", id = "030", author = "Adrienne Hudson")
   public void templatesUpdate(MongoDatabase db) throws IOException {
     BasicDBObject document = new BasicDBObject();
-    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
     collection.deleteMany(document);
 
     final List<String> files = fileloadingService.loadFiles("flow/030/flow_task_templates/*.json");
@@ -522,7 +553,8 @@ public class FlowDatabaseChangeLog {
 
   @ChangeSet(order = "032", id = "032", author = "Adrienne Hudson")
   public void activityUpdate(MongoDatabase db) throws IOException {
-    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows_activity");
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "workflows_activity");
 
     final FindIterable<Document> activities = collection.find();
     for (final Document activity : activities) {
@@ -533,15 +565,16 @@ public class FlowDatabaseChangeLog {
     }
 
   }
-  
+
   @ChangeSet(order = "033", id = "033", author = "Adrienne Hudson")
   public void flowTaskTemplateUpdates(MongoDatabase db) throws IOException {
 
-    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
     collection.deleteOne(eq("name", "Run Custom Task"));
     collection.deleteOne(eq("name", "Send Platform Notification"));
     collection.deleteOne(eq("name", "Send Platform Email"));
-    
+
 
     final List<String> files = fileloadingService.loadFiles("flow/033/flow_task_templates/*.json");
     for (final String fileContents : files) {
@@ -550,12 +583,13 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "034", id = "034", author = "Marcus Roy")
   public void addManualTaskTemplate(MongoDatabase db) throws IOException {
 
-    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
-    
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
+
     final List<String> files = fileloadingService.loadFiles("flow/034/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
@@ -565,21 +599,59 @@ public class FlowDatabaseChangeLog {
 
   @ChangeSet(order = "035", id = "035", author = "Dylan Landry")
   public void setScopeForWorkflows(MongoDatabase db) throws IOException {
-    
+
     final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
     final FindIterable<Document> workflows = collection.find();
-    
-    for(final Document workflow : workflows) {
-      if(workflow.get("scope") == null && workflow.get("flowTeamId") != null) {
+
+    for (final Document workflow : workflows) {
+      if (workflow.get("scope") == null && workflow.get("flowTeamId") != null) {
         workflow.put("scope", "team");
-      } else if(workflow.get("flowTeamId") == null) {
+      } else if (workflow.get("flowTeamId") == null) {
         workflow.put("scope", "system");
       }
       collection.replaceOne(eq("_id", workflow.getObjectId("_id")), workflow);
     }
   }
+
+
+  @ChangeSet(order = "036", id = "036", author = "Adrienne Hudson")
+  public void addingTaskTemplate(MongoDatabase db) throws IOException {
+
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
+    collection.deleteOne(eq("name", "Send Custom Slack Message"));
+    collection.deleteOne(eq("name", "Send Simple Slack Message"));
+    collection.deleteOne(eq("name", "Send Slack Message with File Contents"));
+    collection.deleteOne(eq("name", "Slack User Look Up"));
+    collection.deleteOne(eq("name", "Upload Slack File with Message"));
+    collection.deleteOne(eq("name", "Run Custom Task"));
+
+    final List<String> files = fileloadingService.loadFiles("flow/036/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "037", id = "037", author = "Adrienne Hudson")
+  public void updateFlowSettingWorkerImage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Workers")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.5.7");
+      }
+    }
+    
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Workers"), workers);
+  }
+
+
   
-  @ChangeSet(order = "036", id = "036", author = "Marcus Roy")
+  @ChangeSet(order = "038", id = "038", author = "Marcus Roy")
   public void createLockCollection(MongoDatabase db) throws IOException {
     String collectionName = collectionPrefix + "tasks_locks";
     db.createCollection(collectionName);
@@ -588,4 +660,5 @@ public class FlowDatabaseChangeLog {
         new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));     
   }
   
+
 }

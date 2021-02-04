@@ -1,0 +1,55 @@
+{
+	"_id": ObjectId("5e670a1e2d5e6a302de4f41d"),
+	"currentVersion": NumberLong(1),
+	"description": "Look up Slack user by email address. A Slack app is needed to perform this functionality. Further reading on the underlying API: https://api.slack.com/methods/users.lookupByEmail",
+	"lastModified": ISODate("2021-02-03T18:02:05.340Z"),
+	"name": "Slack User Look Up",
+	"category": "communication",
+	"nodetype": "templateTask",
+	"revisions": [
+		{
+			"version": 1,
+			"image": "",
+			"command": "",
+			"arguments": [
+				"slack",
+				"lookUpUser"
+			],
+			"config": [
+				{
+					"description": "Token is associated with the slack app tied to a workspace",
+					"key": "token",
+					"label": "Token",
+					"type": "text",
+					"required": false,
+					"placeholder": "xxxx-xxxxxxxxx-xxxx",
+					"helpertext": "",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "emailAddress",
+					"label": "Email Address",
+					"type": "text",
+					"required": false,
+					"placeholder": "spengler@ghostbusters.example.com",
+					"helpertext": "An email belonging to a user in the workspace",
+					"defaultValue": "",
+					"readOnly": false
+				}
+			],
+			"changelog": {
+				"userId": "5ecd2d1d0eb5f000012d0895",
+				"reason": "updated copy",
+				"date": ISODate("2021-02-03T18:02:05.340Z"),
+				"userName": "Benjamin Ruby"
+			}
+		}
+	],
+	"status": "active",
+	"createdDate": ISODate("2020-01-09T00:01:00.000Z"),
+	"icon": "Search",
+	"verified": true,
+	"_class": "net.boomerangplatform.model.FlowTaskTemplate"
+}

@@ -1,0 +1,121 @@
+{
+	"_id": ObjectId("5e2866c8612203650e389491"),
+	"currentVersion": NumberLong(1),
+	"description": "Send slack message with file contents via webhook\n",
+	"lastModified": ISODate("2021-02-03T17:59:55.590Z"),
+	"name": "Send Slack Message with File Contents",
+	"category": "communication",
+	"nodetype": "templateTask",
+	"revisions": [
+		{
+			"version": 1,
+			"image": "",
+			"command": "",
+			"arguments": [
+				"slack",
+				"sendFileMessage"
+			],
+			"config": [
+				{
+					"description": "Found within your webhook integration settings",
+					"key": "url",
+					"label": "Webhook URL",
+					"type": "text",
+					"required": false,
+					"placeholder": "https://hooks.slack.com/services/...",
+					"helpertext": "",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "channel",
+					"label": "Channel",
+					"type": "text",
+					"required": false,
+					"placeholder": "#channel-name",
+					"helpertext": "",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "If left blank, defaults to :boomerang:",
+					"key": "icon",
+					"label": "Icon",
+					"type": "text",
+					"required": false,
+					"placeholder": ":boomerang:",
+					"helpertext": "",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "username",
+					"label": "Username",
+					"type": "text",
+					"required": false,
+					"placeholder": "Test-Bot",
+					"helpertext": "Name displayed as the sender of the slack message",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "message",
+					"label": "Message",
+					"type": "textarea",
+					"required": false,
+					"placeholder": "Your message here.",
+					"helpertext": "",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "File can be base64 encoded",
+					"key": "content",
+					"label": "File Content",
+					"type": "textarea",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "Enable if File Content provided is base64 encoded ",
+					"key": "encoded",
+					"label": "Decode File Content",
+					"type": "boolean",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "false",
+					"readOnly": false
+				},
+				{
+					"description": "A helpful footer",
+					"key": "context",
+					"label": "Context",
+					"type": "text",
+					"required": false,
+					"placeholder": "Context for use...",
+					"helpertext": "",
+					"defaultValue": "",
+					"readOnly": false
+				}
+			],
+			"changelog": {
+				"userId": "5ecd2d1d0eb5f000012d0895",
+				"reason": "updated copy",
+				"date": ISODate("2021-02-03T17:59:55.590Z"),
+				"userName": "Benjamin Ruby"
+			}
+		}
+	],
+	"status": "active",
+	"createdDate": ISODate("2020-01-09T00:01:00.000Z"),
+	"icon": "Message",
+	"verified": true,
+	"_class": "net.boomerangplatform.model.FlowTaskTemplate"
+}
