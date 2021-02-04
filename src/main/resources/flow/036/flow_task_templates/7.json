@@ -1,0 +1,52 @@
+{
+	"_id": ObjectId("600b2f5520a674b1d2cb4635"),
+	"currentVersion": NumberLong(1),
+	"description": "This task attempts to obtain a lock with the specified name. If no other workflow in the team is using a lock with that name, a lock with that name and is created. If another workflow in the team is using a lock with the specified name, the current workflow waits until the lock is available.",
+	"lastModified": ISODate("2020-04-30T22:53:23.337Z"),
+	"name": "Acquire Lock",
+	"category": "workflow",
+	"nodetype": "acquirelock",
+	"revisions": [
+		{
+			"version": 1,
+			"image": "",
+			"command": "",
+			"arguments": [
+				"lock"
+			],
+			"config": [
+				{
+					"description": "",
+					"key": "key",
+					"label": "Lock Name",
+					"type": "text",
+					"required": true,
+					"placeholder": "",
+					"helpertext": "A value to identify the lock.",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "timeout",
+					"label": "Timeout",
+					"type": "number",
+					"required": true,
+					"placeholder": "",
+					"helpertext": "Duration before lock expires in seconds",
+					"readOnly": false,
+					"defaultValue": "300"
+				}
+			],
+			"changelog": {
+				"userId": "5e8a6c6cd0827100011c2a35",
+				"reason": "",
+				"date": ISODate("2020-04-30T22:53:23.337Z")
+			}
+		}
+	],
+	"status": "active",
+	"createdDate": ISODate("2020-01-09T00:01:00.000Z"),
+	"icon": "Edit",
+	"_class": "net.boomerangplatform.model.FlowTaskTemplate",
+	"verified": true
+}
