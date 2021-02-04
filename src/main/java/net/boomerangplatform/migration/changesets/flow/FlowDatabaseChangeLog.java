@@ -620,6 +620,7 @@ public class FlowDatabaseChangeLog {
     collection.deleteOne(eq("name", "Send Slack Message with File Contents"));
     collection.deleteOne(eq("name", "Slack User Look Up"));
     collection.deleteOne(eq("name", "Upload Slack File with Message"));
+    collection.deleteOne(eq("name", "Run Custom Task"));
 
     final List<String> files = fileloadingService.loadFiles("flow/036/flow_task_templates/*.json");
     for (final String fileContents : files) {
