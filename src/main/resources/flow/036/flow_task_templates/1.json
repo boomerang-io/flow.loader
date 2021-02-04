@@ -3,7 +3,7 @@
     "currentVersion" : NumberLong(1),
     "description" : "Replace parameters between tokens",
     "lastModified" : ISODate("2021-01-19T02:06:21.185Z"),
-    "name" : "Replace tokens in files",
+    "name" : "Replace Tokens in Files",
     "category" : "file utilities",
     "nodetype" : "templateTask",
     "revisions" : [ 
@@ -93,6 +93,6 @@
     "status" : "active",
     "createdDate" : ISODate("2021-01-15T06:14:56.408Z"),
     "icon" : "Edit",
-    "verified" : false,
+    "verified" : true,
     "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
 }
