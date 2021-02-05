@@ -644,21 +644,37 @@ public class FlowDatabaseChangeLog {
         config.put("value", "boomerangio/worker-flow:2.5.7");
       }
     }
-    
+
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Workers"), workers);
   }
 
 
-  
+
   @ChangeSet(order = "038", id = "038", author = "Marcus Roy")
   public void createLockCollection(MongoDatabase db) throws IOException {
     String collectionName = collectionPrefix + "tasks_locks";
     db.createCollection(collectionName);
     final MongoCollection<Document> collection = db.getCollection(collectionName);
     collection.createIndex(Indexes.ascending("expireAt"),
-        new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));     
+        new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
   }
-  
+
+  @ChangeSet(order = "039", id = "039", author = "Adrienne Hudson")
+  public void updateFlowSettingDefaultWorkerImage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Workers")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.5.9");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Workers"), workers);
+  }
+
 
 }
