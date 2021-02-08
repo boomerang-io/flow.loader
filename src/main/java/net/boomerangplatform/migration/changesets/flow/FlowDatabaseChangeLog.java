@@ -675,6 +675,37 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Workers"), workers);
   }
+  
+  @ChangeSet(order = "040", id = "040", author = "Adrienne Hudson")
+  public void updateDefaultWorkerImage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Workers")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.5.21");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Workers"), workers);
+  }
+  
+  @ChangeSet(order = "041", id = "041", author = "Adrienne Hudson")
+  public void updateTemplate(MongoDatabase db) throws IOException {
+
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "task_templates");
+    collection.deleteOne(eq("name", "Create File"));
+
+
+    final List<String> files = fileloadingService.loadFiles("flow/041/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.insertOne(doc);
+    }
+  }
 
 
 }
