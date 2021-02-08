@@ -712,8 +712,8 @@ public class FlowDatabaseChangeLog {
 
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
     Document controller = collection.find(eq("key", "controller")).first();
-    controller.put("name", "Workers");
-    controller.put("description", "The CICD worker configuration.");
+    controller.put("name", "Task Configuration");
+    controller.put("description", "The task and underlying task execution configuration.");
 
     List<Document> configs = (List<Document>) controller.get("config");
     for (Document config : configs) {
