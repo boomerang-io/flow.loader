@@ -675,7 +675,7 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Workers"), workers);
   }
-  
+
   @ChangeSet(order = "040", id = "040", author = "Adrienne Hudson")
   public void updateDefaultWorkerImage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -691,7 +691,7 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Workers"), workers);
   }
-  
+
   @ChangeSet(order = "041", id = "041", author = "Adrienne Hudson")
   public void updateTemplate(MongoDatabase db) throws IOException {
 
@@ -707,5 +707,23 @@ public class FlowDatabaseChangeLog {
     }
   }
 
+  @ChangeSet(order = "042", id = "042", author = "Adrienne Hudson")
+  public void updateSetting(MongoDatabase db) throws IOException {
 
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document controller = collection.find(eq("key", "controller")).first();
+    controller.put("name", "Task Configuration");
+    controller.put("description", "The task and underlying task execution configuration.");
+
+    List<Document> configs = (List<Document>) controller.get("config");
+    for (Document config : configs) {
+      if (config.get("key").equals("job.deletion.policy")) {
+        config.put("description", "Deletion Policy");
+        config.put("label", "Defines the completion state that will lead to worker removal");
+      }
+    }
+    controller.put("config", configs);
+    collection.replaceOne(eq("key", "controller"), controller);
+
+  }
 }
