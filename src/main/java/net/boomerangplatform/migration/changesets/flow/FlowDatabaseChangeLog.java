@@ -679,7 +679,7 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "040", id = "040", author = "Adrienne Hudson")
   public void updateDefaultWorkerImage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
-    Document workers = collection.find(eq("name", "Workers")).first();
+    Document workers = collection.find(eq("key", "controller")).first();
     List<Document> configs = (List<Document>) workers.get("config");
 
     for (Document config : configs) {
@@ -689,7 +689,7 @@ public class FlowDatabaseChangeLog {
     }
 
     workers.put("config", configs);
-    collection.replaceOne(eq("name", "Workers"), workers);
+    collection.replaceOne(eq("key", "controller"), workers);
   }
 
   @ChangeSet(order = "041", id = "041", author = "Adrienne Hudson")
