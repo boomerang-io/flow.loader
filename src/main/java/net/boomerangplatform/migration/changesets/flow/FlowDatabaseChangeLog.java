@@ -726,4 +726,15 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("key", "controller"), controller);
 
   }
+
+  @ChangeSet(order = "043", id = "043", author = "Adrienne Hudson")
+  public void addFlowSettings(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+
+    final List<String> files = fileloadingService.loadFiles("flow/043/flow_settings/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.insertOne(doc);
+    }
+  }
 }
