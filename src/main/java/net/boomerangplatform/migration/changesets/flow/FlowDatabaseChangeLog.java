@@ -777,4 +777,11 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("key", "controller"), workers);
   }
+
+  @ChangeSet(order = "046", id = "046", author = "Adrienne Hudson")
+  public void addIndexToActivity(MongoDatabase db) throws IOException {
+    final MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "workflows_activity");
+    collection.createIndex(Indexes.ascending("creationDate"));
+  }
 }
