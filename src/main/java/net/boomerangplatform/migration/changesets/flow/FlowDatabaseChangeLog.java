@@ -782,6 +782,6 @@ public class FlowDatabaseChangeLog {
   public void addIndexToActivity(MongoDatabase db) throws IOException {
     final MongoCollection<Document> collection =
         db.getCollection(collectionPrefix + "workflows_activity");
-    collection.createIndex(Indexes.ascending("creationDate"));
+    collection.createIndex(Indexes.descending("creationDate"));
   }
 }
