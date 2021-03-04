@@ -777,4 +777,16 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("key", "controller"), workers);
   }
+  
+  @ChangeSet(order = "046", id = "046", author = "Adrienne Hudson")
+  public void addTemplate(MongoDatabase db) throws IOException {
+
+    final List<String> files = fileloadingService.loadFiles("flow/046/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
+      collection.insertOne(doc);
+    }
+  }
 }
