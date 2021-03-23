@@ -1,0 +1,199 @@
+{
+    "_id" : ObjectId("5e1bf6ca0351fdc9e4319c3b"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Upload a message to Slack using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/files.upload",
+    "lastModified" : ISODate("2021-03-22T10:00:29.629Z"),
+    "name" : "Upload Slack File with Message",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "uploadFileMessage"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If left blank, defaults to :boomerang:",
+                    "key" : "icon",
+                    "label" : "Icon",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "username",
+                    "label" : "Username",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "fileName",
+                    "label" : "File Name",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "fileContent",
+                    "label" : "File Content",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "encoded",
+                    "label" : "Decode File Content",
+                    "type" : "boolean",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e831153d0827100011c29f6",
+                "reason" : "",
+                "date" : ISODate("2020-04-30T22:53:22.305Z")
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "uploadFileMessage"
+            ],
+            "config" : [ 
+                {
+                    "description" : "Token is associated with the slack app tied to a workspace",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "#channel-name",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message",
+                    "type" : "textarea",
+                    "required" : false,
+                    "placeholder" : "Your message here.",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "fileName",
+                    "label" : "File Name",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "foo.txt",
+                    "helpertext" : "Filename of file.",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If omitting this parameter, you must provide a File Path",
+                    "key" : "fileContent",
+                    "label" : "File Content",
+                    "type" : "textarea",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "File contents via a POST variable",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Enable if File Content provided is base64 encoded ",
+                    "key" : "encoded",
+                    "label" : "Decode File Content",
+                    "type" : "boolean",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "false",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "filePath",
+                    "label" : "File Path",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "/workflow/your_file.txt",
+                    "helpertext" : "Full path to desired file",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "fileTitle",
+                    "label" : "File Title",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "My File",
+                    "helpertext" : "Title of file.",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e79e5ae2e0ee000015cacde",
+                "reason" : "",
+                "date" : ISODate("2021-03-22T10:00:29.629Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Upload",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
