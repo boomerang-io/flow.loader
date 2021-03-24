@@ -1,0 +1,56 @@
+{
+    "_id" : ObjectId("6050c68f567ec556435f025a"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Find a Slack user based on the provided user id using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/users.info",
+    "lastModified" : ISODate("2021-03-22T09:57:51.010Z"),
+    "name" : "Find Slack Member By Id",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "getUser"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "user",
+                    "label" : "User",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. W1234567890",
+                    "helpertext" : "User id to get info on",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e79e5ae2e0ee000015cacde",
+                "reason" : "Initial version of Find Slack Member By Id.",
+                "date" : ISODate("2021-03-22T09:57:51.010Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T14:54:07.226Z"),
+    "icon" : "Search",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

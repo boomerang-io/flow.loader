@@ -1,0 +1,67 @@
+{
+    "_id" : ObjectId("6050c4e1567ec556435f0259"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Invite Slack users to a conversation using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/conversations.invite",
+    "lastModified" : ISODate("2021-03-22T09:59:34.966Z"),
+    "name" : "Invite Members to Channel",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "inviteChannelMembers"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. C1234567890",
+                    "helpertext" : "The ID of the channel to invite user(s) to",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Up to 1000 users may be listed",
+                    "key" : "users",
+                    "label" : "Users",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. W1234567890,U2345678901,U3456789012",
+                    "helpertext" : "A comma separated list of user IDs",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e79e5ae2e0ee000015cacde",
+                "reason" : "Initial version of Invite Members to Channel.",
+                "date" : ISODate("2021-03-22T09:59:34.966Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T14:46:57.024Z"),
+    "icon" : "Automated task",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

@@ -1,0 +1,56 @@
+{
+    "_id" : ObjectId("6050d692567ec556435f025d"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Retrieves the Slack channel information using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/conversations.info",
+    "lastModified" : ISODate("2021-03-22T09:58:26.563Z"),
+    "name" : "Get Slack Channel Info",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "getChannelInfo"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. C1234567890",
+                    "helpertext" : "Conversation ID to learn more about",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e79e5ae2e0ee000015cacde",
+                "reason" : "Initial version of Get Slack Channel Info.",
+                "date" : ISODate("2021-03-22T09:58:26.563Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T16:02:26.116Z"),
+    "icon" : "Message",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
