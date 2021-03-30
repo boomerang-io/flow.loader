@@ -1,0 +1,312 @@
+{
+    "_id" : ObjectId("605b424c1c97815d3b8d9499"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Creates a Github team in the organization identified by the organizationName parameter. For further reading on the underlying API see https://docs.github.com/en/rest/reference/teams#create-a-team",
+    "lastModified" : ISODate("2021-03-29T23:49:19.740Z"),
+    "name" : "Create Team in Organization",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/worker-flow:2.5.45",
+            "command" : "",
+            "arguments" : [ 
+                "github", 
+                "createTeamInOrg"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "bmrgadmin",
+                    "helpertext" : "",
+                    "defaultValue" : "youll-come-a-waltzing-maltilda-with-me",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "organizationName",
+                    "label" : "Organization Name",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "teamName",
+                    "label" : "Team Name",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "description",
+                    "label" : "Team Description",
+                    "type" : "textarea",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "maintainers",
+                    "label" : "Maintainers",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "List of IDs for org members to become maintainers",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "repositoryNames",
+                    "label" : "Repository Names",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The full name of repositories to add the team to",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privacy",
+                    "label" : "Level of privacy",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "secret",
+                            "value" : "secret"
+                        }, 
+                        {
+                            "key" : "closed",
+                            "value" : "closed"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Level of privacy this team should have",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "permission",
+                    "label" : "Repository team's default permissions",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "pull",
+                            "value" : "pull"
+                        }, 
+                        {
+                            "key" : "push",
+                            "value" : "push"
+                        }, 
+                        {
+                            "key" : "admin",
+                            "value" : "admin"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "parentTeamId",
+                    "label" : "The ID of a team to set as the parent team",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "test",
+                    "label" : "test",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e79e5ae2e0ee000015cacde",
+                "reason" : "",
+                "date" : ISODate("2021-03-24T13:52:45.209Z"),
+                "userName" : "Costel Moraru"
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "github", 
+                "createTeamInOrg"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/api/v3",
+                    "helpertext" : "Github API end-point",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Github Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "bmrgadmin",
+                    "helpertext" : "Personal access tokens",
+                    "defaultValue" : "youll-come-a-waltzing-maltilda-with-me",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "organizationName",
+                    "label" : "Organization Name",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "teamName",
+                    "label" : "Team Name",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "description",
+                    "label" : "Team Description",
+                    "type" : "textarea",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "maintainers",
+                    "label" : "Maintainers",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "List of IDs for org members to become maintainers",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "repositoryNames",
+                    "label" : "Repository Names",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The full name of repositories to add the team to",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privacy",
+                    "label" : "Level of privacy",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "secret",
+                            "value" : "secret"
+                        }, 
+                        {
+                            "key" : "closed",
+                            "value" : "closed"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Level of privacy this team should have",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "permission",
+                    "label" : "Repository team's default permissions",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "pull",
+                            "value" : "pull"
+                        }, 
+                        {
+                            "key" : "push",
+                            "value" : "push"
+                        }, 
+                        {
+                            "key" : "admin",
+                            "value" : "admin"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "parentTeamId",
+                    "label" : "The ID of a team to set as the parent team",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e71f175756f7e000192eb6c",
+                "reason" : "",
+                "date" : ISODate("2021-03-29T23:49:19.740Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-24T13:44:44.514Z"),
+    "icon" : "Add",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
