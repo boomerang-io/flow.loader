@@ -828,13 +828,13 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("key", "controller"), workers);
   }
-  
+
   @ChangeSet(order = "049", id = "049", author = "Adrienne Hudson")
   public void updateTaskTemplatesAndWorkerImage(MongoDatabase db) throws IOException {
 
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
 
-    final List<String> files = fileloadingService.loadFiles("flow/049/flow_task_templates/*.json"); //TODO
+    final List<String> files = fileloadingService.loadFiles("flow/049/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
       collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
@@ -854,4 +854,18 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("key", "controller"), workers);
   }
+
+  @ChangeSet(order = "050", id = "050", author = "Adrienne Hudson")
+  public void templateUpdates(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/050/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
 }
