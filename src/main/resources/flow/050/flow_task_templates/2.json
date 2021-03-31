@@ -1,0 +1,86 @@
+{
+	"_id": ObjectId("605b3f801c97815d3b8d948c"),
+	"currentVersion": NumberLong(1),
+	"description": "Lists all teams in an organization that are visible to the authenticated token. For further reading on the underlying API see https://docs.github.com/en/rest/reference/teams#list-teams",
+	"lastModified": ISODate("2021-03-29T23:49:38.356Z"),
+	"name": "Get All Teams in Organization",
+	"category": "GitHub",
+	"nodetype": "templateTask",
+	"revisions": [
+		{
+			"version": 1,
+			"image": "",
+			"command": "",
+			"arguments": [
+				"github",
+				"findTeamsInOrg"
+			],
+			"config": [
+				{
+					"description": "",
+					"key": "url",
+					"label": "URL",
+					"type": "text",
+					"required": true,
+					"placeholder": "e.g. https://github.ibm.com/api/v3",
+					"helpertext": "Github API end-point",
+					"defaultValue": "",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "token",
+					"label": "Github Access Token",
+					"type": "password",
+					"required": true,
+					"placeholder": "bmrgadmin",
+					"helpertext": "Personal access tokens",
+					"defaultValue": "youll-come-a-waltzing-maltilda-with-me",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "organizationName",
+					"label": "Organization Name",
+					"type": "text",
+					"required": true,
+					"placeholder": "",
+					"helpertext": "",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "pageNumber",
+					"label": "Page Number",
+					"type": "number",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "teamsPerPage",
+					"label": "Number of teams per page",
+					"type": "number",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"readOnly": false
+				}
+			],
+			"changelog": {
+				"userId": "5e71f175756f7e000192eb6c",
+				"reason": "",
+				"date": ISODate("2021-03-29T23:49:38.356Z"),
+				"userName": "Tyson Lawrie"
+			}
+		}
+	],
+	"status": "active",
+	"createdDate": ISODate("2021-03-24T13:32:48.238Z"),
+	"icon": "API/HTTP call",
+	"verified": true,
+	"enableLifecycle": false,
+	"_class": "net.boomerangplatform.model.FlowTaskTemplate"
+}
