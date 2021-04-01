@@ -868,4 +868,25 @@ public class FlowDatabaseChangeLog {
     }
   }
 
+  @ChangeSet(order = "051", id = "051", author = "Adrienne Hudson")
+  public void tasktemplateUpdates(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/051/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+
+    final FindIterable<Document> taskTemplates = collection.find();
+    for (Document taskTemplate : taskTemplates) {
+      if (taskTemplate.get("category").equals("workflow")) {
+        taskTemplate.put("category", "Workflow");
+        collection.replaceOne(eq("_id", taskTemplate.getObjectId("_id")), taskTemplate);
+      }
+    }
+  }
+
 }

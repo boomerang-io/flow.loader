@@ -1,0 +1,128 @@
+{
+    "_id" : ObjectId("604a6d3218c4f445d69c49d4"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Creates a support center ticket. Should be used when you got a problem, found a bug or just need some help",
+    "lastModified" : ISODate("2021-03-31T23:42:45.278Z"),
+    "name" : "Create Support Center Ticket",
+    "category" : "IBM Services Essentials",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/worker-flow:2.5.43",
+            "command" : "",
+            "arguments" : [ 
+                "ibmessentials", 
+                "createSupportCenterTicket"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "Support Center URL",
+                    "type" : "url",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "accessToken",
+                    "label" : "Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "ownerId",
+                    "label" : "Ticket Owner Id",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The owner id of the ticket",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "teamId",
+                    "label" : "Team Id",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Set the team id the ticket is related to",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Does this ticket relate to a specific Catalog item?",
+                    "key" : "catalogServiceId",
+                    "label" : "Catalog item",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "subject",
+                    "label" : "Subject",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "What's this ticket about?",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "description",
+                    "label" : "Description",
+                    "type" : "textarea",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Give us all the details",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "type",
+                    "label" : "Ticket Type",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "issue",
+                            "value" : "issue"
+                        }, 
+                        {
+                            "key" : "query",
+                            "value" : "query"
+                        }
+                    ],
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e71f175756f7e000192eb6c",
+                "reason" : "",
+                "date" : ISODate("2021-03-31T23:42:45.278Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-11T19:19:13.996Z"),
+    "icon" : "Message",
+    "verified" : false,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

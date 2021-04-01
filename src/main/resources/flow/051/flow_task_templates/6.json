@@ -1,0 +1,74 @@
+{
+    "_id" : ObjectId("5bd9b4115a5df954ad5ad8db"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Artifactory File Download",
+    "lastModified" : ISODate("2021-03-31T23:44:42.104Z"),
+    "name" : "Artifactory File Download",
+    "category" : "Artifactory",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "artifactory", 
+                "downloadFile"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "username",
+                    "label" : "Username",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "password",
+                    "label" : "Password",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "destinationPath",
+                    "label" : "Destination Path",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "apiKey",
+                    "label" : "API Key",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e71f175756f7e000192eb6c",
+                "reason" : "",
+                "date" : ISODate("2021-03-31T23:44:42.104Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Download",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

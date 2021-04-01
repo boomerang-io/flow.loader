@@ -1,0 +1,136 @@
+{
+    "_id" : ObjectId("5bd9d0825a5df954ad5bb5c3"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Upload file to Artifactory",
+    "lastModified" : ISODate("2021-03-31T23:44:49.840Z"),
+    "name" : "Artifactory File Upload",
+    "category" : "Artifactory",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "artifactory", 
+                "uploadFile"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "file",
+                    "label" : "File",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "username",
+                    "label" : "Username",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "password",
+                    "label" : "Password",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "apiKey",
+                    "label" : "API Key",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e8a6c6cd0827100011c2a35",
+                "reason" : "",
+                "date" : ISODate("2020-04-30T22:52:58.798Z")
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "artifactory", 
+                "uploadFile"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "artifactory.url/folder/test.txt",
+                    "helpertext" : "File will be uploaded at the specified path. Include file name",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "file",
+                    "label" : "File",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "/data/test.txt",
+                    "helpertext" : "Specify the desired file in it's absolute path",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "username",
+                    "label" : "Username",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "password",
+                    "label" : "Password",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "apiKey",
+                    "label" : "API Key",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e71f175756f7e000192eb6c",
+                "reason" : "",
+                "date" : ISODate("2021-03-31T23:44:49.840Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Upload",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

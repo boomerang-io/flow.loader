@@ -1,0 +1,50 @@
+{
+    "_id" : ObjectId("5c3fb7e2352b1b5141692f75"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Read parameters from file",
+    "lastModified" : ISODate("2021-03-31T23:47:13.803Z"),
+    "name" : "Read Parameters from File",
+    "category" : "File Utilities",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "file", 
+                "readPropertiesFromFile"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "path",
+                    "label" : "File Path",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Defaults to = if blank.",
+                    "key" : "delimiter",
+                    "label" : "Delimiter",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e71f175756f7e000192eb6c",
+                "reason" : "",
+                "date" : ISODate("2021-03-31T23:47:13.803Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Search",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
