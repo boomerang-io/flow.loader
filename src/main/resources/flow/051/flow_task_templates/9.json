@@ -1,0 +1,53 @@
+{
+    "_id" : ObjectId("5c39015b352b1b51412e9c85"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Read file and add contents to tasks result parameter",
+    "lastModified" : ISODate("2021-03-31T23:46:39.639Z"),
+    "name" : "Read File to Parameter",
+    "category" : "File Utilities",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "file", 
+                "readFileToProperty"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "path",
+                    "label" : "File Path",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "propertyName",
+                    "label" : "Parameter Name",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e71f175756f7e000192eb6c",
+                "reason" : "",
+                "date" : ISODate("2021-03-31T23:46:39.639Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Search",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
