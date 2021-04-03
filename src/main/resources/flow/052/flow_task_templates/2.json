@@ -95,7 +95,7 @@
     "status" : "active",
     "createdDate" : ISODate("2021-03-19T15:30:25.049Z"),
     "icon" : "API/HTTP call",
-    "verified" : false,
+    "verified" : true,
     "enableLifecycle" : true,
     "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
 }

@@ -107,7 +107,7 @@
     "status" : "active",
     "createdDate" : ISODate("2021-03-22T10:42:56.178Z"),
     "icon" : "Delete",
-    "verified" : false,
+    "verified" : true,
     "enableLifecycle" : true,
     "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
 }

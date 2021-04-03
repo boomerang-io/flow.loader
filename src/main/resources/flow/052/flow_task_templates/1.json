@@ -185,7 +185,7 @@
     "status" : "active",
     "createdDate" : ISODate("2021-03-04T13:00:43.348Z"),
     "icon" : "Add",
-    "verified" : false,
+    "verified" : true,
     "enableLifecycle" : true,
     "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
 }
