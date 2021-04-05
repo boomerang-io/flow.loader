@@ -1,0 +1,124 @@
+{
+    "_id" : ObjectId("60586af37a38c63898cc4de8"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Removes an user from a Box folder.",
+    "lastModified" : ISODate("2021-03-25T13:54:28.927Z"),
+    "name" : "Remove User From Box Folder",
+    "category" : "Box",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/box-service:0.0.10",
+            "command" : "",
+            "arguments" : [ 
+                "-props", 
+                "box", 
+                "leave", 
+                "folderId", 
+                "email"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "enterpriseId",
+                    "label" : "Authentication - Enterprise ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box enterprise id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Authentication - Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientSecret",
+                    "label" : "Authentication - Client Secret",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client secret",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "publicKeyId",
+                    "label" : "Authentication - Public Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box public key id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Authentication - Private Key",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "passphrase",
+                    "label" : "Authentication - Private Key Password",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box passphrase",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "folderId",
+                    "label" : "Folder ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The id of the desired Box folder",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "email",
+                    "label" : "User's email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The email of the user we want to be removed",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5f3395043d5fe75ef860da26",
+                "reason" : "",
+                "date" : ISODate("2021-03-25T13:54:28.927Z"),
+                "userName" : "George Safta"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-22T10:01:23.084Z"),
+    "icon" : "Delete",
+    "verified" : true,
+    "enableLifecycle" : true,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

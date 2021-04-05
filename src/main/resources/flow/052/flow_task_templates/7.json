@@ -1,0 +1,123 @@
+{
+    "_id" : ObjectId("605884d67a38c63898cc4df4"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Downloads a file from Box to the provided path.",
+    "lastModified" : ISODate("2021-03-25T13:45:39.884Z"),
+    "name" : "Download File From Box",
+    "category" : "Box",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/box-service:0.0.10",
+            "command" : "",
+            "arguments" : [ 
+                "-props", 
+                "box", 
+                "download", 
+                "fileId", 
+                "file"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "enterpriseId",
+                    "label" : "Authentication - Enterprise ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box enterprise id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Authentication - Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientSecret",
+                    "label" : "Authentication - Client Secret",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client secret",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "publicKeyId",
+                    "label" : "Authentication - Public Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box public key id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Authnetication - Private Key",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "passphrase",
+                    "label" : "Authentication - Private Key Password",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box passphrase",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "fileId",
+                    "label" : "File ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box id of the desired file",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "file",
+                    "label" : "Path",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "/workflow/downloded_file.txt",
+                    "helpertext" : "Full path of downloaded file",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5f3395043d5fe75ef860da26",
+                "reason" : "",
+                "date" : ISODate("2021-03-25T13:45:39.884Z"),
+                "userName" : "George Safta"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-22T11:51:50.347Z"),
+    "icon" : "Download",
+    "verified" : true,
+    "enableLifecycle" : true,
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
