@@ -1,0 +1,65 @@
+{
+	"_id": ObjectId("606dcbadaabd435d10eb02a2"),
+	"currentVersion": NumberLong(1),
+	"description": "Get the Gihub repository details based on the Github URL. For further reading on the underlying API see https://docs.github.com/en/rest/reference/repos#get-a-repository",
+	"lastModified": ISODate("2021-04-07T15:37:48.725Z"),
+	"name": "Get Github Repository",
+	"category": "GitHub",
+	"nodetype": "templateTask",
+	"revisions": [
+		{
+			"version": 1,
+			"image": "boomerangio/worker-flow:2.5.51",
+			"command": "",
+			"arguments": [
+				"github",
+				"getRepositoryFromRepoURL"
+			],
+			"config": [
+				{
+					"description": "",
+					"key": "url",
+					"label": "URL",
+					"type": "text",
+					"required": true,
+					"placeholder": "e.g. https://github.ibm.com/api/v3",
+					"helpertext": "Github API end-point",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "token",
+					"label": "Github Access Token",
+					"type": "password",
+					"required": true,
+					"placeholder": "",
+					"helpertext": "Personal access tokens",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "repoURL",
+					"label": "Repository URL",
+					"type": "text",
+					"required": true,
+					"placeholder": "e.g. https://github.ibm.com/org-name/repo-name",
+					"helpertext": "The Github repository url to get the details for",
+					"readOnly": false
+				}
+			],
+			"changelog": {
+				"userId": "5e79e5ae2e0ee000015cacde",
+				"reason": "",
+				"date": ISODate("2021-04-07T15:37:48.725Z"),
+				"userName": "Costel Moraru"
+			}
+		}
+	],
+	"status": "active",
+	"createdDate": ISODate("2021-04-07T15:11:41.595Z"),
+	"icon": "API/HTTP call",
+	"verified": true,
+	"enableLifecycle": false,
+	"scope": "global",
+	"_class": "net.boomerangplatform.model.FlowTaskTemplate"
+}
