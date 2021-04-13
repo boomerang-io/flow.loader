@@ -1,0 +1,76 @@
+{
+    "_id" : ObjectId("6065ec8b62c6952fc2e59646"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Removes a Github Collaborator from a repository. For further reading on the underlying API see https://docs.github.com/en/rest/reference/repos#remove-a-repository-collaborator",
+    "lastModified" : ISODate("2021-04-07T15:13:01.078Z"),
+    "name" : "Remove Collaborator From Project",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/worker-flow:2.5.48",
+            "command" : "",
+            "arguments" : [ 
+                "github", 
+                "removeCollaboratorFromProject"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/api/v3",
+                    "helpertext" : "Github API end-point",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Github Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "bmrgadmin",
+                    "helpertext" : "Personal access tokens",
+                    "defaultValue" : "youll-come-a-waltzing-maltilda-with-me",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "repoURL",
+                    "label" : "Repository URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/org-name/repo-name",
+                    "helpertext" : "The Github repository url from where to remove",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "userEmail",
+                    "label" : "Collaborator Email Address",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e79e5ae2e0ee000015cacde",
+                "reason" : "",
+                "date" : ISODate("2021-04-07T15:13:01.078Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-04-01T15:53:47.643Z"),
+    "icon" : "Delete",
+    "verified" : true,
+    "enableLifecycle" : false,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
