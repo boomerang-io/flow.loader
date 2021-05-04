@@ -43,10 +43,20 @@ public class FlowDatabaseChangeLog {
 
     db.createCollection(collectionPrefix + "task_templates");
     db.createCollection(collectionPrefix + "teams");
-    db.createCollection(collectionPrefix + "workflows");
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
+    if (collection == null) {
+      db.createCollection(collectionPrefix + "workflows");
+    }
+
     db.createCollection(collectionPrefix + "workflows_activity");
     db.createCollection(collectionPrefix + "workflows_activity_task");
-    db.createCollection(collectionPrefix + "workflows_revisions");
+
+
+    collection = db.getCollection(collectionPrefix + "workflows_revisions");
+    if (collection == null) {
+      db.createCollection(collectionPrefix + "workflows_revisions");
+    }
   }
 
   @ChangeSet(order = "002", id = "002", author = "Marcus Roy")
