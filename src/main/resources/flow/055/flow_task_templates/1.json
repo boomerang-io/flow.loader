@@ -60,7 +60,7 @@
     "status" : "active",
     "createdDate" : ISODate("2021-04-16T12:01:47.277Z"),
     "icon" : "Launch",
-    "verified" : false,
+    "verified" : true,
     "enableLifecycle" : false,
     "scope" : "global",
     "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
