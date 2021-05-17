@@ -1,0 +1,42 @@
+{
+    "_id" : ObjectId("5bd97bea5a5df954ad592c06"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Sleep for specified duration in milliseconds",
+    "lastModified" : ISODate("2021-05-15T01:53:29.735Z"),
+    "name" : "Sleep",
+    "category" : "Utilities",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "system", 
+                "sleep"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "duration",
+                    "label" : "Duration",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608ca23d70bfa94ac91f8eef",
+                "reason" : "",
+                "date" : ISODate("2021-05-15T01:53:29.735Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Power on/off",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

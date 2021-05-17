@@ -923,7 +923,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "054", id = "054", author = "Adrienne Hudson")
   public void updateTasktemplate(MongoDatabase db) throws IOException {
 
@@ -936,7 +936,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "055", id = "055", author = "Adrienne Hudson")
   public void updatingTemplate(MongoDatabase db) throws IOException {
 
@@ -949,5 +949,19 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
+
+  @ChangeSet(order = "056", id = "056", author = "Adrienne Hudson")
+  public void updateTasktemplates(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/056/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
 
 }
