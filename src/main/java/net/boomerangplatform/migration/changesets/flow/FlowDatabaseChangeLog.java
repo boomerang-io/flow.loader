@@ -962,6 +962,15 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
+  
+  @ChangeSet(order = "057", id = "057", author = "Adrienne Hudson")
+  public void updateIndexes(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows_activity_task");
+    collection.createIndex(Indexes.ascending("activityId"));
+    collection.createIndex(Indexes.ascending("activityId", "taskId"));
+
+  }
 
 
 }
