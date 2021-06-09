@@ -13,6 +13,7 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -967,6 +968,14 @@ public class FlowDatabaseChangeLog {
   public void updateIndexes(MongoDatabase db) throws IOException {
 
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows_activity_task");
+    
+    ListIndexesIterable<Document> indexes = collection.listIndexes();
+    for (Document index : indexes) {
+      if (index.get("name").toString().startsWith("activityId_1")|| index.get("name").toString().startsWith("activityId_1_taskId_1")) {
+        collection.dropIndex(index.get("name").toString());
+      }
+    }
+
     collection.createIndex(Indexes.ascending("activityId"));
     collection.createIndex(Indexes.ascending("activityId", "taskId"));
 
