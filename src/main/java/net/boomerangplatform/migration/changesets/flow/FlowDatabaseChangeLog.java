@@ -963,15 +963,17 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "057", id = "057", author = "Adrienne Hudson")
   public void updateIndexes(MongoDatabase db) throws IOException {
 
-    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows_activity_task");
-    
+    MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "workflows_activity_task");
+
     ListIndexesIterable<Document> indexes = collection.listIndexes();
     for (Document index : indexes) {
-      if (index.get("name").toString().startsWith("activityId_1")|| index.get("name").toString().startsWith("activityId_1_taskId_1")) {
+      if (index.get("name").toString().startsWith("activityId_1")
+          || index.get("name").toString().startsWith("activityId_1_taskId_1")) {
         collection.dropIndex(index.get("name").toString());
       }
     }
@@ -979,6 +981,19 @@ public class FlowDatabaseChangeLog {
     collection.createIndex(Indexes.ascending("activityId"));
     collection.createIndex(Indexes.ascending("activityId", "taskId"));
 
+  }
+
+  @ChangeSet(order = "058", id = "058", author = "Adrienne Hudson")
+  public void taskTemplatesUpdate(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/058/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
   }
 
 
