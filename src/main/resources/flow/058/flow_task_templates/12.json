@@ -1,0 +1,65 @@
+{
+    "_id" : ObjectId("6050d872567ec556435f025f"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Archives a Slack conversation using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/conversations.archive",
+    "lastModified" : ISODate("2021-06-15T17:09:27.252Z"),
+    "name" : "Delete Slack Channel",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Status of the delete slack channel action",
+                    "name" : "response"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "slack", 
+                "deleteChannel"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. C1234567890",
+                    "helpertext" : "ID of conversation to archive",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:09:27.252Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T16:10:26.379Z"),
+    "icon" : "Delete",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

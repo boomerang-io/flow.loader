@@ -1,0 +1,65 @@
+{
+    "_id" : ObjectId("6050c68f567ec556435f025a"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Find a Slack user based on the provided user id using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/users.info",
+    "lastModified" : ISODate("2021-06-15T17:09:58.182Z"),
+    "name" : "Find Slack Member By Id",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Slack user details",
+                    "name" : "response"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "slack", 
+                "getUser"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "user",
+                    "label" : "User",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. W1234567890",
+                    "helpertext" : "User id to get info on",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:09:58.182Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T14:54:07.226Z"),
+    "icon" : "Search",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

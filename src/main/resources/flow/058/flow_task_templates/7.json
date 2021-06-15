@@ -1,0 +1,114 @@
+{
+    "_id" : ObjectId("6054c3917a38c63898cc4dcb"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Retrieves and lists an user's Box folders.",
+    "lastModified" : ISODate("2021-06-15T10:14:53.870Z"),
+    "name" : "List Box Folders",
+    "category" : "Box",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/box-service:0.0.13",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "The status of the list box folders action",
+                    "name" : "status"
+                }, 
+                {
+                    "description" : "The retrieved Box folders information",
+                    "name" : "folders"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "-props", 
+                "box", 
+                "list"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "enterpriseId",
+                    "label" : "Authentication - Enterprise ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box entreprise id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Authentication - Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientSecret",
+                    "label" : "Authentication - Client Secret",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client secret",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "publicKeyId",
+                    "label" : "Authentication - Public Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box public key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Authentication - Private Key",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "passphrase",
+                    "label" : "Authentication - Private Key Password",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box passphrase",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T10:14:53.870Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-19T15:30:25.049Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

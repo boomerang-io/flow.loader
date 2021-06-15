@@ -1,0 +1,122 @@
+{
+    "_id" : ObjectId("605874b07a38c63898cc4df2"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Removes a Box folder.",
+    "lastModified" : ISODate("2021-06-15T10:15:29.339Z"),
+    "name" : "Remove Box Folder",
+    "category" : "Box",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/box-service:0.0.13",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "The status of the remove box folder action",
+                    "name" : "status"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "-props", 
+                "box", 
+                "remove", 
+                "folderId"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "enterpriseId",
+                    "label" : "Authentication - Enterprise ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box enterprise id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Autentication - Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientSecret",
+                    "label" : "Authentication - Client Secret",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client secret",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "publicKeyId",
+                    "label" : "Authentication - Public Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box public key id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Authentication - Private Key",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "passphrase",
+                    "label" : "Authentication - Private Key Password",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box passphrase",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "folderId",
+                    "label" : "Folder ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The id of the Box folder we want removed",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T10:15:29.339Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-22T10:42:56.178Z"),
+    "icon" : "Delete",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

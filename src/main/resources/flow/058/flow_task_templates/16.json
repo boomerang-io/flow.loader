@@ -1,0 +1,65 @@
+{
+    "_id" : ObjectId("6050cb66567ec556435f025c"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Retrieve the Slack channel members using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/conversations.members",
+    "lastModified" : ISODate("2021-06-15T17:10:32.085Z"),
+    "name" : "Get Slack Channel Members",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "The list of the channel's member ids",
+                    "name" : "response"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "slack", 
+                "getChannelMembers"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. C1234567890",
+                    "helpertext" : "Conversation ID to learn more about",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:10:32.085Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T15:14:46.062Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

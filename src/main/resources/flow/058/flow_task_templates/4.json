@@ -1,0 +1,200 @@
+{
+    "_id" : ObjectId("6040d9fb03e8ac417d2ee47e"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Adds an user to the specified Box folder.",
+    "lastModified" : ISODate("2021-06-15T10:12:04.104Z"),
+    "name" : "Add User To Box Folder",
+    "category" : "Box",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/box-service:0.0.13",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "The status of the invite",
+                    "name" : "status"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "-props", 
+                "box", 
+                "join", 
+                "folderId", 
+                "email"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "folderId",
+                    "label" : "Folder Id",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box folder id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "email",
+                    "label" : "Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The email of the user we want to add to the folder",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "enterpriseId",
+                    "label" : "Authentication - Enterprise ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box enterprise id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Authentication - Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientSecret",
+                    "label" : "Authentication - Client Secret",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client secret",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "publicKeyId",
+                    "label" : "Authentication - Public Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box public key id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Authentication - Private Key",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "passphrase",
+                    "label" : "Authentication - Private Key Password",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box passphrase",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "The user's box role for the provided folder. If not provided, the default role of EDITOR is set.",
+                    "key" : "role",
+                    "label" : "Box User Role",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "EDITOR",
+                            "value" : "EDITOR"
+                        }, 
+                        {
+                            "key" : "VIEWER",
+                            "value" : "VIEWER"
+                        }, 
+                        {
+                            "key" : "PREVIEWER",
+                            "value" : "PREVIEWER"
+                        }, 
+                        {
+                            "key" : "UPLOADER",
+                            "value" : "UPLOADER"
+                        }, 
+                        {
+                            "key" : "PREVIEWER_UPLOADER",
+                            "value" : "PREVIEWER_UPLOADER"
+                        }, 
+                        {
+                            "key" : "VIEWER_UPLOADER",
+                            "value" : "VIEWER_UPLOADER"
+                        }, 
+                        {
+                            "key" : "CO_OWNER",
+                            "value" : "CO_OWNER"
+                        }, 
+                        {
+                            "key" : "OWNER",
+                            "value" : "OWNER"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The user's box role",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Specifies if the user should receive email notification. If not specified, the default value is true.",
+                    "key" : "notify",
+                    "label" : "Notify By Email",
+                    "type" : "boolean",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Send email notification",
+                    "defaultValue" : "true",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Allows the invitee to see the entire ancestral path to the associated folder. The user will not gain privileges in any ancestral folder. If not specified, the default value is false.",
+                    "key" : "viewPath",
+                    "label" : "Can View Path",
+                    "type" : "boolean",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Allow invitee to see the entire ancestral path",
+                    "defaultValue" : "false",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T10:12:04.104Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-04T13:00:43.348Z"),
+    "icon" : "Add",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

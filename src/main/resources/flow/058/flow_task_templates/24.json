@@ -1,0 +1,86 @@
+{
+    "_id" : ObjectId("605b39cf1c97815d3b8d946c"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Lists all Github organizations, in the order that they were created on GitHub. For further reading on the underlying API see https://docs.github.com/rest/reference/orgs/#list-organizations",
+    "lastModified" : ISODate("2021-06-15T17:15:10.659Z"),
+    "name" : "Get All Organizations",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "ls -la /tekton/results/",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "List of the organizations",
+                    "name" : "organizations"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "github", 
+                "listAllOrganizations"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/api/v3",
+                    "helpertext" : "Github API end-point",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Github Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "bmrgadmin",
+                    "helpertext" : "Personal access tokens",
+                    "defaultValue" : "youll-come-a-waltzing-maltilda-with-me",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "since",
+                    "label" : "First organization ID",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "maxNoOrg",
+                    "label" : "Number of organizations",
+                    "type" : "number",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The maximum returned number of organizations",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:15:10.659Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-24T13:08:31.431Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
