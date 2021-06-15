@@ -9,7 +9,7 @@
     "revisions" : [ 
         {
             "version" : 1,
-            "image" : "boomerangio/worker-flow:2.5.45",
+            "image" : "boomerangio/worker-flow:2.7.1",
             "command" : "",
             "arguments" : [ 
                 "github", 
