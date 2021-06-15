@@ -1,0 +1,112 @@
+{
+    "_id" : ObjectId("6065e9e262c6952fc2e59645"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Invites a Github user identified vie email to collaborate to a repository. For further reading on the underlying API see https://docs.github.com/en/rest/reference/repos#add-a-repository-collaborator",
+    "lastModified" : ISODate("2021-06-15T17:16:43.197Z"),
+    "name" : "Invite Collaborator to Project",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [],
+            "envs" : [],
+            "arguments" : [ 
+                "github", 
+                "inviteCollaboratorToProject"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/api/v3",
+                    "helpertext" : "Github API end-point",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Github Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "bmrgadmin",
+                    "helpertext" : "Personal access tokens",
+                    "defaultValue" : "youll-come-a-waltzing-maltilda-with-me",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "repoURL",
+                    "label" : "Repository URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/org-name/repo-name",
+                    "helpertext" : "The Github repository url to add the collaborator",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "userEmail",
+                    "label" : "Collaborator Email Address",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "permission",
+                    "label" : "Permission",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "pull",
+                            "value" : "pull"
+                        }, 
+                        {
+                            "key" : "push",
+                            "value" : "push"
+                        }, 
+                        {
+                            "key" : "admin",
+                            "value" : "admin"
+                        }, 
+                        {
+                            "key" : "maintain",
+                            "value" : "maintain"
+                        }, 
+                        {
+                            "key" : "triage",
+                            "value" : "triage"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The permission to grant the collaborator",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:16:43.197Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-04-01T15:42:26.439Z"),
+    "icon" : "Add",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
