@@ -5,7 +5,7 @@
     "lastModified" : ISODate("2021-06-15T17:30:20.043Z"),
     "name" : "Run Python Script",
     "category" : "Utilities",
-    "nodetype" : "templateTask",
+    "nodetype" : "script",
     "revisions" : [ 
         {
             "version" : 1,

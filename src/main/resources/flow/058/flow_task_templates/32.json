@@ -3,7 +3,7 @@
     "currentVersion" : NumberLong(2),
     "description" : "Takes the first value from the file content returned by a valid JSONPath expression and sets as an output property",
     "lastModified" : ISODate("2021-06-15T17:19:50.888Z"),
-    "name" : "File JSONPath To Property",
+    "name" : "File JSONPath To Parameter",
     "category" : "Utilities",
     "nodetype" : "templateTask",
     "revisions" : [ 
@@ -108,7 +108,7 @@
     "status" : "active",
     "createdDate" : ISODate("2021-06-10T14:58:05.686Z"),
     "icon" : "Filter",
-    "verified" : false,
+    "verified" : true,
     "scope" : "global",
     "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
 }
