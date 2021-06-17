@@ -1,0 +1,104 @@
+{
+    "_id" : ObjectId("5e670a1e2d5e6a302de4f41d"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Find a Slack user based on the provided email address using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/users.lookupByEmail",
+    "lastModified" : ISODate("2021-06-15T17:09:46.299Z"),
+    "name" : "Find Slack Member By Email",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "slack", 
+                "lookUpUser"
+            ],
+            "config" : [ 
+                {
+                    "description" : "Token is associated with the slack app tied to a workspace",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "emailAddress",
+                    "label" : "Email Address",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "spengler@ghostbusters.example.com",
+                    "helpertext" : "An email belonging to a user in the workspace",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e71f175756f7e000192eb6c",
+                "reason" : "",
+                "date" : ISODate("2021-03-19T23:34:38.737Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "The slack user id",
+                    "name" : "slackUserId"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "slack", 
+                "lookUpUser"
+            ],
+            "config" : [ 
+                {
+                    "description" : "Token is associated with the slack app tied to a workspace",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "emailAddress",
+                    "label" : "Email Address",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. spengler@ghostbusters.example.com",
+                    "helpertext" : "An email belonging to a user in the workspace",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:09:46.299Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Search",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

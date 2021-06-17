@@ -1,0 +1,75 @@
+{
+    "_id" : ObjectId("605b3cc01c97815d3b8d9480"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Retrieves the details of a Github organization. For further reading on the underlying API see https://docs.github.com/en/rest/reference/orgs#get-an-organization",
+    "lastModified" : ISODate("2021-06-15T17:16:10.442Z"),
+    "name" : "Get Organization Info",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Github organization details",
+                    "name" : "organization"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "github", 
+                "getOrganization"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/api/v3",
+                    "helpertext" : "Github API end-point",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Github Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "bmrgadmin",
+                    "helpertext" : "Personal access tokens",
+                    "defaultValue" : "youll-come-a-waltzing-maltilda-with-me",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "organizationName",
+                    "label" : "Organization Name",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:16:10.442Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-24T13:21:04.542Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

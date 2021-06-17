@@ -1,0 +1,93 @@
+{
+    "_id" : ObjectId("6050c7bd567ec556435f025b"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Retrieves the Slack channels using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/conversations.list",
+    "lastModified" : ISODate("2021-06-15T17:11:10.137Z"),
+    "name" : "Get Slack Channels",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "List of limited channel-like conversation objects",
+                    "name" : "response"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "slack", 
+                "getChannels"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Required if token belongs to org-wide app",
+                    "key" : "team",
+                    "label" : "Team",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Encoded team id to list channels in",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "types",
+                    "label" : " Channel Types",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "public_channel",
+                            "value" : "public_channel"
+                        }, 
+                        {
+                            "key" : "private_channel",
+                            "value" : "private_channel"
+                        }, 
+                        {
+                            "key" : "mpim",
+                            "value" : "mpim"
+                        }, 
+                        {
+                            "key" : "im",
+                            "value" : "im"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Channel types: private, public, mpim, im",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:11:10.137Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T14:59:09.271Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

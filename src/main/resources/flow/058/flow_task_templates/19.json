@@ -1,0 +1,76 @@
+{
+    "_id" : ObjectId("6050c2a3567ec556435f0258"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Removes a user from Slack conversation using a Slack application through Bot tokens. For further reading on the underlying API see https://api.slack.com/methods/conversations.kick",
+    "lastModified" : ISODate("2021-06-15T17:11:43.632Z"),
+    "name" : "Remove Member from Channel",
+    "category" : "Communication with Slack",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "The result of the removal action",
+                    "name" : "response"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "slack", 
+                "removeChannelMember"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Authentication API Token",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. xxxx-xxxxxxxxx-xxxx",
+                    "helpertext" : "The token is associated with the slack application",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "channel",
+                    "label" : "Channel",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "ID of conversation to remove user from.",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "user",
+                    "label" : "User",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. W1234567890",
+                    "helpertext" : "User ID to be removed",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:11:43.632Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-16T14:37:23.706Z"),
+    "icon" : "Delete",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

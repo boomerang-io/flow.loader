@@ -963,15 +963,17 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "057", id = "057", author = "Adrienne Hudson")
   public void updateIndexes(MongoDatabase db) throws IOException {
 
-    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows_activity_task");
-    
+    MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "workflows_activity_task");
+
     ListIndexesIterable<Document> indexes = collection.listIndexes();
     for (Document index : indexes) {
-      if (index.get("name").toString().startsWith("activityId_1")|| index.get("name").toString().startsWith("activityId_1_taskId_1")) {
+      if (index.get("name").toString().startsWith("activityId_1")
+          || index.get("name").toString().startsWith("activityId_1_taskId_1")) {
         collection.dropIndex(index.get("name").toString());
       }
     }
@@ -980,6 +982,44 @@ public class FlowDatabaseChangeLog {
     collection.createIndex(Indexes.ascending("activityId", "taskId"));
 
   }
+
+  @ChangeSet(order = "058", id = "058", author = "Adrienne Hudson")
+  public void taskTemplatesUpdate(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/058/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+
+    final FindIterable<Document> taskTemplates = collection.find();
+    for (Document taskTemplate : taskTemplates) {
+      if (taskTemplate.get("name").equals("Read Parameters from File")) {
+        taskTemplate.put("status", "inactive");
+        collection.replaceOne(eq("_id", taskTemplate.getObjectId("_id")), taskTemplate);
+      }
+    }
+  }
+  
+  @ChangeSet(order = "059", id = "059", author = "Adrienne Hudson")
+  public void updateWorkerImage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.8.2");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
 
 
 }

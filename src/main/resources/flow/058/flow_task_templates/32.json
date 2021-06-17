@@ -1,0 +1,114 @@
+{
+    "_id" : ObjectId("60c2287d3911cb71a1f371a2"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Takes the first value from the file content returned by a valid JSONPath expression and sets as an output property",
+    "lastModified" : ISODate("2021-06-15T17:19:50.888Z"),
+    "name" : "File JSONPath To Parameter",
+    "category" : "Utilities",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/worker-flow:2.7.1",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [],
+            "envs" : [],
+            "arguments" : [ 
+                "system", 
+                "jsonFilePathToProperty"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "filePath",
+                    "label" : "File Path",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "File content to query",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "query",
+                    "label" : "Query Expression",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "e.g. $.store.book",
+                    "helpertext" : "A valid JSON path expression",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "propertyKey",
+                    "label" : "Output Property Key",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The name of the output property",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608ca23d70bfa94ac91f8eef",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T08:51:53.015Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "The value based on the applied expression",
+                    "name" : "evaluation"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "system", 
+                "jsonFilePathToProperty"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "filePath",
+                    "label" : "File Path",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "File content to query",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "query",
+                    "label" : "Query Expression",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "e.g. $.store.book",
+                    "helpertext" : "A valid JSON path expression",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:19:50.888Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-06-10T14:58:05.686Z"),
+    "icon" : "Filter",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

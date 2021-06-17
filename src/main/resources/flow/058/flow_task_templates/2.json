@@ -1,0 +1,187 @@
+{
+	"_id": ObjectId("600132e0d911287a826f0d75"),
+	"currentVersion": NumberLong(2),
+	"description": "Replace parameters between tokens. The default start and end delimiters allow you to replace parameters defined following the parameter reference syntax.",
+	"lastModified": ISODate("2021-06-12T02:00:08.621Z"),
+	"name": "Replace Tokens in Files",
+	"category": "File Utilities",
+	"nodetype": "templateTask",
+	"revisions": [
+		{
+			"version": 1,
+			"command": "",
+			"arguments": [
+				"file",
+				"replaceTokensInFile"
+			],
+			"config": [
+				{
+					"description": "",
+					"key": "path",
+					"label": "File Path",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "$(params.deploy-kubernetes-path)",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "files",
+					"label": "Files",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "$(params.deploy-kubernetes-file)",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "tokenStartDelimiter",
+					"label": "Start Delimiter",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "@",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "tokenEndDelimiter",
+					"label": "End Delimiter",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "@",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "allParams",
+					"label": "Replacement Values",
+					"type": "textarea",
+					"required": false,
+					"placeholder": "key=value",
+					"helpertext": "New line delimited key value pairs",
+					"defaultValue": "$(allParams)",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "failIfNotFound",
+					"label": "Fail If Not Found",
+					"type": "boolean",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "false",
+					"readOnly": false
+				}
+			],
+			"changelog": {
+				"userId": "608ca23d70bfa94ac91f8eef",
+				"reason": "",
+				"date": ISODate("2021-05-15T01:53:10.990Z"),
+				"userName": "Tyson Lawrie"
+			}
+		},
+		{
+			"version": 2,
+			"command": "",
+			"script": "",
+			"workingDir": "",
+			"results": [
+			],
+			"envs": [
+			],
+			"arguments": [
+				"file",
+				"replaceTokensInFile"
+			],
+			"config": [
+				{
+					"description": "",
+					"key": "path",
+					"label": "File Path",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "$(params.deploy-kubernetes-path)",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "files",
+					"label": "Files",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "$(params.deploy-kubernetes-file)",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "tokenStartDelimiter",
+					"label": "Start Delimiter",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "Enter regex string, escaping special characters.",
+					"defaultValue": "\\$\\(params\\.",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "tokenEndDelimiter",
+					"label": "End Delimiter",
+					"type": "text",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "Enter regex string, escaping special characters.",
+					"defaultValue": "\\)",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "allParams",
+					"label": "Replacement Values",
+					"type": "textarea",
+					"required": false,
+					"placeholder": "key=value",
+					"helpertext": "New line delimited key value pairs",
+					"defaultValue": "$(allParams)",
+					"readOnly": false
+				},
+				{
+					"description": "",
+					"key": "failIfNotFound",
+					"label": "Fail If Not Found",
+					"type": "boolean",
+					"required": false,
+					"placeholder": "",
+					"helpertext": "",
+					"defaultValue": "false",
+					"readOnly": false
+				}
+			],
+			"changelog": {
+				"userId": "608ca23d70bfa94ac91f8eef",
+				"reason": "Updated with new delimiter default following parameter syntax",
+				"date": ISODate("2021-06-12T02:00:08.621Z"),
+				"userName": "Tyson Lawrie"
+			}
+		}
+	],
+	"status": "active",
+	"createdDate": ISODate("2021-01-15T06:14:56.408Z"),
+	"icon": "Edit",
+	"verified": true,
+	"scope": "global",
+	"_class": "net.boomerangplatform.model.FlowTaskTemplate"
+}

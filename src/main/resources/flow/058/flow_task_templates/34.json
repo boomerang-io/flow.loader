@@ -1,0 +1,151 @@
+{
+    "_id" : ObjectId("60797cab3df7807907be1551"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Execute a Python script. The returned result of the script is returned as the result value of the task.",
+    "lastModified" : ISODate("2021-06-15T17:30:20.043Z"),
+    "name" : "Run Python Script",
+    "category" : "Utilities",
+    "nodetype" : "script",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/worker-flow:2.7.1",
+            "command" : "",
+            "arguments" : [ 
+                "python", 
+                "execute"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "pythonScript",
+                    "label" : "Python Script",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "pythonArguments",
+                    "label" : "Python Arguments",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Space delimited arguments for the python script",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "The content will get installed using pip3 via the requirements.txt file",
+                    "key" : "pythonRequirements",
+                    "label" : "Python script requirements",
+                    "type" : "texteditor",
+                    "required" : false,
+                    "placeholder" : "i.e. beautifulsoup4",
+                    "helpertext" : "Requirements for the python script, one per line",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e79e5ae2e0ee000015cacde",
+                "reason" : "",
+                "date" : ISODate("2021-04-22T14:36:01.177Z"),
+                "userName" : "Costel Moraru"
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "boomerangio/worker-python:0.0.3",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Python script standard output standard and error content.",
+                    "name" : "output"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "none"
+            ],
+            "config" : [ 
+                {
+                    "description" : "Select the Python version to execute your script.",
+                    "key" : "pythonVersion",
+                    "label" : "Python Version",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "Python 2 (version 2.7.16)",
+                            "value" : "Python 2 (version 2.7.16)"
+                        }, 
+                        {
+                            "key" : "Python 3 (version 3.9.5)",
+                            "value" : "Python 3 (version 3.9.5)"
+                        }
+                    ],
+                    "required" : true,
+                    "placeholder" : "Select Python version...",
+                    "helpertext" : "Python 3 or Python 2 only.",
+                    "readOnly" : true
+                }, 
+                {
+                    "description" : "Enter a list of packages to install before executing your script. Follow the \"requirement specifier format\".",
+                    "key" : "pythonPackages",
+                    "label" : "Additional Python Packages",
+                    "type" : "texteditor::text",
+                    "required" : false,
+                    "placeholder" : "e.g.: SomePackageILike >= 4.20.69",
+                    "helpertext" : "\"Requirement specifier format\": www.ibm.biz/BdfMmj",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Additional command line arguments provided to your script when this is executed.",
+                    "key" : "pythonArguments",
+                    "label" : "Python Arguments",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "e.g.: --my_string=\"Much wow!\" --my_int=420",
+                    "helpertext" : "Command line arguments.",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Enter the Python script you want to execute. The execution result of the script is set as the exit value of the task.",
+                    "key" : "pythonScript",
+                    "label" : "Python Script",
+                    "type" : "texteditor",
+                    "required" : true,
+                    "placeholder" : "e.g.: print(\"Very Python, so amaze!\")",
+                    "helpertext" : "Python script to execute.",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If not provided, the output will be written to standard `/tekton/results/output`.",
+                    "key" : "outputFilePath",
+                    "label" : "Output file path",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "e.g.: /my_app/output.txt",
+                    "helpertext" : "File path where the script output will be written.",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-15T17:30:20.043Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-04-16T12:01:47.277Z"),
+    "icon" : "Launch",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
