@@ -994,7 +994,16 @@ public class FlowDatabaseChangeLog {
       collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
       collection.insertOne(doc);
     }
+
+    final FindIterable<Document> taskTemplates = collection.find();
+    for (Document taskTemplate : taskTemplates) {
+      if (taskTemplate.get("name").equals("Read Parameters from File")) {
+        taskTemplate.put("status", "inactive");
+        collection.replaceOne(eq("_id", taskTemplate.getObjectId("_id")), taskTemplate);
+      }
+    }
   }
+
 
 
 }
