@@ -1003,7 +1003,7 @@ public class FlowDatabaseChangeLog {
       }
     }
   }
-  
+
   @ChangeSet(order = "059", id = "059", author = "Adrienne Hudson")
   public void updateWorkerImage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1019,7 +1019,7 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
-  
+
   @ChangeSet(order = "060", id = "060", author = "Adrienne Hudson")
   public void taskTemplatesUpdates(MongoDatabase db) throws IOException {
 
@@ -1032,7 +1032,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "061", id = "061", author = "Adrienne Hudson")
   public void updatingWorkerImage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1047,5 +1047,25 @@ public class FlowDatabaseChangeLog {
 
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
+  @ChangeSet(order = "062", id = "062", author = "Adrienne Hudson")
+  public void updateTaskConfigurationSettings(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document setting = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> config = (List<Document>) setting.get("config");
+
+    Document newConfig = new Document();
+    newConfig.put("description", "Task Timeout Configuration specified in minutes");
+    newConfig.put("key", "task.timeout.configuration");
+    newConfig.put("label", "Task Timeout Configuration");
+    newConfig.put("type", "number");
+    newConfig.put("value", "90");
+    newConfig.put("readOnly", false);
+
+    config.add(newConfig);
+
+    setting.put("config", config);
+    collection.replaceOne(eq("name", "Task Configuration"), setting);
   }
 }
