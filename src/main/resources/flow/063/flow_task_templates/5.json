@@ -1,0 +1,139 @@
+{
+    "_id" : ObjectId("606dcbadaabd435d10eb02a2"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Get the Gihub repository details based on the Github URL. For further reading on the underlying API see https://docs.github.com/en/rest/reference/repos#get-a-repository",
+    "lastModified" : ISODate("2021-06-25T09:39:09.095Z"),
+    "name" : "Get Github Repository",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "boomerangio/worker-flow:2.8.6",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Github repository details",
+                    "name" : "result"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "github", 
+                "getRepositoryFromRepoURL"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/api/v3",
+                    "helpertext" : "Github API end-point",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Github Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Personal access tokens",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "repoURL",
+                    "label" : "Repository URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/org-name/repo-name",
+                    "helpertext" : "The Github repository url to get the details for",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-25T09:00:40.210Z"),
+                "userName" : "Costel Moraru"
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Github repository details",
+                    "name" : "result"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "github", 
+                "getRepositoryFromRepoURL"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/api/v3",
+                    "helpertext" : "Github API end-point",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Github Access Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Personal access tokens",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "repoURL",
+                    "label" : "Repository URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "e.g. https://github.ibm.com/org-name/repo-name",
+                    "helpertext" : "The Github repository url to get the details for",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If provided, the result parameter is not filled",
+                    "key" : "outputFilePath",
+                    "label" : "Response File Path",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "File path to store the output response",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-25T09:39:09.095Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-04-07T15:11:41.595Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
