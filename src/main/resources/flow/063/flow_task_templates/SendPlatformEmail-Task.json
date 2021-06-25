@@ -1,0 +1,118 @@
+{
+    "_id" : ObjectId("5bd98b105a5df954ad599bc2"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Send Email to Member with Subject and Message",
+    "lastModified" : ISODate("2021-06-25T04:36:19.511Z"),
+    "name" : "Send Platform Email",
+    "category" : "IBM Services Essentials",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [],
+            "envs" : [],
+            "arguments" : [ 
+                "ibmessentials", 
+                "sendMailToMember"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "to",
+                    "label" : "To",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "subject",
+                    "label" : "Subject",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5fc9c3163727f831e8946186",
+                "reason" : "",
+                "date" : ISODate("2021-06-25T04:35:49.492Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [],
+            "envs" : [],
+            "arguments" : [ 
+                "ibmessentials", 
+                "sendMailToMember"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Endpoint to the internal platform service",
+                    "defaultValue" : "http://ess-core-services-messaging/messaging/mail/event",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "to",
+                    "label" : "To",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "subject",
+                    "label" : "Subject",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "message",
+                    "label" : "Message",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5fc9c3163727f831e8946186",
+                "reason" : "Added new URL endpoint",
+                "date" : ISODate("2021-06-25T04:36:19.511Z"),
+                "userName" : "Tyson Lawrie"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "Message",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}

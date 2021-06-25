@@ -1,0 +1,301 @@
+{
+    "_id" : ObjectId("5d25414c988e7b6b6fb3d5f7"),
+    "currentVersion" : NumberLong(3),
+    "description" : "Find Repositories in a GitHub organization",
+    "lastModified" : ISODate("2021-06-25T09:38:04.792Z"),
+    "name" : "Find Repositories in Org",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "version" : 1,
+            "image" : "",
+            "command" : "",
+            "arguments" : [ 
+                "github", 
+                "findPublicReposInOrg"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "org",
+                    "label" : "Org",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Newline delimited list",
+                    "key" : "skipRepos",
+                    "label" : "Repositories to Skip",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "5e8a6c6cd0827100011c2a35",
+                "reason" : "",
+                "date" : ISODate("2020-04-30T22:51:00.560Z")
+            }
+        }, 
+        {
+            "version" : 2,
+            "image" : "boomerangio/worker-flow:2.8.6",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Filtered repositories list",
+                    "name" : "repositories"
+                }, 
+                {
+                    "description" : "Filtered list based repositories",
+                    "name" : "repositoriesPrettyPrint"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "github", 
+                "findReposInOrg"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "org",
+                    "label" : "Org",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Specifies the types of repositories you want returned",
+                    "key" : "visibility",
+                    "label" : "Visibility",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "all",
+                            "value" : "all"
+                        }, 
+                        {
+                            "key" : "public",
+                            "value" : "public"
+                        }, 
+                        {
+                            "key" : "private",
+                            "value" : "private"
+                        }, 
+                        {
+                            "key" : "forks",
+                            "value" : "forks"
+                        }, 
+                        {
+                            "key" : "sources",
+                            "value" : "sources"
+                        }, 
+                        {
+                            "key" : "member",
+                            "value" : "member"
+                        }, 
+                        {
+                            "key" : "internal",
+                            "value" : "internal"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "all",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Newline delimited list",
+                    "key" : "skipRepos",
+                    "label" : "Repositories to Skip",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "numToRetrieve",
+                    "label" : "Number of Repositories to Retrieve",
+                    "type" : "number",
+                    "required" : false,
+                    "placeholder" : "Default: 30",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-25T08:54:29.521Z"),
+                "userName" : "Costel Moraru"
+            }
+        }, 
+        {
+            "version" : 3,
+            "image" : "",
+            "command" : "",
+            "script" : "",
+            "workingDir" : "",
+            "results" : [ 
+                {
+                    "description" : "Filtered repositories list",
+                    "name" : "repositories"
+                }, 
+                {
+                    "description" : "Filtered list based repositories",
+                    "name" : "repositoriesPrettyPrint"
+                }
+            ],
+            "envs" : [],
+            "arguments" : [ 
+                "github", 
+                "findReposInOrg"
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "org",
+                    "label" : "Org",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Specifies the types of repositories you want returned",
+                    "key" : "visibility",
+                    "label" : "Visibility",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "all",
+                            "value" : "all"
+                        }, 
+                        {
+                            "key" : "public",
+                            "value" : "public"
+                        }, 
+                        {
+                            "key" : "private",
+                            "value" : "private"
+                        }, 
+                        {
+                            "key" : "forks",
+                            "value" : "forks"
+                        }, 
+                        {
+                            "key" : "sources",
+                            "value" : "sources"
+                        }, 
+                        {
+                            "key" : "member",
+                            "value" : "member"
+                        }, 
+                        {
+                            "key" : "internal",
+                            "value" : "internal"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "all",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Newline delimited list",
+                    "key" : "skipRepos",
+                    "label" : "Repositories to Skip",
+                    "type" : "textarea",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "numToRetrieve",
+                    "label" : "Number of Repositories to Retrieve",
+                    "type" : "number",
+                    "required" : false,
+                    "placeholder" : "Default: 30",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If provided, the result parameter is not filled",
+                    "key" : "outputFilePath",
+                    "label" : "Response File Path",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "File path to store the output response",
+                    "readOnly" : false
+                }
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2021-06-25T09:38:04.792Z"),
+                "userName" : "Costel Moraru"
+            }
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "net.boomerangplatform.model.FlowTaskTemplate"
+}
