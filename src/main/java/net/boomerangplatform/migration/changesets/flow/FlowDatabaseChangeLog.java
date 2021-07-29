@@ -1107,18 +1107,22 @@ public class FlowDatabaseChangeLog {
 
       List<Document> revisions = (List<Document>) taskTemplate.get("revisions");
       for (Document revision : revisions) {
-        List<String> updatedCommand = new ArrayList<>();
-        String command = revision.getString("command");
-        if (command != null && !command.isBlank()) {
-          updatedCommand.add(command);
+        try {
+          String command = revision.getString("command");
+          List<String> updatedCommand = new ArrayList<>();
+          if (command != null && !command.isBlank()) {
+            updatedCommand.add(command);
+          }
+          revision.put("command", updatedCommand);
+          collection.replaceOne(eq("_id", taskTemplate.getObjectId("_id")), taskTemplate);
+        } catch (ClassCastException e) {
+
         }
-        revision.put("command", updatedCommand);
-        collection.replaceOne(eq("_id", taskTemplate.getObjectId("_id")), taskTemplate);
       }
     }
 
   }
-  
+
   @ChangeSet(order = "066", id = "066", author = "Adrienne Hudson")
   public void tasktemplateUpdate(MongoDatabase db) throws IOException {
 
