@@ -1131,4 +1131,16 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
+  
+  @ChangeSet(order = "067", id = "067", author = "Marcus Roy")
+  public void upateQuartzJobClassName(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "jobs");
+
+    final FindIterable<Document> taskTemplates = collection.find();
+    for (Document job : taskTemplates) {
+      job.put("jobClass", "io.boomerang.quartz.FlowJob");
+      collection.replaceOne(eq("_id", job.getObjectId("_id")), job);
+    }
+  }
 }
