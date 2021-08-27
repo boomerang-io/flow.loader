@@ -1118,7 +1118,7 @@ public class FlowDatabaseChangeLog {
     }
 
   }
-  
+
   @ChangeSet(order = "066", id = "066", author = "Adrienne Hudson")
   public void tasktemplateUpdate(MongoDatabase db) throws IOException {
 
@@ -1131,7 +1131,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "067", id = "067", author = "Adrienne Hudson")
   public void updatingtaskTemplate(MongoDatabase db) throws IOException {
 
@@ -1144,19 +1144,28 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "068", id = "068", author = "Marcus Roy")
   public void upateQuartzJobClassName(MongoDatabase db) throws IOException {
 
-    final MongoCollection<Document> collection =
-        db.getCollection(collectionPrefix + "settings");
-    
+    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+
     final List<String> files = fileloadingService.loadFiles("flow/068/flow_settings/*.json");
-    
+
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
       collection.insertOne(doc);
-    } 
+    }
   }
-  
+
+  @ChangeSet(order = "069", id = "069", author = "Adrienne Hudson")
+  public void addingFlowSetting(MongoDatabase db) throws IOException {
+
+    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    final List<String> files = fileloadingService.loadFiles("flow/069/flow_settings/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.insertOne(doc);
+    }
+  }
 }
