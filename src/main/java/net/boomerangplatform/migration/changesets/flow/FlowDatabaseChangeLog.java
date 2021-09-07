@@ -1195,4 +1195,20 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
 
+  @ChangeSet(order = "071", id = "071", author = "Adrienne Hudson")
+  public void verifyTaskTemplate(MongoDatabase db) throws IOException {
+    final MongoCollection<Document> flowTaskTemplateCollection =
+        db.getCollection(collectionPrefix + "task_templates");
+
+    final FindIterable<Document> flowTemplates = flowTaskTemplateCollection.find();
+    for (final Document flowTemplate : flowTemplates) {
+      if (flowTemplate.get("name").equals("Send Email with Postmark Template")) {
+        flowTemplate.put("verified", true);
+        flowTaskTemplateCollection.replaceOne(eq("_id", flowTemplate.getObjectId("_id")),
+            flowTemplate);
+      }
+    }
+  }
+
+
 }
