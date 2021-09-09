@@ -45,18 +45,21 @@ public class FlowDatabaseChangeLog {
     db.createCollection(collectionPrefix + "task_templates");
     db.createCollection(collectionPrefix + "teams");
 
-    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
-    if (collection == null) {
-      db.createCollection(collectionPrefix + "workflows");
-    }
 
+    try {
+      db.createCollection(collectionPrefix + "workflows");
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+    }
     db.createCollection(collectionPrefix + "workflows_activity");
     db.createCollection(collectionPrefix + "workflows_activity_task");
 
 
-    collection = db.getCollection(collectionPrefix + "workflows_revisions");
-    if (collection == null) {
+
+    try {
       db.createCollection(collectionPrefix + "workflows_revisions");
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
     }
   }
 
@@ -1218,6 +1221,35 @@ public class FlowDatabaseChangeLog {
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
       collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "073", id = "073", author = "Adrienne Hudson")
+  public void migrateEnablePersistentStorage(MongoDatabase db) throws IOException {
+
+    final MongoCollection<Document> flowWorkflowsCollection =
+        db.getCollection(collectionPrefix + "workflows");
+    final FindIterable<Document> flowWorkflows = flowWorkflowsCollection.find();
+    for (final Document flowWorkflow : flowWorkflows) {
+
+      boolean enablePersistentStorage = (boolean) flowWorkflow.get("enablePersistentStorage");
+
+      Document storage =
+          (Document) flowWorkflow.get("storage") != null ? (Document) flowWorkflow.get("storage")
+              : new Document();
+
+      Document workflowStorage =
+          (Document) storage.get("workflow") != null ? (Document) storage.get("workflow")
+              : new Document();
+
+      workflowStorage.put("enabled", enablePersistentStorage);
+      storage.put("workflow", workflowStorage);
+
+      flowWorkflow.put("storage", storage);
+      flowWorkflow.remove("enablePersistentStorage");
+
+      flowWorkflowsCollection.replaceOne(eq("_id", flowWorkflow.getObjectId("_id")), flowWorkflow);
+
     }
   }
 
