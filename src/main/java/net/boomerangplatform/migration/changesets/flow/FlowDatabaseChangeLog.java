@@ -1253,4 +1253,56 @@ public class FlowDatabaseChangeLog {
     }
   }
 
+  @ChangeSet(order = "074", id = "074", author = "Adrienne Hudson")
+  public void updateFlowSettings(MongoDatabase db) throws IOException {
+
+    Document newConfig = new Document();
+    newConfig.put("description", "Maximum storage size");
+    newConfig.put("key", "max.storage.size");
+    newConfig.put("label", "Maximum storage size");
+    newConfig.put("type", "text");
+    newConfig.put("value", "5Gi");
+    newConfig.put("readOnly", false);
+
+    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workspaceSetting = collection.find(eq("key", "workspace")).first();
+    workspaceSetting.put("name", "Workspace Configuration - Workflow Storage");
+    List<Document> configs = (List<Document>) workspaceSetting.get("config");
+    configs.add(newConfig);
+    collection.replaceOne(eq("_id", workspaceSetting.getObjectId("_id")), workspaceSetting);
+
+
+    Document workflowSetting = collection.find(eq("key", "workflow")).first();
+    workflowSetting.put("name", "Workspace Configuration - Activity Storage");
+    configs = (List<Document>) workflowSetting.get("config");
+    configs.add(newConfig);
+    collection.replaceOne(eq("_id", workflowSetting.getObjectId("_id")), workflowSetting);
+
+
+    Document teamDefaults = collection.find(eq("key", "teams")).first();
+    configs = (List<Document>) teamDefaults.get("config");
+    for (Document config : configs) {
+      if (config.get("key").equals("max.team.workflow.storage")) {
+        config.put("description", "Maximum Storage allowed Per Workflow across executions");
+        config.put("type", "text");
+        config.put("value", "25Gi");
+      }
+    }
+    teamDefaults.put("config", configs);
+    collection.replaceOne(eq("_id", teamDefaults.getObjectId("_id")), teamDefaults);
+
+
+    newConfig.put("key", "max.user.workflow.storage");
+    newConfig.put("description", "Maximum Storage allowed Per Workflow across executions");
+    newConfig.put("type", "text");
+    newConfig.put("value", "25Gi");
+    newConfig.put("label", "Total Storage");
+    newConfig.put("readOnly", false);
+
+    Document userDefaults = collection.find(eq("key", "users")).first();
+    configs = (List<Document>) userDefaults.get("config");
+    configs.add(newConfig);
+    collection.replaceOne(eq("_id", userDefaults.getObjectId("_id")), userDefaults);
+
+  }
 }
