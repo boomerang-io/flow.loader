@@ -12,7 +12,7 @@
 	<groupId>net.boomerangplatform</groupId>
 	<artifactId>loader</artifactId>
 	<packaging>jar</packaging>
-	<name>util-mongo</name>
+	<name>loader</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
