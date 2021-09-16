@@ -10,8 +10,7 @@
     </parent>
 
 	<groupId>net.boomerangplatform</groupId>
-	<artifactId>flow-loader</artifactId>
-	<version>${version.name}</version>
+	<artifactId>loader</artifactId>
 	<packaging>jar</packaging>
 	<name>util-mongo</name>
 	<url>http://maven.apache.org</url>
@@ -77,5 +76,6 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+	    <finalName>${project.name}</finalName>
 	</build>
 </project>
