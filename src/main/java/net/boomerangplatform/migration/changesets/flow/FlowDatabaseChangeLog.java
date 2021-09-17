@@ -1305,8 +1305,8 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("_id", userDefaults.getObjectId("_id")), userDefaults);
 
   }
-  
-  
+
+
   @ChangeSet(order = "075", id = "075", author = "Adrienne Hudson")
   public void workerImageUpdate(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1321,5 +1321,31 @@ public class FlowDatabaseChangeLog {
 
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
+  @ChangeSet(order = "076", id = "076", author = "Adrienne Hudson")
+  public void workflowStorageMigration(MongoDatabase db) throws IOException {
+
+    final MongoCollection<Document> flowWorkflowsCollection =
+        db.getCollection(collectionPrefix + "workflows");
+    final FindIterable<Document> flowWorkflows = flowWorkflowsCollection.find();
+    for (final Document flowWorkflow : flowWorkflows) {
+
+      Document storage = (Document) flowWorkflow.get("storage");
+
+      if (storage.get("workflow") != null) {
+        Document activity = (Document) storage.get("workflow");
+        storage.put("activity", activity);
+        storage.remove("workflow");
+      }
+      if (storage.get("workspace") != null) {
+        Document workflow = (Document) storage.get("workspace");
+        storage.put("workflow", workflow);
+        storage.remove("workspace");
+      }
+
+      flowWorkflowsCollection.replaceOne(eq("_id", flowWorkflow.getObjectId("_id")), flowWorkflow);
+
+    }
   }
 }
