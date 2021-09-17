@@ -1305,4 +1305,21 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("_id", userDefaults.getObjectId("_id")), userDefaults);
 
   }
+  
+  
+  @ChangeSet(order = "075", id = "075", author = "Adrienne Hudson")
+  public void workerImageUpdate(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.9.4");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
 }
