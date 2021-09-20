@@ -1348,4 +1348,38 @@ public class FlowDatabaseChangeLog {
 
     }
   }
+
+  @ChangeSet(order = "077", id = "077", author = "Adrienne Hudson")
+  public void updatingTaskTemplate(MongoDatabase db) throws IOException {
+    final MongoCollection<Document> flowTaskTemplateCollection =
+        db.getCollection(collectionPrefix + "task_templates");
+
+    final FindIterable<Document> flowTemplates = flowTaskTemplateCollection.find();
+    for (final Document flowTemplate : flowTemplates) {
+      if (flowTemplate.get("name").equals("Send Email with Postmark Template")) {
+        List<Document> revisions = (List<Document>) flowTemplate.get("revisions");
+        for (Document revision : revisions) {
+          List<Document> configs = (List<Document>) revision.get("config");
+          for (Document config : configs) {
+            if (config.get("key").equals("apiKey")) {
+              config.put("key", "token");
+              config.put("label", "API Token");
+            }
+          }
+
+        }
+      }
+      if (flowTemplate.get("name").equals("Execute HTTP Call")) {
+        List<Document> revisions = (List<Document>) flowTemplate.get("revisions");
+        for (Document revision : revisions) {
+          if (revision.get("image").equals("boomerangio/worker-flow:2.8.13")) {
+            revision.put("image", "");
+          }
+
+        }
+      }
+      flowTaskTemplateCollection.replaceOne(eq("_id", flowTemplate.getObjectId("_id")),
+          flowTemplate);
+    }
+  }
 }
