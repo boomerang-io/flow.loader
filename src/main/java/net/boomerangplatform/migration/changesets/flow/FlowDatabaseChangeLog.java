@@ -1333,15 +1333,17 @@ public class FlowDatabaseChangeLog {
 
       Document storage = (Document) flowWorkflow.get("storage");
 
-      if (storage.get("workflow") != null) {
-        Document activity = (Document) storage.get("workflow");
-        storage.put("activity", activity);
-        storage.remove("workflow");
-      }
-      if (storage.get("workspace") != null) {
-        Document workflow = (Document) storage.get("workspace");
-        storage.put("workflow", workflow);
-        storage.remove("workspace");
+      if (storage != null) {
+        if (storage.get("workflow") != null) {
+          Document activity = (Document) storage.get("workflow");
+          storage.put("activity", activity);
+          storage.remove("workflow");
+        }
+        if (storage.get("workspace") != null) {
+          Document workflow = (Document) storage.get("workspace");
+          storage.put("workflow", workflow);
+          storage.remove("workspace");
+        }
       }
 
       flowWorkflowsCollection.replaceOne(eq("_id", flowWorkflow.getObjectId("_id")), flowWorkflow);
@@ -1350,7 +1352,7 @@ public class FlowDatabaseChangeLog {
   }
 
   @ChangeSet(order = "077", id = "077", author = "Adrienne Hudson")
-  public void updatingTaskTemplate(MongoDatabase db) throws IOException{
+  public void updatingTaskTemplate(MongoDatabase db) throws IOException {
 
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
 
