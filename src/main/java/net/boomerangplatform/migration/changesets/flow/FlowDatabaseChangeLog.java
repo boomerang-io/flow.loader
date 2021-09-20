@@ -1350,36 +1350,15 @@ public class FlowDatabaseChangeLog {
   }
 
   @ChangeSet(order = "077", id = "077", author = "Adrienne Hudson")
-  public void updatingTaskTemplate(MongoDatabase db) throws IOException {
-    final MongoCollection<Document> flowTaskTemplateCollection =
-        db.getCollection(collectionPrefix + "task_templates");
+  public void updatingTaskTemplate(MongoDatabase db) throws IOException{
 
-    final FindIterable<Document> flowTemplates = flowTaskTemplateCollection.find();
-    for (final Document flowTemplate : flowTemplates) {
-      if (flowTemplate.get("name").equals("Send Email with Postmark Template")) {
-        List<Document> revisions = (List<Document>) flowTemplate.get("revisions");
-        for (Document revision : revisions) {
-          List<Document> configs = (List<Document>) revision.get("config");
-          for (Document config : configs) {
-            if (config.get("key").equals("apiKey")) {
-              config.put("key", "token");
-              config.put("label", "API Token");
-            }
-          }
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
 
-        }
-      }
-      if (flowTemplate.get("name").equals("Execute HTTP Call")) {
-        List<Document> revisions = (List<Document>) flowTemplate.get("revisions");
-        for (Document revision : revisions) {
-          if (revision.get("image").equals("boomerangio/worker-flow:2.8.13")) {
-            revision.put("image", "");
-          }
-
-        }
-      }
-      flowTaskTemplateCollection.replaceOne(eq("_id", flowTemplate.getObjectId("_id")),
-          flowTemplate);
+    final List<String> files = fileloadingService.loadFiles("flow/077/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
     }
   }
 }
