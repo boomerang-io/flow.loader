@@ -1363,4 +1363,17 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
+
+  @ChangeSet(order = "078", id = "078", author = "Adrienne Hudson")
+  public void addingAddIssueTaskTemplate(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/078/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
 }
