@@ -1,0 +1,67 @@
+{
+    "_id" : ObjectId("6170b3b6c87e7471580d00fb"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Adds a GitHub issue to a GitHub Issue Project",
+    "lastModified" : ISODate("2021-10-21T04:34:44.582Z"),
+    "name" : "Add Issue to Project",
+    "category" : "GitHub",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "github", 
+                "addIssueToProject"
+            ],
+            "changelog" : {
+                "userId" : "614415021950a72949b00efb",
+                "reason" : "",
+                "date" : ISODate("2021-10-21T04:34:44.582Z"),
+                "userName" : "tyson@lawrie.com.au"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "token",
+                    "label" : "Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "GitHub Personal Access Token",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "projectId",
+                    "label" : "Project ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The unique Node ID",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "issueId",
+                    "label" : "Issue ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Unique Node ID",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-10-21T00:26:30.030Z"),
+    "icon" : "Add",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
