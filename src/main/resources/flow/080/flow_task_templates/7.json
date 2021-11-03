@@ -1,0 +1,117 @@
+{
+    "_id" : ObjectId("617a9de6aae7066447752ea6"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Delete a sheet from a Google spreadsheet.",
+    "lastModified" : ISODate("2021-10-28T14:06:21.370Z"),
+    "name" : "Delete Sheet",
+    "category" : "Google Sheets",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "googlesheets", 
+                "deleteSheet"
+            ],
+            "changelog" : {
+                "userId" : "60d46143b8cb91383e74dde5",
+                "reason" : "",
+                "date" : ISODate("2021-10-28T14:06:21.370Z"),
+                "userName" : "George Safta"
+            },
+            "command" : [ 
+                ""
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "projectId",
+                    "label" : "Project ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's project ID",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKeyId",
+                    "label" : "Private Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key ID",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client ID",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "You can find the spreadsheet ID in a Google Sheets URL:  https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId",
+                    "key" : "spreadsheetId",
+                    "label" : "Spreadsheet ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The ID of the desired spreadsheet",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "You can find the sheet ID in a Google Sheets URL:  https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId",
+                    "key" : "sheetId",
+                    "label" : "Sheet ID",
+                    "type" : "number",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The ID of the sheet to delete",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "image" : "boomerangio/worker-flow:2.9.19",
+            "results" : [],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-10-28T12:56:06.049Z"),
+    "icon" : "Delete",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
