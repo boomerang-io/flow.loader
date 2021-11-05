@@ -1397,11 +1397,11 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
 
-  @ChangeSet(order = "080", id = "080", author = "George Safta")
+  @ChangeSet(order = "081", id = "081", author = "George Safta")
   public void addGoogleSheetsTaskTemplates(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
 
-    final List<String> files = fileloadingService.loadFiles("flow/080/flow_task_templates/*.json");
+    final List<String> files = fileloadingService.loadFiles("flow/081/flow_task_templates/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
       collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));

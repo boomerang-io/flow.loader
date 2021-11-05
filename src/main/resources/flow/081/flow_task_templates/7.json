@@ -1,21 +1,21 @@
 {
-    "_id" : ObjectId("617a98f4aae7066447752ea3"),
+    "_id" : ObjectId("617a9de6aae7066447752ea6"),
     "currentVersion" : NumberLong(1),
-    "description" : "Clear the cell data in the specified range from a Google spreadsheet.\nThe supported range notations are A1 notation and R1C1 notation.",
-    "lastModified" : ISODate("2021-10-28T14:17:45.416Z"),
-    "name" : "Clear Data",
+    "description" : "Delete a sheet from a Google spreadsheet.",
+    "lastModified" : ISODate("2021-10-28T14:06:21.370Z"),
+    "name" : "Delete Sheet",
     "category" : "Google Sheets",
     "nodetype" : "templateTask",
     "revisions" : [ 
         {
             "arguments" : [ 
                 "googlesheets", 
-                "clearData"
+                "deleteSheet"
             ],
             "changelog" : {
                 "userId" : "60d46143b8cb91383e74dde5",
                 "reason" : "",
-                "date" : ISODate("2021-10-28T14:17:45.416Z"),
+                "date" : ISODate("2021-10-28T14:06:21.370Z"),
                 "userName" : "George Safta"
             },
             "command" : [ 
@@ -89,19 +89,18 @@
                     "readOnly" : false
                 }, 
                 {
-                    "description" : "Supports A1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-1 and R1C1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-2",
-                    "key" : "ranges",
-                    "label" : "Data Ranges",
-                    "type" : "text",
+                    "description" : "You can find the sheet ID in a Google Sheets URL:  https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId",
+                    "key" : "sheetId",
+                    "label" : "Sheet ID",
+                    "type" : "number",
                     "required" : true,
-                    "placeholder" : "Sheet1!6:7,Sheet2",
-                    "helpertext" : "The data ranges to clear separated by a comma",
+                    "placeholder" : "",
+                    "helpertext" : "The ID of the sheet to delete",
                     "defaultValue" : "",
                     "readOnly" : false
                 }
             ],
             "envs" : [],
-            "image" : "boomerangio/worker-flow:2.9.20",
             "results" : [],
             "script" : "",
             "version" : 1,
@@ -109,7 +108,7 @@
         }
     ],
     "status" : "active",
-    "createdDate" : ISODate("2021-10-28T12:35:00.875Z"),
+    "createdDate" : ISODate("2021-10-28T12:56:06.049Z"),
     "icon" : "Delete",
     "verified" : true,
     "scope" : "global",

@@ -1,21 +1,21 @@
 {
-    "_id" : ObjectId("617a976eaae7066447752ea2"),
+    "_id" : ObjectId("617a9641aae7066447752ea1"),
     "currentVersion" : NumberLong(1),
-    "description" : "Append data to an existing Google spreadsheet.\nThe supported range notations are A1 notation and R1C1 notation.",
-    "lastModified" : ISODate("2021-10-28T14:35:33.486Z"),
-    "name" : "Append Data",
+    "description" : "Add new sheet to a Google spreadsheet.",
+    "lastModified" : ISODate("2021-10-28T14:37:26.916Z"),
+    "name" : "Add Sheet",
     "category" : "Google Sheets",
     "nodetype" : "templateTask",
     "revisions" : [ 
         {
             "arguments" : [ 
                 "googlesheets", 
-                "append"
+                "addSheet"
             ],
             "changelog" : {
                 "userId" : "60d46143b8cb91383e74dde5",
                 "reason" : "",
-                "date" : ISODate("2021-10-28T14:35:33.486Z"),
+                "date" : ISODate("2021-10-28T14:37:26.916Z"),
                 "userName" : "George Safta"
             },
             "command" : [ 
@@ -89,43 +89,26 @@
                     "readOnly" : false
                 }, 
                 {
-                    "description" : "The input range is used to search for existing data and find a \"table\" within that range. Values will be appended to the next row of the table, starting with the first column of the table.",
-                    "key" : "range",
-                    "label" : "Data Range",
+                    "description" : "",
+                    "key" : "title",
+                    "label" : "Sheet Title",
                     "type" : "text",
                     "required" : true,
-                    "placeholder" : "Sheet1!6:7",
-                    "helpertext" : "The desired data range",
-                    "defaultValue" : "",
-                    "readOnly" : false
-                }, 
-                {
-                    "description" : "Split each data row with an endline and each cell value with a semicolon",
-                    "key" : "values",
-                    "label" : "Cell Data",
-                    "type" : "textarea",
-                    "required" : true,
-                    "placeholder" : "Val1;Val2;Val3",
-                    "helpertext" : "Input data",
+                    "placeholder" : "",
+                    "helpertext" : "The title of the new sheet",
                     "defaultValue" : "",
                     "readOnly" : false
                 }
             ],
             "envs" : [],
-            "image" : "boomerangio/worker-flow:2.9.20",
-            "results" : [ 
-                {
-                    "description" : "Append information",
-                    "name" : "response"
-                }
-            ],
+            "results" : [],
             "script" : "",
             "version" : 1,
             "workingDir" : ""
         }
     ],
     "status" : "active",
-    "createdDate" : ISODate("2021-10-28T12:28:30.895Z"),
+    "createdDate" : ISODate("2021-10-28T12:23:29.333Z"),
     "icon" : "Add",
     "verified" : true,
     "scope" : "global",

@@ -1,21 +1,21 @@
 {
-    "_id" : ObjectId("617a9ec8aae7066447752ea7"),
+    "_id" : ObjectId("617a9b13aae7066447752ea5"),
     "currentVersion" : NumberLong(1),
-    "description" : "Update cell data from a Google spreadsheet.\nThe supported range notations are A1 notation and R1C1 notation.",
-    "lastModified" : ISODate("2021-10-28T14:03:08.833Z"),
-    "name" : "Update Data",
+    "description" : "Create a new Google Spreadsheet with the provided name.",
+    "lastModified" : ISODate("2021-10-28T14:07:58.907Z"),
+    "name" : "Create Spreadsheet",
     "category" : "Google Sheets",
     "nodetype" : "templateTask",
     "revisions" : [ 
         {
             "arguments" : [ 
                 "googlesheets", 
-                "update"
+                "create"
             ],
             "changelog" : {
                 "userId" : "60d46143b8cb91383e74dde5",
                 "reason" : "",
-                "date" : ISODate("2021-10-28T14:03:08.833Z"),
+                "date" : ISODate("2021-10-28T14:07:58.907Z"),
                 "userName" : "George Safta"
             },
             "command" : [ 
@@ -78,45 +78,22 @@
                     "readOnly" : false
                 }, 
                 {
-                    "description" : "You can find the spreadsheet ID in a Google Sheets URL:  https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=sheetId",
-                    "key" : "spreadsheetId",
-                    "label" : "Spreadsheet ID",
+                    "description" : "",
+                    "key" : "title",
+                    "label" : "Spreadsheet Title",
                     "type" : "text",
                     "required" : true,
                     "placeholder" : "",
-                    "helpertext" : "The ID of the desired spreadsheet",
-                    "defaultValue" : "",
-                    "readOnly" : false
-                }, 
-                {
-                    "description" : "Supports A1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-1 and R1C1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-2",
-                    "key" : "range",
-                    "label" : "Data Range",
-                    "type" : "text",
-                    "required" : true,
-                    "placeholder" : "Sheet1!1:3",
-                    "helpertext" : "The desired data range",
-                    "defaultValue" : "",
-                    "readOnly" : false
-                }, 
-                {
-                    "description" : "Split each data row with an endline and each cell value with a semicolon",
-                    "key" : "values",
-                    "label" : "Cell Data",
-                    "type" : "textarea",
-                    "required" : true,
-                    "placeholder" : "Val1;Val2;Val3",
-                    "helpertext" : "Input data",
+                    "helpertext" : "The new spreadsheet's title",
                     "defaultValue" : "",
                     "readOnly" : false
                 }
             ],
             "envs" : [],
-            "image" : "boomerangio/worker-flow:2.9.20",
             "results" : [ 
                 {
-                    "description" : "Update information",
-                    "name" : "response"
+                    "description" : "Newly created spreadsheet information",
+                    "name" : "spreadsheet"
                 }
             ],
             "script" : "",
@@ -125,8 +102,8 @@
         }
     ],
     "status" : "active",
-    "createdDate" : ISODate("2021-10-28T12:59:52.700Z"),
-    "icon" : "Edit",
+    "createdDate" : ISODate("2021-10-28T12:44:03.569Z"),
+    "icon" : "Add",
     "verified" : true,
     "scope" : "global",
     "_class" : "io.boomerang.model.FlowTaskTemplate"
