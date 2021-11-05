@@ -101,7 +101,7 @@
                 }
             ],
             "envs" : [],
-            "image" : "boomerangio/worker-flow:2.9.19",
+            "image" : "boomerangio/worker-flow:2.9.20",
             "results" : [],
             "script" : "",
             "version" : 1,
