@@ -187,7 +187,7 @@ public class FlowDatabaseChangeLog {
           List<String> options = (List<String>) config.get("options");
           if (options != null) {
 
-            List<Document> newOptions = new ArrayList<Document>();
+            List<Document> newOptions = new ArrayList<>();
             for (String option : options) {
               Document newOption = new Document();
               newOption.put("key", option);
@@ -1396,7 +1396,8 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
-  
+
+
   @ChangeSet(order = "080", id = "080", author = "Adrienne Hudson")
   public void updateworkerimage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1412,4 +1413,17 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
+
+  @ChangeSet(order = "081", id = "081", author = "George Safta")
+  public void addGoogleSheetsTaskTemplates(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/081/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
 }
