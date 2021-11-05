@@ -1,7 +1,7 @@
 {
     "_id" : ObjectId("617a98f4aae7066447752ea3"),
     "currentVersion" : NumberLong(1),
-    "description" : "Get the cell data in the specified range from a Google spreadsheet.\nThe supported range notations are A1 notation and R1C1 notation.",
+    "description" : "Clear the cell data in the specified range from a Google spreadsheet.\nThe supported range notations are A1 notation and R1C1 notation.",
     "lastModified" : ISODate("2021-10-28T14:17:45.416Z"),
     "name" : "Clear Data",
     "category" : "Google Sheets",
