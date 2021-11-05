@@ -1397,6 +1397,23 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
 
+
+  @ChangeSet(order = "080", id = "080", author = "Adrienne Hudson")
+  public void updateworkerimage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.9.20");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
   @ChangeSet(order = "081", id = "081", author = "George Safta")
   public void addGoogleSheetsTaskTemplates(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
