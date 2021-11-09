@@ -42,24 +42,34 @@ public class FlowDatabaseChangeLog {
 
     logger.info("Running change log: #1 - Creating Collections for Boomerang Flow");
 
-    db.createCollection(collectionPrefix + "task_templates");
-    db.createCollection(collectionPrefix + "teams");
-
-
-    try {
-      db.createCollection(collectionPrefix + "workflows");
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    if (collection == null) {
+      db.createCollection(collectionPrefix + "task_templates");
     }
-    db.createCollection(collectionPrefix + "workflows_activity");
-    db.createCollection(collectionPrefix + "workflows_activity_task");
 
+    collection = db.getCollection(collectionPrefix + "teams");
+    if (collection == null) {
+      db.createCollection(collectionPrefix + "teams");
+    }
 
+    collection = db.getCollection(collectionPrefix + "workflows");
+    if (collection == null) {
+      db.createCollection(collectionPrefix + "workflows");
+    }
 
-    try {
+    collection = db.getCollection(collectionPrefix + "workflows_activity");
+    if (collection == null) {
+      db.createCollection(collectionPrefix + "workflows_activity");
+    }
+
+    collection = db.getCollection(collectionPrefix + "workflows_activity_task");
+    if (collection == null) {
+      db.createCollection(collectionPrefix + "workflows_activity_task");
+    }
+
+    collection = db.getCollection(collectionPrefix + "workflows_revisions");
+    if (collection == null) {
       db.createCollection(collectionPrefix + "workflows_revisions");
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
     }
   }
 
