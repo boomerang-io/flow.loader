@@ -1,0 +1,245 @@
+{
+    "_id" : ObjectId("612989ab63a78c0c37074e91"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Send an email from a template using a template ID and variables.",
+    "lastModified" : ISODate("2021-11-17T00:06:37.929Z"),
+    "name" : "Send Email with Postmark Template",
+    "category" : "Communication",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "mail", 
+                "sendPostmarkEmailWithTemplate"
+            ],
+            "changelog" : {
+                "userId" : "614415021950a72949b00efb",
+                "reason" : "",
+                "date" : ISODate("2021-09-21T00:04:41.237Z"),
+                "userName" : "tyson@lawrie.com.au"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "If you have a Postmark account, you will be able to find or create an API token via their Server UI",
+                    "key" : "token",
+                    "label" : "API Token",
+                    "type" : "password",
+                    "placeholder" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "to",
+                    "label" : "To",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "from",
+                    "label" : "From",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Required if TemplateAlias is not specified.",
+                    "key" : "templateId",
+                    "label" : "Template Id",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Required if TemplateID is not specified.",
+                    "key" : "templateAlias",
+                    "label" : "Template Alias",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "You can find sample variables in the Postmark Template UI",
+                    "key" : "templateModel",
+                    "label" : "Template Variables",
+                    "type" : "texteditor::javascript",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "tag",
+                    "label" : "Tag",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "image" : "boomerangio/worker-flow:2.9.7",
+            "results" : [ 
+                {
+                    "description" : "Recipient email address",
+                    "name" : "To"
+                }, 
+                {
+                    "description" : "Timestamp",
+                    "name" : "SubmittedAt"
+                }, 
+                {
+                    "description" : "ID of message",
+                    "name" : "MessageID"
+                }, 
+                {
+                    "description" : "See Postmark API Error Codes",
+                    "name" : "ErrorCode"
+                }, 
+                {
+                    "description" : "Response message",
+                    "name" : "Message"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }, 
+        {
+            "arguments" : [ 
+                "mail", 
+                "sendPostmarkEmailWithTemplate"
+            ],
+            "changelog" : {
+                "userId" : "614415021950a72949b00efb",
+                "reason" : "Added new optional message stream field.",
+                "date" : ISODate("2021-11-17T00:06:37.929Z"),
+                "userName" : "tyson@lawrie.com.au"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "If you have a Postmark account, you will be able to find or create an API token via their Server UI",
+                    "key" : "token",
+                    "label" : "API Token",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "to",
+                    "label" : "To",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Supports up to 50 recipients. Comma delimited.",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "sender@example.com or \"Boomerang Joe <sender@example.com>\"",
+                    "key" : "from",
+                    "label" : "From",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Email address or with name information",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Required if TemplateAlias is not specified.",
+                    "key" : "templateId",
+                    "label" : "Template Id",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Required if TemplateID is not specified.",
+                    "key" : "templateAlias",
+                    "label" : "Template Alias",
+                    "type" : "text",
+                    "placeholder" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "You can find sample variables in the Postmark Template UI",
+                    "key" : "templateModel",
+                    "label" : "Template Variables",
+                    "type" : "texteditor::javascript",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Categorize outgoing emails and get detailed statistics",
+                    "key" : "tag",
+                    "label" : "Tag",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "messageStream",
+                    "label" : "Message Stream",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Message Stream ID that's used for sending",
+                    "defaultValue" : "outbound",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "image" : "",
+            "results" : [ 
+                {
+                    "description" : "Recipient email address",
+                    "name" : "To"
+                }, 
+                {
+                    "description" : "Timestamp",
+                    "name" : "SubmittedAt"
+                }, 
+                {
+                    "description" : "ID of message",
+                    "name" : "MessageID"
+                }, 
+                {
+                    "description" : "See Postmark API Error Codes",
+                    "name" : "ErrorCode"
+                }, 
+                {
+                    "description" : "Response message",
+                    "name" : "Message"
+                }
+            ],
+            "script" : "",
+            "version" : 2,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-08-28T00:56:11.475Z"),
+    "icon" : "Message",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
