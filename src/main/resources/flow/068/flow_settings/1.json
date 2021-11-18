@@ -1,0 +1,43 @@
+{
+    "_id" : ObjectId("6123c1e20b07a54cdce637c0"),
+    "config" : [ 
+        {
+            "description" : "The total number of workflows that a user can have",
+            "key" : "max.user.workflow.count",
+            "label" : "Maximum Number of Workflows",
+            "type" : "number",
+            "value" : "10",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "The number of workflow executions per month",
+            "key" : "max.user.workflow.execution.monthly",
+            "label" : "Maximum Workflow Executions per month",
+            "type" : "number",
+            "value" : "30",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "The number of workflows that can be running at the same time",
+            "key" : "max.user.concurrent.workflows",
+            "label" : "Maximum Concurrent Executions",
+            "type" : "number",
+            "value" : "3",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "The maximum time that a workflow can be executing for",
+            "key" : "max.user.workflow.duration",
+            "label" : "Total Workflow Duration",
+            "type" : "number",
+            "value" : "300",
+            "readOnly" : false
+        }
+    ],
+    "description" : "Define default user settings such as workflow quotas which are applied at user creation time.",
+    "key" : "users",
+    "lastModiifed" : ISODate("2021-08-23T21:48:24.044Z"),
+    "name" : "User Defaults",
+    "type" : "ValuesList",
+    "_class" : "io.boomerang.mongo.entity.FlowSettingsEntity"
+}

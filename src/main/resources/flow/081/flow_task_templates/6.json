@@ -1,0 +1,110 @@
+{
+    "_id" : ObjectId("617a9b13aae7066447752ea5"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Create a new Google Spreadsheet with the provided name.",
+    "lastModified" : ISODate("2021-10-28T14:07:58.907Z"),
+    "name" : "Create Spreadsheet",
+    "category" : "Google Sheets",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "googlesheets", 
+                "create"
+            ],
+            "changelog" : {
+                "userId" : "60d46143b8cb91383e74dde5",
+                "reason" : "",
+                "date" : ISODate("2021-10-28T14:07:58.907Z"),
+                "userName" : "George Safta"
+            },
+            "command" : [ 
+                ""
+            ],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "projectId",
+                    "label" : "Project ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's project ID",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKeyId",
+                    "label" : "Private Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key ID",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client ID",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "title",
+                    "label" : "Spreadsheet Title",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The new spreadsheet's title",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [ 
+                {
+                    "description" : "Newly created spreadsheet information",
+                    "name" : "spreadsheet"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-10-28T12:44:03.569Z"),
+    "icon" : "Add",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
