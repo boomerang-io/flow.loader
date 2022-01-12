@@ -1435,7 +1435,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "082", id = "082", author = "Adrienne Hudson")
   public void updateSendEmailWithPostmarkTemplate(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
@@ -1447,16 +1447,62 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
-  @ChangeSet(order = "083", id = "083", author = "Marcus Roy")
+
+  @ChangeSet(order = "083", id = "083", author = "Adrienne Hudson")
   public void updateQuartzJobClassName(MongoDatabase db) throws IOException {
 
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "jobs");
 
     final FindIterable<Document> taskTemplates = collection.find();
     for (Document job : taskTemplates) {
-      job.put("jobClass", "io.boomerang.quartz.FlowJob");
+      job.put("jobClass", "io.boomerang.quartz.WorkflowExecuteJob");
       collection.replaceOne(eq("_id", job.getObjectId("_id")), job);
+    }
+  }
+
+  @ChangeSet(order = "084", id = "084", author = "Adrienne Hudson")
+  public void migrationWorkflowScheduleTriggers(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> workflowScheduleCollection =
+        db.getCollection(collectionPrefix + "workflows_schedules");
+    if (workflowScheduleCollection == null) {
+
+      db.createCollection(collectionPrefix + "workflows_schedules");
+    }
+
+    final MongoCollection<Document> flowWorkflowsCollection =
+        db.getCollection(collectionPrefix + "workflows");
+
+    final FindIterable<Document> wfEntities = flowWorkflowsCollection.find();
+    for (final Document wfEntity : wfEntities) {
+
+      if (wfEntity.get("status").equals("active")) {
+        Document triggers = (Document) wfEntity.get("triggers");
+        if (triggers != null) {
+          Document ts = (Document) triggers.get("scheduler");
+
+          Document schedule = new Document();
+
+          if (ts.getBoolean("advancedCron").equals(true)) {
+            schedule.put("type", "advancedCron");
+          } else {
+            schedule.put("type", "cron");
+          }
+
+          if (ts.getBoolean("enable").equals(true)) {
+            schedule.put("status", "active");
+          } else {
+            schedule.put("status", "inactive");
+          }
+
+          schedule.put("timezone", ts.get("timezone"));
+          schedule.put("cronSchedlue", ts.get("schedule"));
+
+          schedule.put("_id", wfEntity.get("_id"));
+
+          workflowScheduleCollection.insertOne(schedule);
+        }
+      }
     }
   }
 
