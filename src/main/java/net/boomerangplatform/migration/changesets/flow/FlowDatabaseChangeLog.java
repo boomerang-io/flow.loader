@@ -1506,4 +1506,49 @@ public class FlowDatabaseChangeLog {
     }
   }
 
+  @ChangeSet(order = "085", id = "085", author = "Adrienne Hudson")
+  public void addingRunScheduledWorkflowTask(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/085/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "086", id = "086", author = "Adrienne Hudson")
+  public void updateTeamAndUserSettings(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document teamDefaults = collection.find(eq("name", "Team Defaults")).first();
+    List<Document> configs = (List<Document>) teamDefaults.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("max.team.workflow.duration")) {
+        config.put("description",
+            "The maximum time that a workflow can be executing for in minutes");
+        config.put("label", "Maximum Workflow Execution Duration");
+      }
+    }
+
+    teamDefaults.put("config", configs);
+    collection.replaceOne(eq("name", "Team Defaults"), teamDefaults);
+
+    Document userDefaults = collection.find(eq("name", "User Defaults")).first();
+    configs = (List<Document>) userDefaults.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("max.user.workflow.duration")) {
+        config.put("description",
+            "The maximum time that a workflow can be executing for in minutes");
+        config.put("label", "Maximum Workflow Execution Duration");
+      }
+    }
+
+    userDefaults.put("config", configs);
+    collection.replaceOne(eq("name", "User Defaults"), userDefaults);
+  }
+
 }
