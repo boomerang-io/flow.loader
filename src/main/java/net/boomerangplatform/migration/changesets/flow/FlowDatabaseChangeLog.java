@@ -1483,13 +1483,13 @@ public class FlowDatabaseChangeLog {
 
           Document schedule = new Document();
 
-          if (ts.getBoolean("advancedCron").equals(true)) {
+          if (ts.get("advancedCron") != null && ts.get("advancedCron").equals(true)) {
             schedule.put("type", "advancedCron");
           } else {
             schedule.put("type", "cron");
           }
 
-          if (ts.getBoolean("enable").equals(true)) {
+          if (ts.get("enable") != null && ts.get("enable").equals(true)) {
             schedule.put("status", "active");
           } else {
             schedule.put("status", "inactive");
