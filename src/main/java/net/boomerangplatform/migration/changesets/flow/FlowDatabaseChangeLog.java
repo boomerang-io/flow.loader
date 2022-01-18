@@ -1476,7 +1476,7 @@ public class FlowDatabaseChangeLog {
     final FindIterable<Document> wfEntities = flowWorkflowsCollection.find();
     for (final Document wfEntity : wfEntities) {
 
-      if (wfEntity.get("status").equals("active")) {
+      if ( workflowScheduleCollection.find(eq("_id", wfEntity.get("_id"))).first() == null && wfEntity.get("status").equals("active")) {
         Document triggers = (Document) wfEntity.get("triggers");
         if (triggers != null) {
           Document ts = (Document) triggers.get("scheduler");
@@ -1549,6 +1549,24 @@ public class FlowDatabaseChangeLog {
 
     userDefaults.put("config", configs);
     collection.replaceOne(eq("name", "User Defaults"), userDefaults);
+  }
+  
+  
+  @ChangeSet(order = "087", id = "087", author = "Adrienne Hudson")
+  public void updateTaskConfigurationSetting(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document controller = collection.find(eq("key", "controller")).first();
+
+    List<Document> configs = (List<Document>) controller.get("config");
+    for (Document config : configs) {
+      if (config.get("key").equals("job.deletion.policy")) {
+        config.put("label", "Deletion Policy");
+        config.put("description", "Defines the completion state that will lead to worker removal");
+      }
+    }
+    controller.put("config", configs);
+    collection.replaceOne(eq("key", "controller"), controller);
   }
 
 }
