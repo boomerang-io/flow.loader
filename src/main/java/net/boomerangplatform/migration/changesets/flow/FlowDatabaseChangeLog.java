@@ -1476,7 +1476,7 @@ public class FlowDatabaseChangeLog {
     final FindIterable<Document> wfEntities = flowWorkflowsCollection.find();
     for (final Document wfEntity : wfEntities) {
 
-      if (wfEntity.get("status").equals("active")) {
+      if ( workflowScheduleCollection.find(eq("_id", wfEntity.get("_id"))).first() != null && wfEntity.get("status").equals("active")) {
         Document triggers = (Document) wfEntity.get("triggers");
         if (triggers != null) {
           Document ts = (Document) triggers.get("scheduler");
