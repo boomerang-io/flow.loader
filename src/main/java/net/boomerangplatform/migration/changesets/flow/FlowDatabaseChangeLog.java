@@ -3,6 +3,7 @@ package net.boomerangplatform.migration.changesets.flow;
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
@@ -1473,11 +1474,13 @@ public class FlowDatabaseChangeLog {
     final MongoCollection<Document> flowWorkflowsCollection =
         db.getCollection(collectionPrefix + "workflows");
 
-    final FindIterable<Document> wfEntities = flowWorkflowsCollection.find();
-    for (final Document wfEntity : wfEntities) {
+    final FindIterable<Document> workflowEntities = flowWorkflowsCollection.find();
+    for (final Document workflowEntity : workflowEntities) {
+      Document triggers = (Document) workflowEntity.get("triggers");
 
-      if ( workflowScheduleCollection.find(eq("_id", wfEntity.get("_id"))).first() == null && wfEntity.get("status").equals("active")) {
-        Document triggers = (Document) wfEntity.get("triggers");
+      if (workflowScheduleCollection.find(eq("_id", workflowEntity.get("_id"))).first() == null
+          && workflowEntity.get("status").equals("active")) {
+
         if (triggers != null) {
           Document ts = (Document) triggers.get("scheduler");
 
@@ -1496,15 +1499,34 @@ public class FlowDatabaseChangeLog {
           }
 
           schedule.put("timezone", ts.get("timezone"));
-          schedule.put("cronSchedlue", ts.get("schedule"));
+          schedule.put("cronSchedule", ts.get("schedule"));
 
-          schedule.put("_id", wfEntity.get("_id"));
+          schedule.put("workflowId", workflowEntity.get("_id").toString());
+          schedule.put("name", "Migrated Schedule");
+          schedule.put("description", "");
+          schedule.put("creationDate", new Date());
+          schedule.put("labels", new ArrayList<>());
+
+          List<Document> parameters = new ArrayList<>();
+          for (Document property : (List<Document>) workflowEntity.get("properties")) {
+            Document parameter = new Document();
+            parameter.put("key", property.get("key"));
+            parameter.put("value", property.get("defaultValue"));
+            parameters.add(parameter);
+          }
+
+          schedule.put("parameters", parameters);
 
           workflowScheduleCollection.insertOne(schedule);
         }
       }
+      triggers.remove("scheduler");
+
+      flowWorkflowsCollection.replaceOne(eq("_id", workflowEntity.getObjectId("_id")),
+          workflowEntity);
     }
   }
+
 
   @ChangeSet(order = "085", id = "085", author = "Adrienne Hudson")
   public void addingRunScheduledWorkflowTask(MongoDatabase db) throws IOException {
@@ -1550,8 +1572,8 @@ public class FlowDatabaseChangeLog {
     userDefaults.put("config", configs);
     collection.replaceOne(eq("name", "User Defaults"), userDefaults);
   }
-  
-  
+
+
   @ChangeSet(order = "087", id = "087", author = "Adrienne Hudson")
   public void updateTaskConfigurationSetting(MongoDatabase db) throws IOException {
 
