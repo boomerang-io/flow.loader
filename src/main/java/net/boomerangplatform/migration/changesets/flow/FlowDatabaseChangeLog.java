@@ -1478,7 +1478,7 @@ public class FlowDatabaseChangeLog {
     for (final Document workflowEntity : workflowEntities) {
       Document triggers = (Document) workflowEntity.get("triggers");
 
-      if (workflowScheduleCollection.find(eq("_id", workflowEntity.get("_id"))).first() == null
+      if (workflowScheduleCollection.find(eq("workflowId", workflowEntity.get("_id").toString())).first() == null
           && workflowEntity.get("status").equals("active")) {
 
         if (triggers != null) {
