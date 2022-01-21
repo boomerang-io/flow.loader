@@ -1467,7 +1467,6 @@ public class FlowDatabaseChangeLog {
     MongoCollection<Document> workflowScheduleCollection =
         db.getCollection(collectionPrefix + "workflows_schedules");
     if (workflowScheduleCollection == null) {
-
       db.createCollection(collectionPrefix + "workflows_schedules");
     }
 
@@ -1477,29 +1476,33 @@ public class FlowDatabaseChangeLog {
     final FindIterable<Document> workflowEntities = flowWorkflowsCollection.find();
     for (final Document workflowEntity : workflowEntities) {
       Document triggers = (Document) workflowEntity.get("triggers");
+      if (triggers != null) {
+        Document scheduler = (Document) triggers.get("scheduler");
 
-      if (workflowScheduleCollection.find(eq("workflowId", workflowEntity.get("_id").toString())).first() == null
-          && workflowEntity.get("status").equals("active")) {
-
-        if (triggers != null) {
-          Document ts = (Document) triggers.get("scheduler");
+        if (workflowScheduleCollection.find(eq("workflowId", workflowEntity.get("_id").toString()))
+            .first() == null && workflowEntity.get("status").equals("active")) {
 
           Document schedule = new Document();
 
-          if (ts.get("advancedCron") != null && ts.get("advancedCron").equals(true)) {
+          if (scheduler.get("advancedCron") != null && scheduler.get("advancedCron").equals(true)) {
             schedule.put("type", "advancedCron");
           } else {
             schedule.put("type", "cron");
           }
 
-          if (ts.get("enable") != null && ts.get("enable").equals(true)) {
+          scheduler.remove("advancedCron");
+
+          if (scheduler.get("enable") != null && scheduler.get("enable").equals(true)) {
             schedule.put("status", "active");
           } else {
             schedule.put("status", "inactive");
           }
 
-          schedule.put("timezone", ts.get("timezone"));
-          schedule.put("cronSchedule", ts.get("schedule"));
+          schedule.put("timezone", scheduler.get("timezone"));
+          scheduler.remove("timezone");
+
+          schedule.put("cronSchedule", scheduler.get("schedule"));
+          scheduler.remove("cronSchedule");
 
           schedule.put("workflowId", workflowEntity.get("_id").toString());
           schedule.put("name", "Migrated Schedule");
@@ -1520,7 +1523,6 @@ public class FlowDatabaseChangeLog {
           workflowScheduleCollection.insertOne(schedule);
         }
       }
-      triggers.remove("scheduler");
 
       flowWorkflowsCollection.replaceOne(eq("_id", workflowEntity.getObjectId("_id")),
           workflowEntity);
@@ -1590,7 +1592,7 @@ public class FlowDatabaseChangeLog {
     controller.put("config", configs);
     collection.replaceOne(eq("key", "controller"), controller);
   }
-  
+
   @ChangeSet(order = "088", id = "088", author = "Adrienne Hudson")
   public void updatedefaultworkerimage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
