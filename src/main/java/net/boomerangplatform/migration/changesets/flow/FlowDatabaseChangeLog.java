@@ -3,6 +3,7 @@ package net.boomerangplatform.migration.changesets.flow;
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
@@ -1466,45 +1467,68 @@ public class FlowDatabaseChangeLog {
     MongoCollection<Document> workflowScheduleCollection =
         db.getCollection(collectionPrefix + "workflows_schedules");
     if (workflowScheduleCollection == null) {
-
       db.createCollection(collectionPrefix + "workflows_schedules");
     }
 
     final MongoCollection<Document> flowWorkflowsCollection =
         db.getCollection(collectionPrefix + "workflows");
 
-    final FindIterable<Document> wfEntities = flowWorkflowsCollection.find();
-    for (final Document wfEntity : wfEntities) {
+    final FindIterable<Document> workflowEntities = flowWorkflowsCollection.find();
+    for (final Document workflowEntity : workflowEntities) {
+      Document triggers = (Document) workflowEntity.get("triggers");
+      if (triggers != null) {
+        Document scheduler = (Document) triggers.get("scheduler");
 
-      if ( workflowScheduleCollection.find(eq("_id", wfEntity.get("_id"))).first() == null && wfEntity.get("status").equals("active")) {
-        Document triggers = (Document) wfEntity.get("triggers");
-        if (triggers != null) {
-          Document ts = (Document) triggers.get("scheduler");
+        if (workflowScheduleCollection.find(eq("workflowId", workflowEntity.get("_id").toString()))
+            .first() == null && workflowEntity.get("status").equals("active")) {
 
           Document schedule = new Document();
 
-          if (ts.get("advancedCron") != null && ts.get("advancedCron").equals(true)) {
+          if (scheduler.get("advancedCron") != null && scheduler.get("advancedCron").equals(true)) {
             schedule.put("type", "advancedCron");
           } else {
             schedule.put("type", "cron");
           }
 
-          if (ts.get("enable") != null && ts.get("enable").equals(true)) {
+          scheduler.remove("advancedCron");
+
+          if (scheduler.get("enable") != null && scheduler.get("enable").equals(true)) {
             schedule.put("status", "active");
           } else {
             schedule.put("status", "inactive");
           }
 
-          schedule.put("timezone", ts.get("timezone"));
-          schedule.put("cronSchedlue", ts.get("schedule"));
+          schedule.put("timezone", scheduler.get("timezone"));
+          scheduler.remove("timezone");
 
-          schedule.put("_id", wfEntity.get("_id"));
+          schedule.put("cronSchedule", scheduler.get("schedule"));
+          scheduler.remove("cronSchedule");
+
+          schedule.put("workflowId", workflowEntity.get("_id").toString());
+          schedule.put("name", "Migrated Schedule");
+          schedule.put("description", "");
+          schedule.put("creationDate", new Date());
+          schedule.put("labels", new ArrayList<>());
+
+          List<Document> parameters = new ArrayList<>();
+          for (Document property : (List<Document>) workflowEntity.get("properties")) {
+            Document parameter = new Document();
+            parameter.put("key", property.get("key"));
+            parameter.put("value", property.get("defaultValue"));
+            parameters.add(parameter);
+          }
+
+          schedule.put("parameters", parameters);
 
           workflowScheduleCollection.insertOne(schedule);
         }
       }
+
+      flowWorkflowsCollection.replaceOne(eq("_id", workflowEntity.getObjectId("_id")),
+          workflowEntity);
     }
   }
+
 
   @ChangeSet(order = "085", id = "085", author = "Adrienne Hudson")
   public void addingRunScheduledWorkflowTask(MongoDatabase db) throws IOException {
@@ -1550,8 +1574,8 @@ public class FlowDatabaseChangeLog {
     userDefaults.put("config", configs);
     collection.replaceOne(eq("name", "User Defaults"), userDefaults);
   }
-  
-  
+
+
   @ChangeSet(order = "087", id = "087", author = "Adrienne Hudson")
   public void updateTaskConfigurationSetting(MongoDatabase db) throws IOException {
 
@@ -1569,4 +1593,19 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("key", "controller"), controller);
   }
 
+  @ChangeSet(order = "088", id = "088", author = "Adrienne Hudson")
+  public void updatedefaultworkerimage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.9.22");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
 }
