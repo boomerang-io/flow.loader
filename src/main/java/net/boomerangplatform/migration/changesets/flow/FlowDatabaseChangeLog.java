@@ -1622,7 +1622,7 @@ public class FlowDatabaseChangeLog {
     }
   }
   
-  @ChangeSet(order = "088", id = "088", author = "Adrienne Hudson")
+  @ChangeSet(order = "090", id = "090", author = "Adrienne Hudson")
   public void updatedefaultworker(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
     Document workers = collection.find(eq("name", "Task Configuration")).first();
