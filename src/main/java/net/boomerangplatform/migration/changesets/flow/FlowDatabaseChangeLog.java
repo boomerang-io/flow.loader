@@ -1637,4 +1637,23 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
+  
+  @ChangeSet(order = "091", id = "091", author = "Adrienne Hudson")
+  public void updateWorkspaceConfigurationsKey(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+
+    Document workflowStorage =
+        collection.find(eq("name", "Workspace Configuration - Workflow Storage")).first();
+    workflowStorage.put("key", "workflow");
+
+    collection.replaceOne(eq("name", "Workspace Configuration - Workflow Storage"),
+        workflowStorage);
+
+    Document activityStorage =
+        collection.find(eq("name", "Workspace Configuration - Activity Storage")).first();
+    activityStorage.put("key", "activity");
+
+    collection.replaceOne(eq("name", "Workspace Configuration - Activity Storage"),
+        activityStorage);
+  }
 }
