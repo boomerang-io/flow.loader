@@ -1608,4 +1608,33 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
+  
+  @ChangeSet(order = "089", id = "089", author = "Adrienne Hudson")
+  public void updatingHTTPTaskTemplates(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/089/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+  
+  @ChangeSet(order = "090", id = "090", author = "Adrienne Hudson")
+  public void updatedefaultworker(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.10.16");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
 }
