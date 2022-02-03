@@ -1,0 +1,147 @@
+{
+    "_id" : ObjectId("61f14da3aff34c34ea431963"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Execute a Basic HTTP Call",
+    "lastModified" : ISODate("2022-01-27T16:25:13.252Z"),
+    "name" : "Execute Basic HTTP Call",
+    "category" : "Utilities",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "http", 
+                "execute"
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2022-01-27T16:25:13.252Z"),
+                "userName" : "Costel Moraru"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "url",
+                    "label" : "URL",
+                    "type" : "url",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "method",
+                    "label" : "Method",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "GET",
+                            "value" : "GET"
+                        }, 
+                        {
+                            "key" : "HEAD",
+                            "value" : "HEAD"
+                        }, 
+                        {
+                            "key" : "PUT",
+                            "value" : "PUT"
+                        }, 
+                        {
+                            "key" : "POST",
+                            "value" : "POST"
+                        }, 
+                        {
+                            "key" : "PATCH",
+                            "value" : "PATCH"
+                        }, 
+                        {
+                            "key" : "OPTIONS",
+                            "value" : "OPTIONS"
+                        }, 
+                        {
+                            "key" : "DELETE",
+                            "value" : "DELETE"
+                        }
+                    ],
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Start a new line for each header",
+                    "key" : "header",
+                    "label" : "Headers",
+                    "type" : "textarea",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "Headers to add to the request, such as Authorizati",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "contentType",
+                    "label" : "Content Type",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "body",
+                    "label" : "Body",
+                    "type" : "texteditor",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "allowUntrustedCerts",
+                    "label" : "Allow Untrusted SSL Certs",
+                    "type" : "boolean",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "false",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If provided, the result parameter is not filled",
+                    "key" : "outputFilePath",
+                    "label" : "Response File Path",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "File path to store the output response",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [ 
+                {
+                    "description" : "HTTP execution response content",
+                    "name" : "response"
+                }, 
+                {
+                    "description" : "The received HTTP status code",
+                    "name" : "statusCode"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2022-01-26T13:33:23.236Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}

@@ -1,0 +1,110 @@
+{
+    "_id" : ObjectId("61f2a522aff34c34ea43198c"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Executes a provided query against a mongo databases endpoint.",
+    "lastModified" : ISODate("2022-02-03T13:01:00.655Z"),
+    "name" : "MongoDB Query Execution",
+    "category" : "Utilities",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2022-02-03T13:01:00.655Z"),
+                "userName" : "Costel Moraru"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "host",
+                    "label" : "Database host",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "A valid, reachable mongo db endpoint",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "port",
+                    "label" : "Database port",
+                    "type" : "number",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "database",
+                    "label" : "Database name",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "username",
+                    "label" : "Database username",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The username to use for running the query",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "password",
+                    "label" : "Database password",
+                    "type" : "password",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "query",
+                    "label" : "Query",
+                    "type" : "texteditor::javascript",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "ouputfile",
+                    "label" : "Response file path",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "File path to store the query's output response",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "image" : "rtsp/mongosh",
+            "results" : [],
+            "script" : "mongosh mongodb://$(params.host):$(params.port)/$(params.database) --username=$(params.username) --password=$(params.password) --eval=\"$(params.query)\" --quiet > $(params.ouputfile) ",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2022-01-27T13:58:58.698Z"),
+    "icon" : "Launch",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
