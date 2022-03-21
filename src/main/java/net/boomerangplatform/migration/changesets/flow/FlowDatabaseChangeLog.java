@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.cloudyrock.mongock.ChangeLog;
@@ -1608,7 +1609,7 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
-  
+
   @ChangeSet(order = "089", id = "089", author = "Adrienne Hudson")
   public void updatingHTTPTaskTemplates(MongoDatabase db) throws IOException {
 
@@ -1621,7 +1622,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "090", id = "090", author = "Adrienne Hudson")
   public void updatedefaultworker(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1637,7 +1638,7 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
-  
+
   @ChangeSet(order = "091", id = "091", author = "Adrienne Hudson")
   public void updateWorkspaceConfigurationsKey(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1656,7 +1657,7 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("name", "Workspace Configuration - Activity Storage"),
         activityStorage);
   }
-  
+
   @ChangeSet(order = "092", id = "092", author = "Adrienne Hudson")
   public void updatingtasktemplate(MongoDatabase db) throws IOException {
 
@@ -1669,7 +1670,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "093", id = "093", author = "Adrienne Hudson")
   public void updatingtemplate(MongoDatabase db) throws IOException {
 
@@ -1682,7 +1683,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "094", id = "094", author = "Adrienne Hudson")
   public void updateworker(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1698,7 +1699,7 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
-  
+
   @ChangeSet(order = "095", id = "095", author = "Adrienne Hudson")
   public void updatetemplate(MongoDatabase db) throws IOException {
 
@@ -1711,7 +1712,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "096", id = "096", author = "Adrienne Hudson")
   public void updatetasktemplate(MongoDatabase db) throws IOException {
 
@@ -1723,5 +1724,11 @@ public class FlowDatabaseChangeLog {
       collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
       collection.insertOne(doc);
     }
+  }
+
+  @ChangeSet(order = "097", id = "097", author = "Adrienne Hudson")
+  public void removeDuplicateTemplate(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    collection.findOneAndDelete(eq("_id", new ObjectId("61f2a522aff34c34ea43198c")));
   }
 }
