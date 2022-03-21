@@ -1,0 +1,124 @@
+{
+    "_id" : ObjectId("6054c3917a38c63898cc4dcb"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Retrieves and lists an user's Box folders.",
+    "lastModified" : ISODate("2022-03-21T17:14:10.414Z"),
+    "name" : "List Box Folders",
+    "category" : "Box",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "-props", 
+                "box", 
+                "list"
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2022-03-21T17:14:10.414Z"),
+                "userName" : "Costel Moraru"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "enterpriseId",
+                    "label" : "Authentication - Enterprise ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box entreprise id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Authentication - Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientSecret",
+                    "label" : "Authentication - Client Secret",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client secret",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "publicKeyId",
+                    "label" : "Authentication - Public Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box public key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Authentication - Private Key",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "passphrase",
+                    "label" : "Authentication - Private Key Password",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box passphrase",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "If provided, the result parameter is not filled",
+                    "key" : "outputFilePath",
+                    "label" : "Response File Path",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "File path to store the output response",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "image" : "boomerangio/box-service:0.0.16",
+            "results" : [ 
+                {
+                    "description" : "The status of the list box folders action",
+                    "name" : "status"
+                }, 
+                {
+                    "description" : "The retrieved Box folders information",
+                    "name" : "folders"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-19T15:30:25.049Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
