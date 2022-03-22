@@ -3,10 +3,12 @@ package net.boomerangplatform.migration.changesets.flow;
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.cloudyrock.mongock.ChangeLog;
@@ -1163,7 +1165,7 @@ public class FlowDatabaseChangeLog {
   }
 
   @ChangeSet(order = "068", id = "068", author = "Marcus Roy")
-  public void upateQuartzJobClassName(MongoDatabase db) throws IOException {
+  public void updateSettings(MongoDatabase db) throws IOException {
 
     final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
 
@@ -1436,5 +1438,308 @@ public class FlowDatabaseChangeLog {
     }
   }
 
+  @ChangeSet(order = "082", id = "082", author = "Adrienne Hudson")
+  public void updateSendEmailWithPostmarkTemplate(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
 
+    final List<String> files = fileloadingService.loadFiles("flow/082/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "083", id = "083", author = "Adrienne Hudson")
+  public void updateQuartzJobClassName(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "jobs");
+
+    final FindIterable<Document> taskTemplates = collection.find();
+    for (Document job : taskTemplates) {
+      job.put("jobClass", "io.boomerang.quartz.WorkflowExecuteJob");
+      collection.replaceOne(eq("_id", job.getObjectId("_id")), job);
+    }
+  }
+
+  @ChangeSet(order = "084", id = "084", author = "Adrienne Hudson")
+  public void migrationWorkflowScheduleTriggers(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> workflowScheduleCollection =
+        db.getCollection(collectionPrefix + "workflows_schedules");
+    if (workflowScheduleCollection == null) {
+      db.createCollection(collectionPrefix + "workflows_schedules");
+    }
+
+    final MongoCollection<Document> flowWorkflowsCollection =
+        db.getCollection(collectionPrefix + "workflows");
+
+    final FindIterable<Document> workflowEntities = flowWorkflowsCollection.find();
+    for (final Document workflowEntity : workflowEntities) {
+      Document triggers = (Document) workflowEntity.get("triggers");
+      if (triggers != null) {
+        Document scheduler = (Document) triggers.get("scheduler");
+
+        if (workflowScheduleCollection.find(eq("workflowId", workflowEntity.get("_id").toString()))
+            .first() == null && workflowEntity.get("status").equals("active")) {
+
+          Document schedule = new Document();
+
+          if (scheduler.get("advancedCron") != null && scheduler.get("advancedCron").equals(true)) {
+            schedule.put("type", "advancedCron");
+          } else {
+            schedule.put("type", "cron");
+          }
+
+          scheduler.remove("advancedCron");
+
+          if (scheduler.get("enable") != null && scheduler.get("enable").equals(true)) {
+            schedule.put("status", "active");
+          } else {
+            schedule.put("status", "inactive");
+          }
+
+          schedule.put("timezone", scheduler.get("timezone"));
+          scheduler.remove("timezone");
+
+          schedule.put("cronSchedule", scheduler.get("schedule"));
+          scheduler.remove("cronSchedule");
+
+          schedule.put("workflowId", workflowEntity.get("_id").toString());
+          schedule.put("name", "Migrated Schedule");
+          schedule.put("description", "");
+          schedule.put("creationDate", new Date());
+          schedule.put("labels", new ArrayList<>());
+
+          List<Document> parameters = new ArrayList<>();
+          for (Document property : (List<Document>) workflowEntity.get("properties")) {
+            Document parameter = new Document();
+            parameter.put("key", property.get("key"));
+            parameter.put("value", property.get("defaultValue"));
+            parameters.add(parameter);
+          }
+
+          schedule.put("parameters", parameters);
+
+          workflowScheduleCollection.insertOne(schedule);
+        }
+      }
+
+      flowWorkflowsCollection.replaceOne(eq("_id", workflowEntity.getObjectId("_id")),
+          workflowEntity);
+    }
+  }
+
+
+  @ChangeSet(order = "085", id = "085", author = "Adrienne Hudson")
+  public void addingRunScheduledWorkflowTask(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/085/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "086", id = "086", author = "Adrienne Hudson")
+  public void updateTeamAndUserSettings(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document teamDefaults = collection.find(eq("name", "Team Defaults")).first();
+    List<Document> configs = (List<Document>) teamDefaults.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("max.team.workflow.duration")) {
+        config.put("description",
+            "The maximum time that a workflow can be executing for in minutes");
+        config.put("label", "Maximum Workflow Execution Duration");
+      }
+    }
+
+    teamDefaults.put("config", configs);
+    collection.replaceOne(eq("name", "Team Defaults"), teamDefaults);
+
+    Document userDefaults = collection.find(eq("name", "User Defaults")).first();
+    configs = (List<Document>) userDefaults.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("max.user.workflow.duration")) {
+        config.put("description",
+            "The maximum time that a workflow can be executing for in minutes");
+        config.put("label", "Maximum Workflow Execution Duration");
+      }
+    }
+
+    userDefaults.put("config", configs);
+    collection.replaceOne(eq("name", "User Defaults"), userDefaults);
+  }
+
+
+  @ChangeSet(order = "087", id = "087", author = "Adrienne Hudson")
+  public void updateTaskConfigurationSetting(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document controller = collection.find(eq("key", "controller")).first();
+
+    List<Document> configs = (List<Document>) controller.get("config");
+    for (Document config : configs) {
+      if (config.get("key").equals("job.deletion.policy")) {
+        config.put("label", "Deletion Policy");
+        config.put("description", "Defines the completion state that will lead to worker removal");
+      }
+    }
+    controller.put("config", configs);
+    collection.replaceOne(eq("key", "controller"), controller);
+  }
+
+  @ChangeSet(order = "088", id = "088", author = "Adrienne Hudson")
+  public void updatedefaultworkerimage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.9.22");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
+  @ChangeSet(order = "089", id = "089", author = "Adrienne Hudson")
+  public void updatingHTTPTaskTemplates(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/089/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "090", id = "090", author = "Adrienne Hudson")
+  public void updatedefaultworker(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.10.16");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
+  @ChangeSet(order = "091", id = "091", author = "Adrienne Hudson")
+  public void updateWorkspaceConfigurationsKey(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+
+    Document workflowStorage =
+        collection.find(eq("name", "Workspace Configuration - Workflow Storage")).first();
+    workflowStorage.put("key", "workflow");
+
+    collection.replaceOne(eq("name", "Workspace Configuration - Workflow Storage"),
+        workflowStorage);
+
+    Document activityStorage =
+        collection.find(eq("name", "Workspace Configuration - Activity Storage")).first();
+    activityStorage.put("key", "activity");
+
+    collection.replaceOne(eq("name", "Workspace Configuration - Activity Storage"),
+        activityStorage);
+  }
+
+  @ChangeSet(order = "092", id = "092", author = "Adrienne Hudson")
+  public void updatingtasktemplate(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/092/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "093", id = "093", author = "Adrienne Hudson")
+  public void updatingtemplate(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/093/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "094", id = "094", author = "Adrienne Hudson")
+  public void updateworker(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.10.19");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
+  @ChangeSet(order = "095", id = "095", author = "Adrienne Hudson")
+  public void updatetemplate(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/095/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "096", id = "096", author = "Adrienne Hudson")
+  public void updatetasktemplate(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+
+    final List<String> files = fileloadingService.loadFiles("flow/096/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "097", id = "097", author = "Adrienne Hudson")
+  public void removeDuplicateTemplate(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    collection.findOneAndDelete(eq("_id", new ObjectId("61f2a522aff34c34ea43198c")));
+  }
+  
+  @ChangeSet(order = "098", id = "098", author = "Adrienne Hudson")
+  public void updatetaskTemplates(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
+    final List<String> files = fileloadingService.loadFiles("flow/098/flow_task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
 }

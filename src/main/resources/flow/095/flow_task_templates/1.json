@@ -1,0 +1,167 @@
+{
+    "_id" : ObjectId("620636845b676b358e8c440c"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Executes a provided query against a mongo databases endpoint.",
+    "lastModified" : ISODate("2022-02-22T16:28:28.541Z"),
+    "name" : "MongoDB Query Execution",
+    "category" : "Utilities",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2022-02-22T16:28:28.541Z"),
+                "userName" : "Costel Moraru"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "host",
+                    "label" : "MongoDB database host",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "A valid, reachable mongo db endpoint",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "port",
+                    "label" : "MongoDB database port",
+                    "type" : "number",
+                    "required" : true,
+                    "placeholder" : "e.g. 27017",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "database",
+                    "label" : "Database name",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The database name used in the connection string",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "username",
+                    "label" : "Database username",
+                    "type" : "text",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "The username to use for running the query",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "password",
+                    "label" : "Database password",
+                    "type" : "password",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "tlsenabled",
+                    "label" : "TLS enabled",
+                    "type" : "boolean",
+                    "required" : false,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "false",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "authenticationMechanism",
+                    "label" : "Authentication mechanism",
+                    "type" : "select",
+                    "options" : [ 
+                        {
+                            "key" : "MONGODB-AWS",
+                            "value" : "MONGODB-AWS"
+                        }, 
+                        {
+                            "key" : "MONGODB-CR",
+                            "value" : "MONGODB-CR"
+                        }, 
+                        {
+                            "key" : "DEFAULT",
+                            "value" : "DEFAULT"
+                        }, 
+                        {
+                            "key" : "GSSAPI",
+                            "value" : "GSSAPI"
+                        }, 
+                        {
+                            "key" : "PLAIN",
+                            "value" : "PLAIN"
+                        }, 
+                        {
+                            "key" : "SCRAM-SHA-1",
+                            "value" : "SCRAM-SHA-1"
+                        }, 
+                        {
+                            "key" : "SCRAM-SHA-256",
+                            "value" : "SCRAM-SHA-256"
+                        }, 
+                        {
+                            "key" : "MONGODB-X509",
+                            "value" : "MONGODB-X509"
+                        }
+                    ],
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "DEFAULT",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "query",
+                    "label" : "Query",
+                    "type" : "texteditor::javascript",
+                    "required" : true,
+                    "placeholder" : "e.g. db.collection.find({})",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "ouputfile",
+                    "label" : "Response file path",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "File path to store the query's output response",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "image" : "rtsp/mongosh",
+            "results" : [],
+            "script" : "mkdir $(dirname \"$(params.ouputfile)\")\nmongosh mongodb://$(params.host):$(params.port)/$(params.database)?tls=$(params.tlsenabled) --username=$(params.username) --password=$(params.password) --eval=\"$(params.query)\" --authenticationMechanism=$(params.authenticationMechanism) --quiet > $(params.ouputfile)",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2022-01-27T13:58:58.698Z"),
+    "icon" : "Launch",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
