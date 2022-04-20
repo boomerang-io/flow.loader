@@ -1,0 +1,133 @@
+{
+    "_id" : ObjectId("617a9b13aae7066447752ea5"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Create a new Google Spreadsheet with the provided name.",
+    "lastModified" : ISODate("2022-04-20T09:13:23.994Z"),
+    "name" : "Create Spreadsheet",
+    "category" : "Google Sheets",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "googlesheets", 
+                "create"
+            ],
+            "changelog" : {
+                "userId" : "61d38d133aa9034ded32cae6",
+                "reason" : "Initial version",
+                "date" : ISODate("2021-10-28T14:17:45.416Z"),
+                "userName" : "George Safta"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "title",
+                    "label" : "Spreadsheet Title",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The new spreadsheet's title",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [ 
+                {
+                    "description" : "Newly created spreadsheet information",
+                    "name" : "spreadsheet"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }, 
+        {
+            "arguments" : [ 
+                "googlesheets", 
+                "create"
+            ],
+            "changelog" : {
+                "userId" : "61d38d133aa9034ded32cae6",
+                "reason" : "Consolidated and refactored authentication to remove three fields. ",
+                "date" : ISODate("2022-04-20T09:13:23.994Z"),
+                "userName" : "Tyson Lawrie"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "title",
+                    "label" : "Spreadsheet Title",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The new spreadsheet's title",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [ 
+                {
+                    "description" : "Newly created spreadsheet information",
+                    "name" : "spreadsheet"
+                }
+            ],
+            "script" : "",
+            "version" : 2,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-10-28T12:44:03.569Z"),
+    "icon" : "Add",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
