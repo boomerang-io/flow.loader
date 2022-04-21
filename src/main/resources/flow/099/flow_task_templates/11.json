@@ -1,0 +1,75 @@
+{
+    "_id" : ObjectId("62608e805f8f60e852e306b0"),
+    "currentVersion" : NumberLong(1),
+    "description" : "List a file's permissions.",
+    "lastModified" : ISODate("2022-04-20T22:53:14.956Z"),
+    "name" : "List File Permissions",
+    "category" : "Google Drive",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "googledrive", 
+                "listFilePermissions"
+            ],
+            "changelog" : {
+                "userId" : "61d38d133aa9034ded32cae6",
+                "reason" : "",
+                "date" : ISODate("2022-04-20T22:53:14.956Z"),
+                "userName" : "Tyson Lawrie"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "The ID of the file.",
+                    "key" : "fileId",
+                    "label" : "File ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [ 
+                {
+                    "description" : "The resulting array of permissions associated with the file",
+                    "name" : "permissions"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2022-04-20T09:28:02.838Z"),
+    "icon" : "Filter",
+    "verified" : false,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}

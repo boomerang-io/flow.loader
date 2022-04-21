@@ -1,0 +1,147 @@
+{
+    "_id" : ObjectId("617a64cfaae7066447752e8d"),
+    "currentVersion" : NumberLong(2),
+    "description" : "Get the cell data in the specified range from a Google spreadsheet.\nThe supported range notations are A1 notation and R1C1 notation.",
+    "lastModified" : ISODate("2022-04-20T09:13:45.242Z"),
+    "name" : "Get Data",
+    "category" : "Google Sheets",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "googlesheets", 
+                "getData"
+            ],
+            "changelog" : {
+                "userId" : "61d38d133aa9034ded32cae6",
+                "reason" : "Consolidated and refactored authentication to remove three fields. ",
+                "date" : ISODate("2022-04-20T09:13:45.242Z"),
+                "userName" : "Tyson Lawrie"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "You can find the spreadsheet ID in a Google Sheets URL:  https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=0",
+                    "key" : "spreadsheetId",
+                    "label" : "Spreadsheet ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The ID of the desired spreadsheet",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Supports A1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-1 and R1C1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-2",
+                    "key" : "ranges",
+                    "label" : "Data Ranges",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "Sheet1!6:7,Sheet2",
+                    "helpertext" : "The desired data ranges separated by comma",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [ 
+                {
+                    "description" : "The list of row cell data from the provided ranges",
+                    "name" : "rows"
+                }
+            ],
+            "script" : "",
+            "version" : 2,
+            "workingDir" : ""
+        }, 
+        {
+            "arguments" : [ 
+                "googlesheets", 
+                "getData"
+            ],
+            "changelog" : {
+                "userId" : "61d38d133aa9034ded32cae6",
+                "reason" : "Initial version",
+                "date" : ISODate("2021-10-28T14:17:45.416Z"),
+                "userName" : "George Safta"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "You can find the spreadsheet ID in a Google Sheets URL:  https://docs.google.com/spreadsheets/d/spreadsheetId/edit#gid=0",
+                    "key" : "spreadsheetId",
+                    "label" : "Spreadsheet ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The ID of the desired spreadsheet",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "Supports A1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-1 and R1C1 notation: https://developers.google.com/sheets/api/guides/concepts#expandable-2",
+                    "key" : "ranges",
+                    "label" : "Data Ranges",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "Sheet1!6:7,Sheet2",
+                    "helpertext" : "The desired data ranges separated by comma",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [ 
+                {
+                    "description" : "The list of row cell data from the provided ranges",
+                    "name" : "rows"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-10-28T08:52:31.561Z"),
+    "icon" : "API/HTTP call",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
