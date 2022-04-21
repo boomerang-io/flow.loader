@@ -1731,7 +1731,7 @@ public class FlowDatabaseChangeLog {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
     collection.findOneAndDelete(eq("_id", new ObjectId("61f2a522aff34c34ea43198c")));
   }
-  
+
   @ChangeSet(order = "098", id = "098", author = "Adrienne Hudson")
   public void updatetaskTemplates(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
@@ -1742,7 +1742,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "099", id = "099", author = "Adrienne Hudson")
   public void updatetasktemplates(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
@@ -1753,5 +1753,22 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
+  @ChangeSet(order = "094", id = "094", author = "Adrienne Hudson")
+  public void updateimage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.11.6");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+
+
 }

@@ -1,0 +1,70 @@
+{
+    "_id" : ObjectId("62608f4a5f8f60e852e30d0a"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Deletes a file.",
+    "lastModified" : ISODate("2022-04-20T22:56:02.562Z"),
+    "name" : "Delete File",
+    "category" : "Google Drive",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "googledrive", 
+                "deleteFile"
+            ],
+            "changelog" : {
+                "userId" : "61d38d133aa9034ded32cae6",
+                "reason" : "",
+                "date" : ISODate("2022-04-20T22:56:02.562Z"),
+                "userName" : "Tyson Lawrie"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Private Key",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientEmail",
+                    "label" : "Client Email",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The service account's client email",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "The ID of the file.",
+                    "key" : "fileId",
+                    "label" : "File ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "results" : [],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2022-04-20T09:28:02.838Z"),
+    "icon" : "Delete",
+    "verified" : false,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
