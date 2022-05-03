@@ -1754,7 +1754,7 @@ public class FlowDatabaseChangeLog {
     }
   }
 
-  @ChangeSet(order = "094", id = "094", author = "Adrienne Hudson")
+  @ChangeSet(order = "100", id = "100", author = "Adrienne Hudson")
   public void updateimage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
     Document workers = collection.find(eq("name", "Task Configuration")).first();
@@ -1765,10 +1765,7 @@ public class FlowDatabaseChangeLog {
         config.put("value", "boomerangio/worker-flow:2.11.6");
       }
     }
-
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
-
-
 }
