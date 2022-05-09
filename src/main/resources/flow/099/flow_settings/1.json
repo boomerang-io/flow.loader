@@ -1,0 +1,67 @@
+{
+	"_id": ObjectId("622a595d3c9208b437579741"),
+	"config": [
+		{
+			"description": "Enable eventing",
+			"key": "enable.eventing",
+			"label": "Enable eventing",
+			"type": "boolean",
+			"value": "true",
+			"readOnly": false
+		},
+		{
+			"description": "Enable eventing for In Progress events",
+			"key": "enable.eventing.inProgress",
+			"label": "Enable eventing for In Progress workflow activity events",
+			"type": "boolean",
+			"value": "false",
+			"readOnly": false
+		},
+		{
+			"description": "Enable eventing for Completed workflow activity events",
+			"key": "enable.eventing.completed",
+			"label": "Enable eventing for Completed workflow activity events",
+			"type": "boolean",
+			"value": "false",
+			"readOnly": false
+		},
+		{
+			"description": "Enable eventing for Failure workflow activity  events",
+			"key": "enable.eventing.failure",
+			"label": "Enable eventing for Failure workflow activity events",
+			"type": "boolean",
+			"value": "false",
+			"readOnly": false
+		},
+		{
+			"description": "Enable eventing for Invalid workflow activity events",
+			"key": "enable.eventing.invalid",
+			"label": "Enable eventing for Invalid workflow activity events",
+			"type": "boolean",
+			"value": "false",
+			"readOnly": false
+		},
+		{
+			"description": "Enable eventing for Cancelled workflow activity events",
+			"key": "enable.eventing.cancelled",
+			"label": "Enable eventing for Cancelled workflow activity events",
+			"type": "boolean",
+			"value": "false",
+			"readOnly": false
+		},
+		{
+			"description": "Enable eventing for Waiting workflow activity events",
+			"key": "enable.eventing.waiting",
+			"label": "Enable eventing for Waiting workflow activity events",
+			"type": "boolean",
+			"value": "false",
+			"readOnly": false
+		}
+	],
+	"description": "Eventing configuration",
+	"key": "eventing",
+	"lastModiifed": ISODate("2022-03-14T02:20:59.926Z"),
+	"name": "Eventing",
+	"type": "ValuesList",
+	"_class": "io.boomerang.mongo.entity.FlowSettingsEntity"
+}
