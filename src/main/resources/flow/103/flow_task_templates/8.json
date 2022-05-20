@@ -1,0 +1,138 @@
+{
+    "_id" : ObjectId("605882237a38c63898cc4df3"),
+    "currentVersion" : NumberLong(1),
+    "description" : "Uploads the file at the specified path to the desired Box folder.",
+    "lastModified" : ISODate("2022-05-19T15:29:46.121Z"),
+    "name" : "Upload File To Box",
+    "category" : "Box",
+    "nodetype" : "templateTask",
+    "revisions" : [ 
+        {
+            "arguments" : [ 
+                "-props", 
+                "box", 
+                "upload", 
+                "folderId", 
+                "file"
+            ],
+            "changelog" : {
+                "userId" : "608fb6fb70bfa94ac91f90cb",
+                "reason" : "",
+                "date" : ISODate("2022-05-19T15:29:46.121Z"),
+                "userName" : "Costel Moraru"
+            },
+            "command" : [],
+            "config" : [ 
+                {
+                    "description" : "",
+                    "key" : "enterpriseId",
+                    "label" : "Authentication - Enterprise ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box enterprise id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientId",
+                    "label" : "Authentication - Client ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "clientSecret",
+                    "label" : "Authentication - Client Secret",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box client secret",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "publicKeyId",
+                    "label" : "Authentication - Public Key ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box public key id",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "privateKey",
+                    "label" : "Authentication - Private Key",
+                    "type" : "texteditor::text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box private key",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "passphrase",
+                    "label" : "Authentication - Private Key Password",
+                    "type" : "password",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "Box passphrase",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "folderId",
+                    "label" : "Folder ID",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "",
+                    "helpertext" : "The id of the box folder to upload into",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }, 
+                {
+                    "description" : "",
+                    "key" : "file",
+                    "label" : "Path To File",
+                    "type" : "text",
+                    "required" : true,
+                    "placeholder" : "/workflow/to_upload.txt",
+                    "helpertext" : "Full path to desired file",
+                    "defaultValue" : "",
+                    "readOnly" : false
+                }
+            ],
+            "envs" : [],
+            "image" : "boomerangio/box-service:0.0.18",
+            "results" : [ 
+                {
+                    "description" : "The status of he upload file to box action",
+                    "name" : "status"
+                }, 
+                {
+                    "description" : "The id of the newly uploaded file into Box",
+                    "name" : "id"
+                }
+            ],
+            "script" : "",
+            "version" : 1,
+            "workingDir" : ""
+        }
+    ],
+    "status" : "active",
+    "createdDate" : ISODate("2021-03-22T11:40:19.164Z"),
+    "icon" : "Upload",
+    "verified" : true,
+    "scope" : "global",
+    "_class" : "io.boomerang.model.FlowTaskTemplate"
+}
