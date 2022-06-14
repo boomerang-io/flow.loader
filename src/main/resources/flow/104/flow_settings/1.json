@@ -1,0 +1,19 @@
+{
+    "_id" : ObjectId("62a7bec0a6166d30aff64a5b"),
+    "config" : [ 
+        {
+            "description" : "The auth token for authenticating as a Slack app.",
+            "key" : "slack.token",
+            "label" : "Slack Auth Token",
+            "type" : "text",
+            "value" : "",
+            "readOnly" : false
+        }
+    ],
+    "description" : "Define the configuration for integrating with the extensions.",
+    "key" : "extensions",
+    "lastModiifed" : ISODate("2022-01-20T23:09:32.800Z"),
+    "name" : "Extensions Configuration",
+    "type" : "ValuesList",
+    "_class" : "io.boomerang.mongo.entity.FlowSettingsEntity"
+}
