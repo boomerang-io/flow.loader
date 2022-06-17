@@ -1,0 +1,43 @@
+{
+    "_id" : ObjectId("62a7bec0a6166d30aff64a5b"),
+    "config" : [ 
+        {
+            "description" : "The default auth token for authenticating as a Slack app. Only used if installing into a single workspace and not a distributed app.",
+            "key" : "slack.token",
+            "label" : "Slack Auth Token",
+            "type" : "secured",
+            "value" : "",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "The App ID from your Slack apps credentials.",
+            "key" : "slack.appId",
+            "label" : "Slack App ID",
+            "type" : "text",
+            "value" : "",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "The Client ID from your Slack apps credentials.",
+            "key" : "slack.clientId",
+            "label" : "Slack Client ID",
+            "type" : "text",
+            "value" : "",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "The Client Secret from your Slack apps credentials.",
+            "key" : "slack.clientSecret",
+            "label" : "Slack Client Secret",
+            "type" : "secured",
+            "value" : "",
+            "readOnly" : false
+        }
+    ],
+    "description" : "Define the configuration for integrating with the extensions.",
+    "key" : "extensions",
+    "lastModiifed" : ISODate("2022-06-15T12:07:48.123Z"),
+    "name" : "Extensions Configuration",
+    "type" : "ValuesList",
+    "_class" : "io.boomerang.mongo.entity.FlowSettingsEntity"
+}
