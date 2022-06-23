@@ -1815,27 +1815,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
-  @ChangeSet(order = "105", id = "105", author = "Adrienne Hudson")
-  public void updateExtensionsFlowSetting(MongoDatabase db) throws IOException {
-    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
-    Document extensions = collection.find(eq("name", "Extensions Configuration")).first();
-    List<Document> config = (List<Document>) extensions.get("config");
 
-    Document newConfig = new Document();
-    newConfig.put("description", "The shareable install URL found in Manage Distribution.");
-    newConfig.put("key", "slack.installURL");
-    newConfig.put("label", "Slack Shareable Install URL");
-    newConfig.put("type", "text");
-    newConfig.put("value", "");
-    newConfig.put("readOnly", false);
-
-    config.add(newConfig);
-
-    extensions.put("config", config);
-    collection.replaceOne(eq("name", "Extensions Configuration"), extensions);
-  }
-  
   @ChangeSet(order = "106", id = "106", author = "Adrienne Hudson")
   public void addingSetting(MongoDatabase db) throws IOException {
     final List<String> files = fileloadingService.loadFiles("flow/106/flow_settings/*.json");
