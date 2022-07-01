@@ -1,0 +1,725 @@
+{
+    "properties": [
+        {
+            "required": true,
+            "placeholder": null,
+            "language": null,
+            "disabled": null,
+            "defaultValue": "Kamino",
+            "value": null,
+            "values": null,
+            "readOnly": false,
+            "jsonPath": "",
+            "description": "",
+            "key": "planet",
+            "label": "Planet name",
+            "type": "text",
+            "minValueLength": null,
+            "maxValueLength": null,
+            "options": null,
+            "helperText": null
+        }
+    ],
+    "description": "Workflow example that uses HTTP Call to look for Star Wars planets, their characteristics and the movies where they appeared. ",
+    "ownerUserId": "608fb6fb70bfa94ac91f90cb",
+    "icon": "bot",
+    "id": "627552dc23613d5a27a2af72",
+    "name": "Looking through planets with HTTP Call ",
+    "shortDescription": "Searching for Star Wars planets",
+    "status": "active",
+    "triggers": {
+        "manual": {
+            "enable": true
+        },
+        "scheduler": {
+            "enable": false
+        },
+        "webhook": {
+            "enable": false,
+            "token": "",
+            "topic": null
+        },
+        "custom": {
+            "enable": false,
+            "token": null,
+            "topic": ""
+        }
+    },
+    "tokens": [
+        {
+            "token": "03830148CDC39F83D7BF8BF205806FF2510593FB4AC65EB7C2C22101C8B48211",
+            "label": "default"
+        }
+    ],
+    "storage": {
+        "activity": {
+            "enabled": true,
+            "size": 1,
+            "mountPath": "/tekton/results"
+        },
+        "workflow": {
+            "enabled": false,
+            "size": 1,
+            "mountPath": ""
+        }
+    },
+    "labels": [],
+    "scope": "user",
+    "revisionCount": 22,
+    "templateUpgradesAvailable": false,
+    "latestRevision": {
+        "dag": {
+            "tasks": [
+                {
+                    "taskId": "da0e1ca3-7a44-47e6-beff-c4240f78ef9e",
+                    "type": "start",
+                    "dependencies": [],
+                    "metadata": {
+                        "position": {
+                            "x": -155.3224752468125,
+                            "y": 388.2996742717853
+                        }
+                    }
+                },
+                {
+                    "taskId": "c40d8cc8-7b05-438e-a321-94752a0ebf57",
+                    "type": "end",
+                    "dependencies": [
+                        {
+                            "taskId": "99720322-3b38-443f-a659-ed1216e609d7",
+                            "executionCondition": "always",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "0638c381-a406-455a-8d9a-1284b0461cbe",
+                                        "selected": false,
+                                        "x": 2306.1023470824834,
+                                        "y": 449.2640983060842
+                                    },
+                                    {
+                                        "id": "cd06359f-14ea-4379-9fa1-8442aee40985",
+                                        "selected": false,
+                                        "x": 2433.845643719863,
+                                        "y": 442.26484014584685
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 2449.840614770318,
+                            "y": 404.2687538359388
+                        }
+                    }
+                },
+                {
+                    "taskId": "539d9062-11a7-4622-a55e-b80f5a8c4f77",
+                    "type": "template",
+                    "label": "Search through planets",
+                    "templateId": "61f14da3aff34c34ea431963",
+                    "dependencies": [
+                        {
+                            "taskId": "da0e1ca3-7a44-47e6-beff-c4240f78ef9e",
+                            "executionCondition": "always",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "03b34e11-bddf-4ef7-8c6b-7db9d9ee2854",
+                                        "selected": false,
+                                        "x": 4.691391308159078,
+                                        "y": 426.2900928531273
+                                    },
+                                    {
+                                        "id": "98bfbf11-fa81-49b3-8128-bee570c0ecf0",
+                                        "selected": false,
+                                        "x": 72.04894802195382,
+                                        "y": 340.10308222105664
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "allowUntrustedCerts",
+                            "value": ""
+                        },
+                        {
+                            "key": "method",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "header",
+                            "value": "Accept: application/json"
+                        },
+                        {
+                            "key": "body",
+                            "value": ""
+                        },
+                        {
+                            "key": "contentType",
+                            "value": "application/json"
+                        },
+                        {
+                            "key": "url",
+                            "value": "https://swapi.dev/api/planets"
+                        },
+                        {
+                            "key": "outputFilePath",
+                            "value": "/tekton/results/planets.json"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 88.05610228268388,
+                            "y": 300.12202192299134
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 1
+                },
+                {
+                    "taskId": "ef0d73d6-00ed-46ec-86c7-23149f3cf888",
+                    "type": "template",
+                    "label": "Get the planet",
+                    "templateId": "60c2287d3911cb71a1f371a2",
+                    "dependencies": [
+                        {
+                            "taskId": "539d9062-11a7-4622-a55e-b80f5a8c4f77",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "0cc2abd5-948d-4908-a884-2134e572bd4b",
+                                        "selected": false,
+                                        "x": 324.04968316052714,
+                                        "y": 340.10308222105664
+                                    },
+                                    {
+                                        "id": "285225d4-7111-42d0-8bb6-e3d43d136ffe",
+                                        "selected": false,
+                                        "x": 351.1135081848688,
+                                        "y": 460.40800851884154
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "filePath",
+                            "value": "/tekton/results/planets.json"
+                        },
+                        {
+                            "key": "query",
+                            "value": "$.results[?(@.name=='$(params.planet)')].url"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 367.093581060401,
+                            "y": 420.42033312095487
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 2
+                },
+                {
+                    "taskId": "c7d74de9-85f3-4a81-be14-93ae2397a2e3",
+                    "type": "template",
+                    "label": "Scan the planet",
+                    "templateId": "5c3d0401352b1b514150545b",
+                    "dependencies": [
+                        {
+                            "taskId": "ef0d73d6-00ed-46ec-86c7-23149f3cf888",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "6d0cade9-5fd6-436b-804b-dff5af60cdf8",
+                                        "selected": false,
+                                        "x": 603.0868019534148,
+                                        "y": 460.40800851884154
+                                    },
+                                    {
+                                        "id": "43b6a4a5-900c-4e18-a888-23589dac67bf",
+                                        "selected": false,
+                                        "x": 652.4384474032711,
+                                        "y": 330.71587202032526
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "errorcodes",
+                            "value": "5xx"
+                        },
+                        {
+                            "key": "allowUntrustedCerts",
+                            "value": ""
+                        },
+                        {
+                            "key": "method",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "body",
+                            "value": ""
+                        },
+                        {
+                            "key": "url",
+                            "value": "$(tasks.Get the planet.results.evaluation)"
+                        },
+                        {
+                            "key": "outputFilePath",
+                            "value": "/tekton/results/planetdetails.json"
+                        },
+                        {
+                            "key": "retrynumber",
+                            "value": ""
+                        },
+                        {
+                            "key": "retrydelay",
+                            "value": ""
+                        },
+                        {
+                            "key": "header",
+                            "value": "Accept: application/json"
+                        },
+                        {
+                            "key": "retrycodes",
+                            "value": ""
+                        },
+                        {
+                            "key": "successcodes",
+                            "value": ""
+                        },
+                        {
+                            "key": "contentType",
+                            "value": "application/json"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 668.4431323410391,
+                            "y": 290.7098586846809
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 4
+                },
+                {
+                    "taskId": "ea3e8554-aa7c-47bf-8c59-6c407a0c1932",
+                    "type": "template",
+                    "label": "Track the film",
+                    "templateId": "60c2287d3911cb71a1f371a2",
+                    "dependencies": [
+                        {
+                            "taskId": "c7d74de9-85f3-4a81-be14-93ae2397a2e3",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "35400cd0-dfff-4cac-b098-523704190680",
+                                        "selected": false,
+                                        "x": 904.4391825418444,
+                                        "y": 330.71587202032526
+                                    },
+                                    {
+                                        "id": "50f2572c-a43b-4b39-8d45-052fb942853e",
+                                        "selected": false,
+                                        "x": 930.3227271014929,
+                                        "y": 458.4317775465968
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "filePath",
+                            "value": "/tekton/results/planetdetails.json"
+                        },
+                        {
+                            "key": "query",
+                            "value": "$.films[0]"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 946.3189831692042,
+                            "y": 418.43034679863393
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 2
+                },
+                {
+                    "taskId": "09cec1f3-4d64-4cf4-897e-56862c8477d1",
+                    "type": "template",
+                    "label": "Scan the film",
+                    "templateId": "5c3d0401352b1b514150545b",
+                    "dependencies": [
+                        {
+                            "taskId": "ea3e8554-aa7c-47bf-8c59-6c407a0c1932",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "54e1784a-73cf-48a2-8ef8-e827e4592e71",
+                                        "selected": false,
+                                        "x": 1182.3233617222274,
+                                        "y": 458.4317775465968
+                                    },
+                                    {
+                                        "id": "c0445931-db85-4a65-9e0b-659586541255",
+                                        "selected": false,
+                                        "x": 1218.9116540563566,
+                                        "y": 325.0890341738919
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "errorcodes",
+                            "value": ""
+                        },
+                        {
+                            "key": "allowUntrustedCerts",
+                            "value": ""
+                        },
+                        {
+                            "key": "method",
+                            "value": "GET"
+                        },
+                        {
+                            "key": "body",
+                            "value": ""
+                        },
+                        {
+                            "key": "url",
+                            "value": "$(tasks.Track the film.results.evaluation)"
+                        },
+                        {
+                            "key": "outputFilePath",
+                            "value": "/tekton/results/thefilm.json"
+                        },
+                        {
+                            "key": "retrynumber",
+                            "value": ""
+                        },
+                        {
+                            "key": "retrydelay",
+                            "value": ""
+                        },
+                        {
+                            "key": "header",
+                            "value": "Accept: application/json"
+                        },
+                        {
+                            "key": "retrycodes",
+                            "value": ""
+                        },
+                        {
+                            "key": "successcodes",
+                            "value": ""
+                        },
+                        {
+                            "key": "contentType",
+                            "value": "application/json"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 1234.9124629080115,
+                            "y": 285.08605341246283
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 4
+                },
+                {
+                    "taskId": "99720322-3b38-443f-a659-ed1216e609d7",
+                    "type": "manual",
+                    "label": "Destroying the planet",
+                    "templateId": "5fa4144bcb28924ba43ab57c",
+                    "dependencies": [
+                        {
+                            "taskId": "c0096775-6f6f-4e38-9f35-31e6746ef0f9",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "5d432288-af57-44aa-a5d0-4b42278e0c2b",
+                                        "selected": false,
+                                        "x": 2026.4888590011822,
+                                        "y": 576.4035340261034
+                                    },
+                                    {
+                                        "id": "94c273d6-22d2-44cb-b635-e81cddf9e536",
+                                        "selected": false,
+                                        "x": 2054.101712461749,
+                                        "y": 449.2640983060842
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "instructions",
+                            "value": "Congratulations, \n\nThe resistance we found, right there it was in the \"$(tasks.Find Resistance leader.results.evaluation)\" movie.\n\n\n\"$(tasks.Find Resistance troops.results.evaluation)\"\n\nGather the troops, young padawan! "
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 2070.0867952522253,
+                            "y": 409.2596439169139
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 1
+                },
+                {
+                    "taskId": "2f307132-6949-4314-aeb2-91fa86b694b9",
+                    "type": "template",
+                    "label": "Find Resistance troops",
+                    "templateId": "60c2287d3911cb71a1f371a2",
+                    "dependencies": [
+                        {
+                            "taskId": "09cec1f3-4d64-4cf4-897e-56862c8477d1",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "b593f083-bfc1-4e7b-9c09-1cf503501f3d",
+                                        "selected": false,
+                                        "x": 1470.9124897127688,
+                                        "y": 325.0890341738919
+                                    },
+                                    {
+                                        "id": "55ff943d-aa3c-483e-b722-579adde795c3",
+                                        "selected": false,
+                                        "x": 1489.5770441162833,
+                                        "y": 460.7373552180893
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "filePath",
+                            "value": "/tekton/results/thefilm.json"
+                        },
+                        {
+                            "key": "query",
+                            "value": "$.opening_crawl"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 1505.5623145400596,
+                            "y": 420.75074183976267
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 2
+                },
+                {
+                    "taskId": "c0096775-6f6f-4e38-9f35-31e6746ef0f9",
+                    "type": "template",
+                    "label": "Find Resistance leader",
+                    "templateId": "60c2287d3911cb71a1f371a2",
+                    "dependencies": [
+                        {
+                            "taskId": "2f307132-6949-4314-aeb2-91fa86b694b9",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "f0ffeb3c-f329-4499-99cd-657d5e11473b",
+                                        "selected": false,
+                                        "x": 1741.5778797726957,
+                                        "y": 460.7373552180893
+                                    },
+                                    {
+                                        "id": "3383f240-8a1a-465c-ba39-3e7b45531164",
+                                        "selected": false,
+                                        "x": 1774.488123862609,
+                                        "y": 576.4035340261034
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "filePath",
+                            "value": "/tekton/results/thefilm.json"
+                        },
+                        {
+                            "key": "query",
+                            "value": "$.title"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 1790.5044510385758,
+                            "y": 536.4094955489613
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 2
+                }
+            ]
+        },
+        "id": "62758e7923613d5a27a2afe3",
+        "version": 22,
+        "workFlowId": "627552dc23613d5a27a2af72",
+        "changelog": {
+            "userId": "608fb6fb70bfa94ac91f90cb",
+            "reason": "",
+            "date": 1651871353633,
+            "userName": null
+        },
+        "config": {
+            "nodes": [
+                {
+                    "inputs": {
+                        "allowUntrustedCerts": "",
+                        "method": "GET",
+                        "header": "Accept: application/json",
+                        "taskName": "Search through planets",
+                        "body": "",
+                        "contentType": "application/json",
+                        "url": "https://swapi.dev/api/planets",
+                        "outputFilePath": "/tekton/results/planets.json"
+                    },
+                    "nodeId": "539d9062-11a7-4622-a55e-b80f5a8c4f77",
+                    "taskId": "61f14da3aff34c34ea431963",
+                    "type": "templateTask",
+                    "taskVersion": 1,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "filePath": "/tekton/results/planets.json",
+                        "query": "$.results[?(@.name=='$(params.planet)')].url",
+                        "taskName": "Get the planet"
+                    },
+                    "nodeId": "ef0d73d6-00ed-46ec-86c7-23149f3cf888",
+                    "taskId": "60c2287d3911cb71a1f371a2",
+                    "type": "templateTask",
+                    "taskVersion": 2,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "errorcodes": "5xx",
+                        "allowUntrustedCerts": "",
+                        "method": "GET",
+                        "body": "",
+                        "url": "$(tasks.Get the planet.results.evaluation)",
+                        "outputFilePath": "/tekton/results/planetdetails.json",
+                        "retrynumber": "",
+                        "retrydelay": "",
+                        "header": "Accept: application/json",
+                        "retrycodes": "",
+                        "taskName": "Scan the planet",
+                        "successcodes": "",
+                        "contentType": "application/json"
+                    },
+                    "nodeId": "c7d74de9-85f3-4a81-be14-93ae2397a2e3",
+                    "taskId": "5c3d0401352b1b514150545b",
+                    "type": "templateTask",
+                    "taskVersion": 4,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "filePath": "/tekton/results/planetdetails.json",
+                        "query": "$.films[0]",
+                        "taskName": "Track the film"
+                    },
+                    "nodeId": "ea3e8554-aa7c-47bf-8c59-6c407a0c1932",
+                    "taskId": "60c2287d3911cb71a1f371a2",
+                    "type": "templateTask",
+                    "taskVersion": 2,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "errorcodes": "",
+                        "allowUntrustedCerts": "",
+                        "method": "GET",
+                        "body": "",
+                        "url": "$(tasks.Track the film.results.evaluation)",
+                        "outputFilePath": "/tekton/results/thefilm.json",
+                        "retrynumber": "",
+                        "retrydelay": "",
+                        "header": "Accept: application/json",
+                        "retrycodes": "",
+                        "taskName": "Scan the film",
+                        "successcodes": "",
+                        "contentType": "application/json"
+                    },
+                    "nodeId": "09cec1f3-4d64-4cf4-897e-56862c8477d1",
+                    "taskId": "5c3d0401352b1b514150545b",
+                    "type": "templateTask",
+                    "taskVersion": 4,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "instructions": "Congratulations, \n\nThe resistance we found, right there it was in the \"$(tasks.Find Resistance leader.results.evaluation)\" movie.\n\n\n\"$(tasks.Find Resistance troops.results.evaluation)\"\n\nGather the troops, young padawan! ",
+                        "taskName": "Destroying the planet"
+                    },
+                    "nodeId": "99720322-3b38-443f-a659-ed1216e609d7",
+                    "taskId": "5fa4144bcb28924ba43ab57c",
+                    "type": "manual",
+                    "taskVersion": 1,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "filePath": "/tekton/results/thefilm.json",
+                        "query": "$.opening_crawl",
+                        "taskName": "Find Resistance troops"
+                    },
+                    "nodeId": "2f307132-6949-4314-aeb2-91fa86b694b9",
+                    "taskId": "60c2287d3911cb71a1f371a2",
+                    "type": "templateTask",
+                    "taskVersion": 2,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "filePath": "/tekton/results/thefilm.json",
+                        "query": "$.title",
+                        "taskName": "Find Resistance leader"
+                    },
+                    "nodeId": "c0096775-6f6f-4e38-9f35-31e6746ef0f9",
+                    "taskId": "60c2287d3911cb71a1f371a2",
+                    "type": "templateTask",
+                    "taskVersion": 2,
+                    "outputs": []
+                }
+            ]
+        }
+    }
+}

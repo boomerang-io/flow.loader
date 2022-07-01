@@ -1,0 +1,531 @@
+{
+    "properties": [
+        {
+            "required": true,
+            "placeholder": null,
+            "language": null,
+            "disabled": null,
+            "defaultValue": "DBQuery.shellBatchSize = 1000;db.getCollection('my_collection').find({'timestamp':{$gt: ISODate('2022-01-01 00:00:00.000Z')}}).batchSize(1000)",
+            "value": null,
+            "values": null,
+            "readOnly": false,
+            "jsonPath": "",
+            "description": "",
+            "key": "query",
+            "label": "query",
+            "type": "textarea",
+            "minValueLength": null,
+            "maxValueLength": null,
+            "options": null,
+            "helperText": null
+        }
+    ],
+    "description": "This is a workflow example that runs a MongoDB query and then simultaneously sends the results as an attached file on an email and prints out the results for an easy verification.",
+    "ownerUserId": "608fb6fb70bfa94ac91f90cb",
+    "icon": "bot",
+    "id": "6275395323613d5a27a2af61",
+    "name": "MongoDB email query results",
+    "shortDescription": "Sending the mongodb query results as an attachement of an email.",
+    "status": "active",
+    "triggers": {
+        "manual": {
+            "enable": true
+        },
+        "scheduler": {
+            "enable": false
+        },
+        "webhook": {
+            "enable": false,
+            "token": "",
+            "topic": null
+        },
+        "custom": {
+            "enable": false,
+            "token": null,
+            "topic": ""
+        }
+    },
+    "tokens": [
+        {
+            "token": "B2E079F26EA331541FF7B034B2126CAD1C3097DBF7D5830D0C2412A241774E26",
+            "label": "default"
+        }
+    ],
+    "storage": {
+        "activity": {
+            "enabled": true,
+            "size": 1,
+            "mountPath": "/tekton/results"
+        },
+        "workflow": {
+            "enabled": false,
+            "size": 1,
+            "mountPath": "/tekton/results"
+        }
+    },
+    "labels": [],
+    "scope": "user",
+    "revisionCount": 7,
+    "templateUpgradesAvailable": false,
+    "latestRevision": {
+        "dag": {
+            "tasks": [
+                {
+                    "taskId": "e4f28f73-cf36-42ba-949e-889a78a0895f",
+                    "type": "start",
+                    "dependencies": [],
+                    "metadata": {
+                        "position": {
+                            "x": 16.08456973293769,
+                            "y": 286.4888724035608
+                        }
+                    }
+                },
+                {
+                    "taskId": "caf04771-61fe-4ba4-af7e-f4cc42c31375",
+                    "type": "end",
+                    "dependencies": [
+                        {
+                            "taskId": "77f27b3b-d7bd-4ef9-b6c8-3973f7800a9c",
+                            "executionCondition": "always",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "910630b3-87b2-4e99-8c42-33dfb5a768f0",
+                                        "selected": false,
+                                        "x": 959.0166015625,
+                                        "y": 327.08331298828125
+                                    },
+                                    {
+                                        "id": "11036535-695c-4bcb-8465-072151940e62",
+                                        "selected": false,
+                                        "x": 1166.9166259765625,
+                                        "y": 329.88330078125
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "taskId": "11a8a402-8c98-4b90-9ecd-e42c8e0dd75e",
+                            "executionCondition": "always",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "8be9e699-e740-4ef2-baa8-43473e7f4eb1",
+                                        "selected": false,
+                                        "x": 960.6666259765625,
+                                        "y": 154.88333129882812
+                                    },
+                                    {
+                                        "id": "6420d585-21ec-485c-b021-4a27a9058b1f",
+                                        "selected": false,
+                                        "x": 1166.9166259765625,
+                                        "y": 329.88330078125
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "taskId": "3339083b-39a1-4327-b652-eb596c93b79d",
+                            "executionCondition": "always",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "490ab0f5-5ec0-43b9-880d-98e1722585d6",
+                                        "selected": false,
+                                        "x": 967.3499755859375,
+                                        "y": 497.566650390625
+                                    },
+                                    {
+                                        "id": "3330daec-a73f-4941-8caf-b5a084dec312",
+                                        "selected": false,
+                                        "x": 1166.9166259765625,
+                                        "y": 329.88330078125
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 1182.919525222552,
+                            "y": 291.886840751731
+                        }
+                    }
+                },
+                {
+                    "taskId": "67bf1086-aedf-4359-8c51-9c7dcbf5b2d2",
+                    "type": "template",
+                    "label": "MongoDB Execute Query",
+                    "templateId": "620636845b676b358e8c440c",
+                    "dependencies": [
+                        {
+                            "taskId": "e4f28f73-cf36-42ba-949e-889a78a0895f",
+                            "executionCondition": "always",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "94f5450f-267a-4f69-9b5f-93e21983e734",
+                                        "selected": false,
+                                        "x": 176.08331298828125,
+                                        "y": 324.48333740234375
+                                    },
+                                    {
+                                        "id": "8ed5a8c8-aa5f-4d79-a6c1-b1536aecff8c",
+                                        "selected": false,
+                                        "x": 294.58331298828125,
+                                        "y": 324.4000244140625
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "database",
+                            "value": "db"
+                        },
+                        {
+                            "key": "password",
+                            "value": "pass"
+                        },
+                        {
+                            "key": "port",
+                            "value": "27017"
+                        },
+                        {
+                            "key": "query",
+                            "value": "$(params.query)"
+                        },
+                        {
+                            "key": "host",
+                            "value": "mongodb-host"
+                        },
+                        {
+                            "key": "tlsenabled",
+                            "value": "false"
+                        },
+                        {
+                            "key": "authenticationMechanism",
+                            "value": "SCRAM-SHA-1"
+                        },
+                        {
+                            "key": "ouputfile",
+                            "value": "/tekton/results/$(params.workflow-activity-id)/response.json"
+                        },
+                        {
+                            "key": "username",
+                            "value": "username"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 310.59124629080117,
+                            "y": 284.39614243323444
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 1
+                },
+                {
+                    "taskId": "11a8a402-8c98-4b90-9ecd-e42c8e0dd75e",
+                    "type": "script",
+                    "label": "Display the results",
+                    "templateId": "5c3907a1352b1b51412ed079",
+                    "dependencies": [
+                        {
+                            "taskId": "67bf1086-aedf-4359-8c51-9c7dcbf5b2d2",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "25043fd8-7282-4140-a6af-621e8b977ece",
+                                        "selected": false,
+                                        "x": 546.5833129882812,
+                                        "y": 324.4000244140625
+                                    },
+                                    {
+                                        "id": "0c978744-836d-42bf-82d0-ce8d9091cecc",
+                                        "selected": false,
+                                        "x": 708.6666870117188,
+                                        "y": 154.88333129882812
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "path",
+                            "value": ""
+                        },
+                        {
+                            "key": "shell",
+                            "value": ""
+                        },
+                        {
+                            "key": "script",
+                            "value": "cat /tekton/results/$(params.workflow-activity-id)/response.json"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 724.6703086053412,
+                            "y": 114.88144015825921
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 2
+                },
+                {
+                    "taskId": "77f27b3b-d7bd-4ef9-b6c8-3973f7800a9c",
+                    "type": "template",
+                    "label": "Send the results as attachemnt",
+                    "templateId": "5f85dba0868d2e2ebebbe2d1",
+                    "dependencies": [
+                        {
+                            "taskId": "67bf1086-aedf-4359-8c51-9c7dcbf5b2d2",
+                            "executionCondition": "success",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "32a7b041-c193-44d8-b86b-d71ac7d7aa66",
+                                        "selected": false,
+                                        "x": 546.5833129882812,
+                                        "y": 324.4000244140625
+                                    },
+                                    {
+                                        "id": "1023272d-3705-4c34-bfce-2ea51c769a34",
+                                        "selected": false,
+                                        "x": 707.0166625976562,
+                                        "y": 327.08331298828125
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "cc",
+                            "value": ""
+                        },
+                        {
+                            "key": "bcc",
+                            "value": ""
+                        },
+                        {
+                            "key": "attachments",
+                            "value": "/tekton/results/$(params.workflow-activity-id)/response.json"
+                        },
+                        {
+                            "key": "apiKey",
+                            "value": "SG.example"
+                        },
+                        {
+                            "key": "subject",
+                            "value": "Here are the results of the query"
+                        },
+                        {
+                            "key": "replyTo",
+                            "value": ""
+                        },
+                        {
+                            "key": "from",
+                            "value": "from@ibm.com"
+                        },
+                        {
+                            "key": "bodyContent",
+                            "value": "You asked for the results of the mongo DB query.\nThe executed query was:\n$(params.query)\n\nThe results can be found in the attachement.\n\nRegards, \nThe bot"
+                        },
+                        {
+                            "key": "to",
+                            "value": "to@ibm.com"
+                        },
+                        {
+                            "key": "contentType",
+                            "value": "Text"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 723.0222551928781,
+                            "y": 287.0830860534125
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 3
+                },
+                {
+                    "taskId": "3339083b-39a1-4327-b652-eb596c93b79d",
+                    "type": "template",
+                    "label": "Failed to run the query email",
+                    "templateId": "5f85dba0868d2e2ebebbe2d1",
+                    "dependencies": [
+                        {
+                            "taskId": "67bf1086-aedf-4359-8c51-9c7dcbf5b2d2",
+                            "executionCondition": "failure",
+                            "conditionalExecution": false,
+                            "metadata": {
+                                "points": [
+                                    {
+                                        "id": "ce65f0be-6e71-4ffa-8468-5e59f994257d",
+                                        "selected": false,
+                                        "x": 546.5833129882812,
+                                        "y": 324.4000244140625
+                                    },
+                                    {
+                                        "id": "66424896-cba5-4387-babd-95269a8eef53",
+                                        "selected": false,
+                                        "x": 715.3499755859375,
+                                        "y": 497.566650390625
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "properties": [
+                        {
+                            "key": "cc",
+                            "value": ""
+                        },
+                        {
+                            "key": "bcc",
+                            "value": ""
+                        },
+                        {
+                            "key": "attachments",
+                            "value": ""
+                        },
+                        {
+                            "key": "apiKey",
+                            "value": "SG.example"
+                        },
+                        {
+                            "key": "subject",
+                            "value": "Failed to execute the MongoDB query"
+                        },
+                        {
+                            "key": "replyTo",
+                            "value": ""
+                        },
+                        {
+                            "key": "from",
+                            "value": "from@ibm.com"
+                        },
+                        {
+                            "key": "bodyContent",
+                            "value": "Hi there, \n  \n  Sorry to let you know, the MongoDB query execution failed. \n  We can not upload the results, please forward the executed query to the proper authorities and ask them to look into it.\n  \n  Executed MongoDB query:\n$(params.query)\n\nRegards, \nThe bot"
+                        },
+                        {
+                            "key": "to",
+                            "value": "to@ibm.com"
+                        },
+                        {
+                            "key": "contentType",
+                            "value": "Text"
+                        }
+                    ],
+                    "metadata": {
+                        "position": {
+                            "x": 731.3464391691394,
+                            "y": 457.57047477744817
+                        }
+                    },
+                    "results": [],
+                    "templateVersion": 3
+                }
+            ]
+        },
+        "id": "6275501d23613d5a27a2af71",
+        "version": 7,
+        "workFlowId": "6275395323613d5a27a2af61",
+        "changelog": {
+            "userId": "608fb6fb70bfa94ac91f90cb",
+            "reason": "",
+            "date": 1651855389659,
+            "userName": null
+        },
+        "config": {
+            "nodes": [
+                {
+                    "inputs": {
+                        "database": "db",
+                        "password": "pass",
+                        "port": "27017",
+                        "query": "$(params.query)",
+                        "host": "mongodb-host",
+                        "tlsenabled": "false",
+                        "taskName": "MongoDB Execute Query",
+                        "authenticationMechanism": "SCRAM-SHA-1",
+                        "ouputfile": "/tekton/results/$(params.workflow-activity-id)/response.json",
+                        "username": "username"
+                    },
+                    "nodeId": "67bf1086-aedf-4359-8c51-9c7dcbf5b2d2",
+                    "taskId": "620636845b676b358e8c440c",
+                    "type": "templateTask",
+                    "taskVersion": 1,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "path": "",
+                        "shell": "",
+                        "taskName": "Display the results",
+                        "script": "cat /tekton/results/$(params.workflow-activity-id)/response.json"
+                    },
+                    "nodeId": "11a8a402-8c98-4b90-9ecd-e42c8e0dd75e",
+                    "taskId": "5c3907a1352b1b51412ed079",
+                    "type": "script",
+                    "taskVersion": 2,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "cc": "",
+                        "bcc": "",
+                        "attachments": "/tekton/results/$(params.workflow-activity-id)/response.json",
+                        "apiKey": "SG.example",
+                        "subject": "Here are the results of the query",
+                        "replyTo": "",
+                        "from": "from@ibm.com",
+                        "bodyContent": "You asked for the results of the mongo DB query.\nThe executed query was:\n$(params.query)\n\nThe results can be found in the attachement.\n\nRegards, \nThe bot",
+                        "taskName": "Send the results as attachemnt",
+                        "to": "to@ibm.com",
+                        "contentType": "Text"
+                    },
+                    "nodeId": "77f27b3b-d7bd-4ef9-b6c8-3973f7800a9c",
+                    "taskId": "5f85dba0868d2e2ebebbe2d1",
+                    "type": "templateTask",
+                    "taskVersion": 3,
+                    "outputs": []
+                },
+                {
+                    "inputs": {
+                        "cc": "",
+                        "bcc": "",
+                        "attachments": "",
+                        "apiKey": "SG.example",
+                        "subject": "Failed to execute the MongoDB query",
+                        "replyTo": "",
+                        "from": "from@ibm.com",
+                        "bodyContent": "Hi there, \n  \n  Sorry to let you know, the MongoDB query execution failed. \n  We can not upload the results, please forward the executed query to the proper authorities and ask them to look into it.\n  \n  Executed MongoDB query:\n$(params.query)\n\nRegards, \nThe bot",
+                        "taskName": "Failed to run the query email",
+                        "to": "to@ibm.com",
+                        "contentType": "Text"
+                    },
+                    "nodeId": "3339083b-39a1-4327-b652-eb596c93b79d",
+                    "taskId": "5f85dba0868d2e2ebebbe2d1",
+                    "type": "templateTask",
+                    "taskVersion": 3,
+                    "outputs": []
+                }
+            ]
+        }
+    }
+}
