@@ -1794,7 +1794,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "103", id = "103", author = "Adrienne Hudson")
   public void updateBoxTaskTemplates(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "task_templates");
@@ -1805,7 +1805,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "104", id = "104", author = "Adrienne Hudson")
   public void addSetting(MongoDatabase db) throws IOException {
     final List<String> files = fileloadingService.loadFiles("flow/104/flow_settings/*.json");
@@ -1825,7 +1825,7 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "106", id = "106", author = "Adrienne Hudson")
   public void updatedefaultOmage(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1840,11 +1840,40 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
-  
+
   @ChangeSet(order = "107", id = "107", author = "Adrienne Hudson")
   public void addWorkflowTemplates(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
     final List<String> files = fileloadingService.loadFiles("flow/107/flow_workflows/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+
+  @ChangeSet(order = "108", id = "108", author = "Adrienne Hudson")
+  public void removeTemplates(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
+    collection.findOneAndDelete(eq("name", "Looking through planets with HTTP Call "));
+    collection.findOneAndDelete(eq("name", "MongoDB email query results"));
+  }
+  
+  @ChangeSet(order = "109", id = "109", author = "Adrienne Hudson")
+  public void addingWorkflowTemplates(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
+    final List<String> files = fileloadingService.loadFiles("flow/109/flow_workflows/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
+      collection.insertOne(doc);
+    }
+  }
+  
+  @ChangeSet(order = "110", id = "110", author = "Adrienne Hudson")
+  public void addingWorkflowRevisions(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows_revisions");
+    final List<String> files = fileloadingService.loadFiles("flow/110/flow_workflows_revisions/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
       collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
