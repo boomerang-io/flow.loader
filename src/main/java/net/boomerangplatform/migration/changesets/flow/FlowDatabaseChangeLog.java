@@ -1880,4 +1880,23 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
+  
+  @ChangeSet(order = "111", id = "111", author = "Dylan Landry")
+  public void addSlackSigningSetting(MongoDatabase db) throws IOException {
+    final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document extensions = collection.find(eq("name", "Extensions Configuration")).first();
+    List<Document> configs = (List<Document>) extensions.get("config");
+
+    Document newConfig = new Document();
+    newConfig.put("key", "slack.signingSecret");
+    newConfig.put("label", "Slack Signing Secret");
+    newConfig.put("value", "");
+    newConfig.put("description", "The Signing Secret from your Slack apps credentials.");
+    newConfig.put("type", "secured");
+    newConfig.put("readOnly", false);
+
+    configs.add(newConfig);
+    extensions.put("config", configs);
+    collection.replaceOne(eq("name", "Extensions Configuration"), extensions);
+  }
 }
