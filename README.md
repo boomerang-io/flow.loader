@@ -21,6 +21,8 @@ To create a collection, use the `db.createCollection()` method.
     db.createCollection(collectionPrefix + "settings");
 ```
 
-## Updating Collections
-https://www.mongodb.com/docs/manual/reference/method/js-database/
+## Updating Documents in a Collection
+https://www.mongodb.com/docs/manual/reference/method/js-collection/
+
+Updating documents in a collection and involve adding, modifying, and/or removing documents. 
 
