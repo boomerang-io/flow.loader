@@ -45,8 +45,6 @@ where the documents added with changeset 026 are contained within the `flow/026/
 ## Updating Documents in a Collection
 https://www.mongodb.com/docs/manual/reference/method/js-collection/
 
-Updating documents in a collection and involve modifying and/or removing documents. 
-
 Modifying existing documents requires identification of the document(s). 
 
 ```
@@ -68,3 +66,20 @@ Modifying existing documents requires identification of the document(s).
 ```
 In this example, we query to find the first document in the `collectionPrefix + "settings` collection with the `"name": "Task Configuration"` with the statement `Document workers = collection.find(eq("name", "Task Configuration")).first();`. Once the document has been identified, the config with `"key":"worker.image"` is updated with `"value":"boomerangio/worker-flow:2.8.11"`
 and the update is written back onto the document. 
+
+## Removing Documents in a Collection
+
+https://www.mongodb.com/docs/manual/reference/method/js-database/
+
+To remove a document in a collection, use the `db.collection.findOneAndDelete()` method. 
+
+```
+  @ChangeSet(order = "108", id = "108", author = "Adrienne Hudson")
+  public void removeTemplates(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
+    collection.findOneAndDelete(eq("name", "Looking through planets with HTTP Call "));
+    collection.findOneAndDelete(eq("name", "MongoDB email query results"));
+  }
+```
+
+
