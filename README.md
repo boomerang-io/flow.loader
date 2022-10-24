@@ -11,6 +11,11 @@ Every migration starts with creating a ChangeSet (annotated with @ChangeSet). It
 | author | Returns the ChangeSet's author. The combination of this and the author must be unique among the changesets. |No |
 
 
+## ChangeLog and Lock Collections
+
+The changelog and lock collections are defined in `/loader/src/main/java/net/boomerangplatform/migration/config/BoomerangFlowConfig.java`
+
+
 ## Creating Collections
 
 https://www.mongodb.com/docs/manual/reference/method/js-database/
@@ -22,7 +27,9 @@ To create a collection, use the `db.createCollection()` method.
 ```
 
 ## Adding Documents to Collections
- In `/loader/src/main/resources/flow`, there are several numbered folders. The numbering for the folder matches the changeset in which it is applied. 
+https://www.mongodb.com/docs/manual/reference/method/js-collection/
+
+In `/loader/src/main/resources/flow`, there are several numbered folders. The numbering for the folder matches the changeset in which it is applied. 
  
 For example,
 
@@ -68,7 +75,6 @@ In this example, we query to find the first document in the `collectionPrefix + 
 and the update is written back onto the document. 
 
 ## Removing Documents in a Collection
-
 https://www.mongodb.com/docs/manual/reference/method/js-database/
 
 To remove a document in a collection, use the `db.collection.findOneAndDelete()` method. 
