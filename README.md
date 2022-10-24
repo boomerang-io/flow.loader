@@ -45,5 +45,5 @@ where the documents added with changeset 026 are contained within the `flow/026/
 ## Updating Documents in a Collection
 https://www.mongodb.com/docs/manual/reference/method/js-collection/
 
-Updating documents in a collection and involve adding, modifying, and/or removing documents. 
+Updating documents in a collection and involve modifying and/or removing documents. 
 
