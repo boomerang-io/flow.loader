@@ -47,3 +47,24 @@ https://www.mongodb.com/docs/manual/reference/method/js-collection/
 
 Updating documents in a collection and involve modifying and/or removing documents. 
 
+Modifying existing documents requires identification of the document(s). 
+
+```
+  @ChangeSet(order = "064", id = "064", author = "Adrienne Hudson")
+  public void updateWorker(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.8.11");
+      }
+    }
+
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
+  }
+```
+In this example, we query to find the first document in the `collectionPrefix + "settings` collection with the `"name": "Task Configuration"` with the statement `Document workers = collection.find(eq("name", "Task Configuration")).first();`. Once the document has been identified, the config with `"key":"worker.image"` is updated with `"value":"boomerangio/worker-flow:2.8.11"`
+and the update is written back onto the document. 
