@@ -74,6 +74,40 @@ Modifying existing documents requires identification of the document(s).
 In this example, we query to find the first document in the `collectionPrefix + "settings` collection with the `"name": "Task Configuration"` with the statement `Document workers = collection.find(eq("name", "Task Configuration")).first();`. Once the document has been identified, the config with `"key":"worker.image"` is updated with `"value":"boomerangio/worker-flow:2.8.11"`
 and the update is written back onto the document. 
 
+https://mongodb.github.io/mongo-java-driver/3.4/javadoc/org/bson/Document
+
+```
+  @ChangeSet(order = "073", id = "073", author = "Adrienne Hudson")
+  public void migrateEnablePersistentStorage(MongoDatabase db) throws IOException {
+
+    final MongoCollection<Document> flowWorkflowsCollection =
+        db.getCollection(collectionPrefix + "workflows");
+    final FindIterable<Document> flowWorkflows = flowWorkflowsCollection.find();
+    for (final Document flowWorkflow : flowWorkflows) {
+
+      boolean enablePersistentStorage = (boolean) flowWorkflow.get("enablePersistentStorage");
+
+      Document storage =
+          (Document) flowWorkflow.get("storage") != null ? (Document) flowWorkflow.get("storage")
+              : new Document();
+
+      Document workflowStorage =
+          (Document) storage.get("workflow") != null ? (Document) storage.get("workflow")
+              : new Document();
+
+      workflowStorage.put("enabled", enablePersistentStorage);
+      storage.put("workflow", workflowStorage);
+
+      flowWorkflow.put("storage", storage);
+      flowWorkflow.remove("enablePersistentStorage");
+
+      flowWorkflowsCollection.replaceOne(eq("_id", flowWorkflow.getObjectId("_id")), flowWorkflow);
+
+    }
+  }
+  ```
+  In this example, the update applies to every document in the `collectionPrefix + "workflows"` collection. By using the `org.bson.Document.put(String key, Object value)` and `org.bson.Document.remove(Object key)`, object can be created, updated, or removed from a document.  
+
 ## Removing Documents in a Collection
 https://www.mongodb.com/docs/manual/reference/method/js-database/
 
@@ -88,4 +122,10 @@ To remove a document in a collection, use the `db.collection.findOneAndDelete()`
   }
 ```
 
+## How to Run
 
+```
+mvn clean package
+
+java -Dspring.profiles.active={profile} -jar target/loader.jar
+```
