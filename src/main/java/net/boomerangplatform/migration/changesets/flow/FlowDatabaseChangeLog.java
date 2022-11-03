@@ -1858,7 +1858,7 @@ public class FlowDatabaseChangeLog {
     collection.findOneAndDelete(eq("name", "Looking through planets with HTTP Call "));
     collection.findOneAndDelete(eq("name", "MongoDB email query results"));
   }
-  
+
   @ChangeSet(order = "109", id = "109", author = "Adrienne Hudson")
   public void addingWorkflowTemplates(MongoDatabase db) throws IOException {
     MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows");
@@ -1869,18 +1869,20 @@ public class FlowDatabaseChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "110", id = "110", author = "Adrienne Hudson")
   public void addingWorkflowRevisions(MongoDatabase db) throws IOException {
-    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "workflows_revisions");
-    final List<String> files = fileloadingService.loadFiles("flow/110/flow_workflows_revisions/*.json");
+    MongoCollection<Document> collection =
+        db.getCollection(collectionPrefix + "workflows_revisions");
+    final List<String> files =
+        fileloadingService.loadFiles("flow/110/flow_workflows_revisions/*.json");
     for (final String fileContents : files) {
       final Document doc = Document.parse(fileContents);
       collection.findOneAndDelete(eq("_id", doc.getObjectId("_id")));
       collection.insertOne(doc);
     }
   }
-  
+
   @ChangeSet(order = "111", id = "111", author = "Dylan Landry")
   public void addSlackSigningSetting(MongoDatabase db) throws IOException {
     final MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
@@ -1898,5 +1900,21 @@ public class FlowDatabaseChangeLog {
     configs.add(newConfig);
     extensions.put("config", configs);
     collection.replaceOne(eq("name", "Extensions Configuration"), extensions);
+  }
+
+
+  @ChangeSet(order = "112", id = "112", author = "Adrienne Hudson")
+  public void updatingdefaultimage(MongoDatabase db) throws IOException {
+    MongoCollection<Document> collection = db.getCollection(collectionPrefix + "settings");
+    Document workers = collection.find(eq("name", "Task Configuration")).first();
+    List<Document> configs = (List<Document>) workers.get("config");
+
+    for (Document config : configs) {
+      if (config.get("key").equals("worker.image")) {
+        config.put("value", "boomerangio/worker-flow:2.11.15");
+      }
+    }
+    workers.put("config", configs);
+    collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
 }
