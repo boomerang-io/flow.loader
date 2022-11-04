@@ -4,7 +4,10 @@ import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -1917,4 +1920,122 @@ public class FlowDatabaseChangeLog {
     workers.put("config", configs);
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
+  
+  /*
+   * Migration required for Flow v4
+   * See: https://github.com/boomerang-io/roadmap/issues/368 for the v3 to v4 comparison
+   */
+  @ChangeSet(order = "113", id = "113", author = "Tyson Lawrie")
+  public void v4MigrationTaskTemplates(MongoDatabase db) throws IOException {
+
+    MongoCollection<Document> taskTemplatesCollection =
+        db.getCollection(collectionPrefix + "task_templates");
+
+    final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
+    for (final Document taskTemplateEntity : taskTemplateEntities) {
+      taskTemplateEntity.put("displayName", taskTemplateEntity.get("name"));
+      Map<String, String> labels = new HashMap<>();
+      taskTemplateEntity.put("labels", labels);
+      Map<String, Object> annotations = new HashMap<>();
+      taskTemplateEntity.put("annotations", annotations); 
+      
+      taskTemplateEntity.put("creationDate", taskTemplateEntity.get("createdDate")); 
+      taskTemplateEntity.remove("createdDate");
+      taskTemplateEntity.remove("lastModified");
+      taskTemplateEntity.remove("flowTeamId");
+      
+      //TODO: need to go through each nodeType and map to the Type enum
+      taskTemplateEntity.put("type", taskTemplateEntity.get("nodeType")); 
+      taskTemplateEntity.remove("nodeType");
+      
+      List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
+//      Integer version = 1;
+      for (final Document revision : revisions) {
+        taskTemplateEntity.put("version", revision.get("version"));
+        taskTemplateEntity.put("changelog", revision.get("changelog"));
+        revision.remove("changelog");
+        List<Document> configs = (List<Document>) revision.get("config");
+        revision.remove("config");
+        taskTemplateEntity.put("config", configs);
+        List<Document> params = new LinkedList<>();
+        for (final Document config : configs) {
+          Document param = new Document();
+          param.put("name", config.get("key"));
+          param.put("type", "string");
+          param.put("description", config.get("description"));
+          param.put("defaultValue", config.get("defaultValue"));
+          params.add(param);
+        }
+        Document spec = new Document();
+        spec.put("arguments", revision.get("arguments"));
+        spec.put("command", revision.get("command"));
+        spec.put("envs", revision.get("envs"));
+        spec.put("image", revision.get("image"));
+        spec.put("results", revision.get("results"));
+        spec.put("script", revision.get("script"));
+        spec.put("workingDir", revision.get("workingDir"));
+        spec.put("script", revision.get("script"));
+        taskTemplateEntity.put("spec", spec);
+        
+        if (revision.get("version").equals(1)) {
+          taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
+              taskTemplateEntity);
+        } else {
+          taskTemplatesCollection.insertOne(taskTemplateEntity);
+        }
+//        version++;
+      }
+//      if (triggers != null) {
+//        Document scheduler = (Document) triggers.get("scheduler");
+//
+//        if (workflowScheduleCollection.find(eq("workflowId", workflowEntity.get("_id").toString()))
+//            .first() == null && workflowEntity.get("status").equals("active")) {
+//
+//          Document schedule = new Document();
+//
+//          if (scheduler.get("advancedCron") != null && scheduler.get("advancedCron").equals(true)) {
+//            schedule.put("type", "advancedCron");
+//          } else {
+//            schedule.put("type", "cron");
+//          }
+//
+//          scheduler.remove("advancedCron");
+//
+//          if (scheduler.get("enable") != null && scheduler.get("enable").equals(true)) {
+//            schedule.put("status", "active");
+//          } else {
+//            schedule.put("status", "inactive");
+//          }
+//
+//          schedule.put("timezone", scheduler.get("timezone"));
+//          scheduler.remove("timezone");
+//
+//          schedule.put("cronSchedule", scheduler.get("schedule"));
+//          scheduler.remove("cronSchedule");
+//
+//          schedule.put("workflowId", workflowEntity.get("_id").toString());
+//          schedule.put("name", "Migrated Schedule");
+//          schedule.put("description", "");
+//          schedule.put("creationDate", new Date());
+//          schedule.put("labels", new ArrayList<>());
+//
+//          List<Document> parameters = new ArrayList<>();
+//          for (Document property : (List<Document>) workflowEntity.get("properties")) {
+//            Document parameter = new Document();
+//            parameter.put("key", property.get("key"));
+//            parameter.put("value", property.get("defaultValue"));
+//            parameters.add(parameter);
+//          }
+//
+//          schedule.put("parameters", parameters);
+//
+//          workflowScheduleCollection.insertOne(schedule);
+//        }
+//      }
+
+//      taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
+//          taskTemplateEntity);
+    }
+  }
+
 }
