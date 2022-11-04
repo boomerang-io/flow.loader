@@ -1933,40 +1933,50 @@ public class FlowDatabaseChangeLog {
 
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
-      taskTemplateEntity.put("displayName", taskTemplateEntity.get("name"));
+      Document newTaskTemplateEntity = new Document();
+      newTaskTemplateEntity.put("name", taskTemplateEntity.get("name"));
+      newTaskTemplateEntity.put("displayName", taskTemplateEntity.get("name"));
+      newTaskTemplateEntity.put("status", taskTemplateEntity.get("status"));
+      newTaskTemplateEntity.put("description", taskTemplateEntity.get("description"));
+      newTaskTemplateEntity.put("category", taskTemplateEntity.get("category"));
+      newTaskTemplateEntity.put("icon", taskTemplateEntity.get("icon"));
+      newTaskTemplateEntity.put("verified", taskTemplateEntity.get("verified"));
+      newTaskTemplateEntity.put("scope", "global"); //all task_templates in loader are Global
       Map<String, String> labels = new HashMap<>();
-      taskTemplateEntity.put("labels", labels);
+      newTaskTemplateEntity.put("labels", labels);
       Map<String, Object> annotations = new HashMap<>();
-      taskTemplateEntity.put("annotations", annotations); 
+      newTaskTemplateEntity.put("annotations", annotations); 
       
-      taskTemplateEntity.put("creationDate", taskTemplateEntity.get("createdDate")); 
-      taskTemplateEntity.remove("createdDate");
-      taskTemplateEntity.remove("lastModified");
-      taskTemplateEntity.remove("flowTeamId");
-      
-      //TODO: need to go through each nodeType and map to the Type enum
-      taskTemplateEntity.put("type", taskTemplateEntity.get("nodeType")); 
-      taskTemplateEntity.remove("nodeType");
+      newTaskTemplateEntity.put("creationDate", taskTemplateEntity.get("createdDate"));
+           
+      if ("templateTask".equals(taskTemplateEntity.get("nodetype"))) {
+        newTaskTemplateEntity.put("type", "template");
+      } else if ("customTask".equals(taskTemplateEntity.get("nodetype"))) {
+        newTaskTemplateEntity.put("type", "custom");
+      } else {
+        newTaskTemplateEntity.put("type", taskTemplateEntity.get("nodetype"));
+      }
       
       List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
 //      Integer version = 1;
       for (final Document revision : revisions) {
-        taskTemplateEntity.put("version", revision.get("version"));
-        taskTemplateEntity.put("changelog", revision.get("changelog"));
-        revision.remove("changelog");
+        newTaskTemplateEntity.put("version", revision.get("version"));
+        newTaskTemplateEntity.put("changelog", revision.get("changelog"));
         List<Document> configs = (List<Document>) revision.get("config");
-        revision.remove("config");
-        taskTemplateEntity.put("config", configs);
+        newTaskTemplateEntity.put("config", configs);
         List<Document> params = new LinkedList<>();
-        for (final Document config : configs) {
-          Document param = new Document();
-          param.put("name", config.get("key"));
-          param.put("type", "string");
-          param.put("description", config.get("description"));
-          param.put("defaultValue", config.get("defaultValue"));
-          params.add(param);
+        if (!configs.isEmpty()) {
+          for (final Document config : configs) {
+            Document param = new Document();
+            param.put("name", config.get("key"));
+            param.put("type", "string");
+            param.put("description", config.get("description"));
+            param.put("defaultValue", config.get("defaultValue"));
+            params.add(param);
+          }
         }
         Document spec = new Document();
+        spec.put("params", params);
         spec.put("arguments", revision.get("arguments"));
         spec.put("command", revision.get("command"));
         spec.put("envs", revision.get("envs"));
@@ -1975,13 +1985,16 @@ public class FlowDatabaseChangeLog {
         spec.put("script", revision.get("script"));
         spec.put("workingDir", revision.get("workingDir"));
         spec.put("script", revision.get("script"));
-        taskTemplateEntity.put("spec", spec);
+        newTaskTemplateEntity.put("spec", spec);
         
+        logger.info("Version: " + revision.get("version"));
         if (revision.get("version").equals(1)) {
+          newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
           taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
-              taskTemplateEntity);
+              newTaskTemplateEntity);
         } else {
-          taskTemplatesCollection.insertOne(taskTemplateEntity);
+          newTaskTemplateEntity.remove("_id");
+          taskTemplatesCollection.insertOne(newTaskTemplateEntity);
         }
 //        version++;
       }
