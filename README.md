@@ -1,5 +1,6 @@
 # Flow Loader
 
+> Note: this service only works with Java 11
 
 Every migration starts with creating a ChangeSet (annotated with @ChangeSet). It contains the following attributes:
 
@@ -128,4 +129,16 @@ To remove a document in a collection, use the `db.collection.findOneAndDelete()`
 mvn clean package
 
 java -Dspring.profiles.active={profile} -jar target/loader.jar
+```
+
+If you are running a higher version of Java, you will need to locate the Java 11 version by running
+
+```
+/usr/libexec/java_home -V
+```
+
+Using the output you can then run the particular version, such as
+
+```
+/Library/Java/JavaVirtualMachines/ibm-semeru-open-11.jdk/Contents/Home/bin/java -Dspring.profiles.active=flow -jar target/loader.jar
 ```
