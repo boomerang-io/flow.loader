@@ -1921,15 +1921,16 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
   
-  ////////////////////////////////////////////////////////////////////////
-  //                                                                    //
-  // v4 Loader from here. Any new loads will need to use updated models //
-  //                                                                    //
-  ////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  //                                                                                //
+  // v4 Loader from here. Any new loads will need to use updated models             //
+  //                                                                                //
+  // https://github.com/boomerang-io/roadmap/issues/368 for the v3 to v4 comparison //
+  //                                                                                //
+  ////////////////////////////////////////////////////////////////////////////////////
   
   /*
-   * Migration required for Flow v4
-   * See: https://github.com/boomerang-io/roadmap/issues/368 for the v3 to v4 comparison
+   * Task Templates migration required for Flow v4
    */
   @ChangeSet(order = "113", id = "113", author = "Tyson Lawrie")
   public void v4MigrationTaskTemplates(MongoDatabase db) throws IOException {
@@ -1964,7 +1965,6 @@ public class FlowDatabaseChangeLog {
       }
       
       List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
-//      Integer version = 1;
       for (final Document revision : revisions) {
         newTaskTemplateEntity.put("version", revision.get("version"));
         newTaskTemplateEntity.put("changelog", revision.get("changelog"));
@@ -2002,70 +2002,30 @@ public class FlowDatabaseChangeLog {
           newTaskTemplateEntity.remove("_id");
           taskTemplatesCollection.insertOne(newTaskTemplateEntity);
         }
-//        version++;
       }
-//      if (triggers != null) {
-//        Document scheduler = (Document) triggers.get("scheduler");
-//
-//        if (workflowScheduleCollection.find(eq("workflowId", workflowEntity.get("_id").toString()))
-//            .first() == null && workflowEntity.get("status").equals("active")) {
-//
-//          Document schedule = new Document();
-//
-//          if (scheduler.get("advancedCron") != null && scheduler.get("advancedCron").equals(true)) {
-//            schedule.put("type", "advancedCron");
-//          } else {
-//            schedule.put("type", "cron");
-//          }
-//
-//          scheduler.remove("advancedCron");
-//
-//          if (scheduler.get("enable") != null && scheduler.get("enable").equals(true)) {
-//            schedule.put("status", "active");
-//          } else {
-//            schedule.put("status", "inactive");
-//          }
-//
-//          schedule.put("timezone", scheduler.get("timezone"));
-//          scheduler.remove("timezone");
-//
-//          schedule.put("cronSchedule", scheduler.get("schedule"));
-//          scheduler.remove("cronSchedule");
-//
-//          schedule.put("workflowId", workflowEntity.get("_id").toString());
-//          schedule.put("name", "Migrated Schedule");
-//          schedule.put("description", "");
-//          schedule.put("creationDate", new Date());
-//          schedule.put("labels", new ArrayList<>());
-//
-//          List<Document> parameters = new ArrayList<>();
-//          for (Document property : (List<Document>) workflowEntity.get("properties")) {
-//            Document parameter = new Document();
-//            parameter.put("key", property.get("key"));
-//            parameter.put("value", property.get("defaultValue"));
-//            parameters.add(parameter);
-//          }
-//
-//          schedule.put("parameters", parameters);
-//
-//          workflowScheduleCollection.insertOne(schedule);
-//        }
-//      }
-
-//      taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
-//          taskTemplateEntity);
     }
   }
 
+  /*
+   * Migrates tasks_locks to task_locks to match the v4 collection naming
+   */
   @ChangeSet(order = "114", id = "114", author = "Tyson Lawrie")
-  public void createTaskLockCollection(MongoDatabase db) throws IOException {
+  public void v4MigrateTaskLockCollection(MongoDatabase db) throws IOException {
     String collectionName = collectionPrefix + "task_locks";
     db.createCollection(collectionName);
     final MongoCollection<Document> collection = db.getCollection(collectionName);
     collection.createIndex(Indexes.ascending("expireAt"),
         new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
     
-    db.getCollection("tasks_locks").drop();
+    String collectionNameDrop = collectionPrefix + "tasks_locks";
+    db.getCollection(collectionNameDrop).drop();
+  }
+
+  //TODO: do we need to migrate the documents?
+  @ChangeSet(order = "115", id = "115", author = "Tyson Lawrie")
+  public void v4DropWorkflowsActivityTask(MongoDatabase db) throws IOException {  
+    String collectionName = collectionPrefix + "workflows_activity_task";
+    db.getCollection(collectionName).drop();
   }
 
 }
