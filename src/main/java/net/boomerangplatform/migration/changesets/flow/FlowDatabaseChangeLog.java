@@ -1921,6 +1921,12 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("name", "Task Configuration"), workers);
   }
   
+  ////////////////////////////////////////////////////////////////////////
+  //                                                                    //
+  // v4 Loader from here. Any new loads will need to use updated models //
+  //                                                                    //
+  ////////////////////////////////////////////////////////////////////////
+  
   /*
    * Migration required for Flow v4
    * See: https://github.com/boomerang-io/roadmap/issues/368 for the v3 to v4 comparison
@@ -2049,6 +2055,17 @@ public class FlowDatabaseChangeLog {
 //      taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
 //          taskTemplateEntity);
     }
+  }
+
+  @ChangeSet(order = "114", id = "114", author = "Tyson Lawrie")
+  public void createTaskLockCollection(MongoDatabase db) throws IOException {
+    String collectionName = collectionPrefix + "task_locks";
+    db.createCollection(collectionName);
+    final MongoCollection<Document> collection = db.getCollection(collectionName);
+    collection.createIndex(Indexes.ascending("expireAt"),
+        new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
+    
+    db.getCollection("tasks_locks").drop();
   }
 
 }
