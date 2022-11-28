@@ -125,6 +125,14 @@ To remove a document in a collection, use the `db.collection.findOneAndDelete()`
 
 ## How to Run
 
+### Run Local MongoDB w Docker
+
+```
+docker run --name local-mongo -d mongo:latest
+```
+
+### CLI
+
 ```
 mvn clean package
 
@@ -141,4 +149,10 @@ Using the output you can then run the particular version, such as
 
 ```
 /Library/Java/JavaVirtualMachines/ibm-semeru-open-11.jdk/Contents/Home/bin/java -Dspring.profiles.active=flow -jar target/loader.jar
+```
+
+### Docker
+
+```
+docker run -e JAVA_OPTS="-Dspring.data.mongodb.uri=mongodb://localhost:27017/boomerang -Dflow.mongo.collection.prefix=flow -Dspring.profiles.active=flow" --network host --platform linux/amd64 boomerangio/flow-loader:latest
 ```
