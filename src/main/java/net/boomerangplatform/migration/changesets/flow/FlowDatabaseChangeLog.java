@@ -2012,12 +2012,11 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "114", id = "114", author = "Tyson Lawrie")
   public void v4MigrateTaskLockCollection(MongoDatabase db) throws IOException {
     String collectionName = collectionPrefix + "task_locks";
-    try {
-      db.getCollection(collectionName);
-    } catch (IllegalArgumentException ex) {
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+    if (collection == null) {
       db.createCollection(collectionName);
     }
-    final MongoCollection<Document> collection = db.getCollection(collectionName);
+    collection = db.getCollection(collectionName);
     collection.createIndex(Indexes.ascending("expireAt"),
         new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
     
