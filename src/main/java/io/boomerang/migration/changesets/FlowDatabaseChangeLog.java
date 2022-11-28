@@ -2146,7 +2146,7 @@ public class FlowDatabaseChangeLog {
    */
   @ChangeSet(order = "117", id = "117", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActions(MongoDatabase db) throws IOException {    
-    String newCollectionName = collectionPrefix + "workflow_actions";
+    String newCollectionName = collectionPrefix + "actions";
     MongoCollection<Document> workflowActionsCollection = db.getCollection(newCollectionName);
     if (workflowActionsCollection == null) {
       db.createCollection(newCollectionName);
