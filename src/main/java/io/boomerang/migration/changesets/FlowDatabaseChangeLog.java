@@ -2135,7 +2135,7 @@ public class FlowDatabaseChangeLog {
    * Migrates workflow activity approvals to workflow actions.
    * 
    */
-  @ChangeSet(order = "116", id = "116", author = "Tyson Lawrie")
+  @ChangeSet(order = "117", id = "117", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActions(MongoDatabase db) throws IOException {    
     String newCollectionName = collectionPrefix + "workflow_actions";
     db.createCollection(newCollectionName);
