@@ -2021,6 +2021,9 @@ public class FlowDatabaseChangeLog {
     db.getCollection(collectionNameDrop).drop();
   }
 
+  /*
+   * Removes workflows_activity_task as not being migrated.
+   */
   //TODO: do we need to migrate the documents?
   @ChangeSet(order = "115", id = "115", author = "Tyson Lawrie")
   public void v4DropWorkflowsActivityTask(MongoDatabase db) throws IOException {  
@@ -2028,4 +2031,144 @@ public class FlowDatabaseChangeLog {
     db.getCollection(collectionName).drop();
   }
 
+  /*
+   * Partially migrates workflow activity so that insights and activity works at a high level.
+   * 
+   */
+  @ChangeSet(order = "116", id = "116", author = "Tyson Lawrie")
+  public void v4MigrateWorkflowActivity(MongoDatabase db) throws IOException {    
+    String newCollectionName = collectionPrefix + "workflow_runs";
+    db.createCollection(newCollectionName);
+    
+    String collectionName = collectionPrefix + "workflows_activity";
+    MongoCollection<Document> workflowsActivityCollection =
+        db.getCollection(collectionName);
+    
+    final FindIterable<Document> workflowsActivityEntities = workflowsActivityCollection.find();
+    for (final Document workflowsActivityEntity : workflowsActivityEntities) {
+      List<Document> labels = new LinkedList<>();
+      Map<String, String> newLabels = new HashMap<>();
+      for (final Document label : labels) {
+        newLabels.put(label.getString("key"), label.getString("value"));
+      }
+      workflowsActivityEntity.replace("labels", newLabels);
+      Map<String, Object> annotations = new HashMap<>();
+      workflowsActivityEntity.put("annotations", annotations);
+      
+      //TODO: map this to a relationship
+      workflowsActivityEntity.remove("initiatedByUserId");
+      workflowsActivityEntity.remove("initiatedByUserName");
+      workflowsActivityEntity.remove("teamId");
+      workflowsActivityEntity.remove("userId");
+      
+      Long duration = (Long) workflowsActivityEntity.get("duration");
+      long newDuration = 0;
+      if (duration != null) {
+        newDuration = duration;
+      } 
+      workflowsActivityEntity.replace("duration", newDuration);
+      workflowsActivityEntity.put("startTime", workflowsActivityEntity.get("creationDate"));
+      
+      String status = (String) workflowsActivityEntity.get("status");
+      if (status == null) {
+        status = "failed";
+        workflowsActivityEntity.put("status", "failed");
+      }
+      switch (status) {
+        case "inProgress":
+          workflowsActivityEntity.put("status", "running");
+          break;
+        case "completed":
+          workflowsActivityEntity.put("status", "succeeded");
+          break;
+        case "failure":
+          workflowsActivityEntity.put("status", "failed");
+          break;
+        default:
+      }
+      workflowsActivityEntity.put("phase", "finalized");
+      
+      String statusOverride = (String) workflowsActivityEntity.get("statusOverride");
+      if (statusOverride != null) {
+        if ("completed".equals(statusOverride)) {
+          statusOverride = "succeeded";
+        } else if ("failure".equals(statusOverride)) {
+          statusOverride = "failed";
+        }
+        workflowsActivityEntity.replace("statusOverride", statusOverride);
+      }
+      
+      workflowsActivityEntity.put("workflowRef", workflowsActivityEntity.get("workflowId"));
+      workflowsActivityEntity.remove("workflowId");
+      workflowsActivityEntity.put("workflowRevisionRef", workflowsActivityEntity.get("workflowRevisionId"));
+      workflowsActivityEntity.remove("workflowRevisionId");
+      
+      List<Document> properties = new LinkedList<>();
+      List<Document> params = new LinkedList<>();
+      for (final Document property : properties) {
+        Document param = new Document();
+        param.put("name", property.get("key"));
+        param.put("value", property.get("value"));
+        params.add(param);
+      }
+      
+      List<Document> outputProperties = new LinkedList<>();
+      List<Document> results = new LinkedList<>();
+      for (final Document outputProperty : outputProperties) {
+        Document result = new Document();
+        result.put("name", outputProperty.get("key"));
+        result.put("value", outputProperty.get("value"));
+        results.add(result);
+      }
+      
+      workflowsActivityEntity.remove("switchValue");
+      
+      //TODO: determine what to do with Workspaces
+      
+      db.getCollection(newCollectionName).insertOne(workflowsActivityEntity);
+    }
+    
+    workflowsActivityCollection.drop();
+  }
+  
+  /*
+   * Migrates workflow activity approvals to workflow actions.
+   * 
+   */
+  @ChangeSet(order = "116", id = "116", author = "Tyson Lawrie")
+  public void v4MigrateWorkflowActions(MongoDatabase db) throws IOException {    
+    String newCollectionName = collectionPrefix + "workflow_actions";
+    db.createCollection(newCollectionName);
+    
+    String collectionName = collectionPrefix + "workflows_activity_approval";
+    MongoCollection<Document> workflowsActivityApprovalCollection =
+        db.getCollection(collectionName);
+    
+    final FindIterable<Document> workflowsActivityApprovalEntities = workflowsActivityApprovalCollection.find();
+    for (final Document workflowsActivityApprovalEntity : workflowsActivityApprovalEntities) { 
+      workflowsActivityApprovalEntity.put("workflowRef", workflowsActivityApprovalEntity.get("workflowId"));
+      workflowsActivityApprovalEntity.remove("workflowId");
+      workflowsActivityApprovalEntity.put("workflowRunRef", workflowsActivityApprovalEntity.get("activityId"));
+      workflowsActivityApprovalEntity.remove("activityId");    
+      workflowsActivityApprovalEntity.put("taskRunRef", workflowsActivityApprovalEntity.get("taskActivityid"));
+      workflowsActivityApprovalEntity.remove("taskActivityid");    
+      String type = (String) workflowsActivityApprovalEntity.get("type");
+      if ("task".equals(type)) {
+        workflowsActivityApprovalEntity.replace("status", "manual");
+      }
+      
+      //TODO: move to relationship
+      workflowsActivityApprovalEntity.remove("teamId");   
+      
+      db.getCollection(newCollectionName).insertOne(workflowsActivityApprovalEntity);
+    }
+    
+    workflowsActivityApprovalCollection.drop();
+  }
+  
+  /*
+   * Migrates workflows and workflows_revisions to v4 collections and structure
+   * 
+   */
+  //TODO implement the migration
 }
