@@ -1935,6 +1935,8 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "113", id = "113", author = "Tyson Lawrie")
   public void v4MigrationTaskTemplates(MongoDatabase db) throws IOException {
 
+    logger.info("v4::Commencing v4 Migration Change Sets");
+
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(collectionPrefix + "task_templates");
 
@@ -2041,7 +2043,11 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "116", id = "116", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActivity(MongoDatabase db) throws IOException {    
     String newCollectionName = collectionPrefix + "workflow_runs";
-    db.createCollection(newCollectionName);
+    MongoCollection<Document> workflowRunsCollection = db.getCollection(newCollectionName);
+    if (workflowRunsCollection == null) {
+      db.createCollection(newCollectionName);
+    }
+    workflowRunsCollection = db.getCollection(newCollectionName);
     
     String collectionName = collectionPrefix + "workflows_activity";
     MongoCollection<Document> workflowsActivityCollection =
@@ -2128,7 +2134,7 @@ public class FlowDatabaseChangeLog {
       
       //TODO: determine what to do with Workspaces
       
-      db.getCollection(newCollectionName).insertOne(workflowsActivityEntity);
+      workflowRunsCollection.insertOne(workflowsActivityEntity);
     }
     
     workflowsActivityCollection.drop();
@@ -2141,7 +2147,11 @@ public class FlowDatabaseChangeLog {
   @ChangeSet(order = "117", id = "117", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActions(MongoDatabase db) throws IOException {    
     String newCollectionName = collectionPrefix + "workflow_actions";
-    db.createCollection(newCollectionName);
+    MongoCollection<Document> workflowActionsCollection = db.getCollection(newCollectionName);
+    if (workflowActionsCollection == null) {
+      db.createCollection(newCollectionName);
+    }
+    workflowActionsCollection = db.getCollection(newCollectionName);
     
     String collectionName = collectionPrefix + "workflows_activity_approval";
     MongoCollection<Document> workflowsActivityApprovalCollection =
@@ -2163,11 +2173,25 @@ public class FlowDatabaseChangeLog {
       //TODO: move to relationship
       workflowsActivityApprovalEntity.remove("teamId");   
       
-      db.getCollection(newCollectionName).insertOne(workflowsActivityApprovalEntity);
+      workflowActionsCollection.insertOne(workflowsActivityApprovalEntity);
     }
     
     workflowsActivityApprovalCollection.drop();
   }
+  
+  /*
+   * Insert new generic task template
+   */
+//  @ChangeSet(order = "118", id = "118", author = "Tyson Lawrie")
+//  public void v4InsertGenericTaskTemplate(MongoDatabase db) throws IOException {
+//    final List<String> files = fileloadingService.loadFiles("flow/118/flow_task_templates/*.json");
+//    for (final String fileContents : files) {
+//      final Document doc = Document.parse(fileContents);
+//      final MongoCollection<Document> collection =
+//          db.getCollection(collectionPrefix + "task_templates");
+//      collection.insertOne(doc);
+//    }
+//  }
   
   /*
    * Migrates workflows and workflows_revisions to v4 collections and structure
