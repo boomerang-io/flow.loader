@@ -1943,7 +1943,7 @@ public class FlowDatabaseChangeLog {
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
       Document newTaskTemplateEntity = new Document();
-      newTaskTemplateEntity.put("name", taskTemplateEntity.get("name"));
+      newTaskTemplateEntity.put("name", taskTemplateEntity.get("name").toString().toLowerCase().replace(' ', '-'));
       newTaskTemplateEntity.put("displayName", taskTemplateEntity.get("name"));
       newTaskTemplateEntity.put("status", taskTemplateEntity.get("status"));
       newTaskTemplateEntity.put("description", taskTemplateEntity.get("description"));
