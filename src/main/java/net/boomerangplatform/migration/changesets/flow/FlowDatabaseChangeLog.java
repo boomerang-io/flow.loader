@@ -2028,8 +2028,8 @@ public class FlowDatabaseChangeLog {
 
   /*
    * Removes workflows_activity_task as not being migrated.
+   * THESE ARE NOT MIGRATED
    */
-  //TODO: do we need to migrate the documents?
   @ChangeSet(order = "115", id = "115", author = "Tyson Lawrie")
   public void v4DropWorkflowsActivityTask(MongoDatabase db) throws IOException {  
     String collectionName = collectionPrefix + "workflows_activity_task";
@@ -2038,7 +2038,6 @@ public class FlowDatabaseChangeLog {
 
   /*
    * Partially migrates workflow activity so that insights and activity works at a high level.
-   * 
    */
   @ChangeSet(order = "116", id = "116", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActivity(MongoDatabase db) throws IOException {    
@@ -2055,7 +2054,7 @@ public class FlowDatabaseChangeLog {
     
     final FindIterable<Document> workflowsActivityEntities = workflowsActivityCollection.find();
     for (final Document workflowsActivityEntity : workflowsActivityEntities) {
-      List<Document> labels = new LinkedList<>();
+      List<Document> labels = (List<Document>) workflowsActivityEntity.get("labels");
       Map<String, String> newLabels = new HashMap<>();
       for (final Document label : labels) {
         newLabels.put(label.getString("key"), label.getString("value"));
@@ -2180,22 +2179,55 @@ public class FlowDatabaseChangeLog {
   }
   
   /*
-   * Insert new generic task template
-   */
-//  @ChangeSet(order = "118", id = "118", author = "Tyson Lawrie")
-//  public void v4InsertGenericTaskTemplate(MongoDatabase db) throws IOException {
-//    final List<String> files = fileloadingService.loadFiles("flow/118/flow_task_templates/*.json");
-//    for (final String fileContents : files) {
-//      final Document doc = Document.parse(fileContents);
-//      final MongoCollection<Document> collection =
-//          db.getCollection(collectionPrefix + "task_templates");
-//      collection.insertOne(doc);
-//    }
-//  }
-  
-  /*
    * Migrates workflows and workflows_revisions to v4 collections and structure
    * 
    */
-  //TODO implement the migration
+  @ChangeSet(order = "118", id = "118", author = "Tyson Lawrie")
+  public void v4MigrateWorkflowsAndRevisions(MongoDatabase db) throws IOException {    
+    String newRevisionCollectionName = collectionPrefix + "workflow_revisions";
+    MongoCollection<Document> workflowRevisionsCollection = db.getCollection(newRevisionCollectionName);
+    if (workflowRevisionsCollection == null) {
+      db.createCollection(newRevisionCollectionName);
+    }
+    workflowRevisionsCollection = db.getCollection(newRevisionCollectionName);
+    
+    String revisionCollectionName = collectionPrefix + "workflows_revisions";
+    MongoCollection<Document> workflowsRevisionsCollection =
+        db.getCollection(revisionCollectionName);    
+    
+    String workflowsCollectionName = collectionPrefix + "workflows";
+    MongoCollection<Document> workflowsCollection =
+        db.getCollection(revisionCollectionName);
+    
+    final FindIterable<Document> workflowsEntities = workflowsCollection.find();
+    for (final Document workflowsEntity : workflowsEntities) {
+      //TODO change this to retrieve the original changelog from the first revision
+      workflowsEntity.put("creationData", new Date());
+      
+      //Convert Labels
+      List<Document> labels = (List<Document>) workflowsEntity.get("labels");
+      Map<String, String> newLabels = new HashMap<>();
+      for (final Document label : labels) {
+        newLabels.put(label.getString("key"), label.getString("value"));
+      }
+      workflowsEntity.replace("labels", newLabels);
+      
+      //TODO put storage on the revision
+      List<Document> storage = (List<Document>) workflowsEntity.get("storage");
+      
+      //TODO put properties as parameters on the revision
+      List<Document> properties = (List<Document>) workflowsEntity.get("properties");
+      
+      //TODO move to relationships
+      workflowsEntity.remove("flowTeamId");
+      workflowsEntity.remove("ownerUserId");
+      
+//      workflowRevisionsCollection.replaceOne(eq("_id", workflowsEntity.getObjectId("_id")), workflowsEntity);
+      
+      FindIterable<Document> workflowRevisionEntities = workflowsRevisionsCollection.find(eq("workFlowId", workflowsEntity.getObjectId("_id")));
+      logger.info("Found revisions: " + workflowRevisionEntities.toString());
+    }
+    
+//    workflowsRevisionsCollection.drop();
+  }
 }
