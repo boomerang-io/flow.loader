@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -2103,216 +2104,9 @@ public class FlowDatabaseChangeLog {
   }
 
   /*
-   * Migrates workflows and workflows_revisions to v4 collections and structure
-   * Extremely complex migration!
-   * 
-   */
-  @ChangeSet(order = "4004", id = "4004", author = "Tyson Lawrie")
-  public void v4MigrateWorkflowsAndRevisions(MongoDatabase db) throws IOException {
-    String taskTemplateCollectionName = collectionPrefix + "task_templates";
-    MongoCollection<Document> taskTemplatesCollection =
-        db.getCollection(taskTemplateCollectionName);
-    
-    String newRevisionCollectionName = collectionPrefix + "workflow_revisions";
-    MongoCollection<Document> workflowRevisionsCollection =
-        db.getCollection(newRevisionCollectionName);
-    if (workflowRevisionsCollection == null) {
-      db.createCollection(newRevisionCollectionName);
-    }
-    workflowRevisionsCollection = db.getCollection(newRevisionCollectionName);
-
-    String revisionCollectionName = collectionPrefix + "workflows_revisions";
-    MongoCollection<Document> workflowsRevisionsCollection =
-        db.getCollection(revisionCollectionName);
-
-    String workflowsCollectionName = collectionPrefix + "workflows";
-    MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
-
-    final FindIterable<Document> workflowsEntities = workflowsCollection.find();
-    for (final Document workflowsEntity : workflowsEntities) {
-      logger.info("Original v3 Workflow: " + workflowsEntity.toJson());
-      // Retrieve matching revisions
-      FindIterable<Document> workflowRevisionEntities =
-          workflowsRevisionsCollection.find(eq("workFlowId", workflowsEntity.getObjectId("_id")));
-      Document firstRevisionEntity = workflowRevisionEntities.filter(eq("version", 1)).first();
-
-      // Set Creation Date from first revisions changelog
-      Document firstRevisionChangelog = (Document) firstRevisionEntity.get("changelog");
-      workflowsEntity.put("creationDate", firstRevisionChangelog.get("date"));
-
-      // Convert Labels
-      List<Document> labels = (List<Document>) workflowsEntity.get("labels");
-      Map<String, String> newLabels = new HashMap<>();
-      if (labels != null) {
-        for (final Document label : labels) {
-          newLabels.put(label.getString("key"), label.getString("value"));
-        }
-        workflowsEntity.replace("labels", newLabels);
-      } else {
-        workflowsEntity.put("labels", newLabels);
-      }
-
-      // Set an annotation that this Workflow existing prior to v4
-      Map<String, Object> annotations = new HashMap<>();
-      annotations.put("io.boomerang/v3", "true");
-      workflowsEntity.put("annotations", annotations);
-
-      // Storage to Workspaces conversion. Only added if enabled.
-      List<Document> workspaces = new LinkedList<>();
-      if (workflowsEntity.containsKey("storage")) {
-        Document storage = (Document) workflowsEntity.get("storage");
-        // if (storage != null & !storage.isEmpty()) {
-        Document activityStorage = (Document) storage.get("activity");
-        if (activityStorage.getBoolean("enabled", false)) {
-          Document activityWorkspace = new Document();
-          activityWorkspace.put("name", "activity");
-          activityWorkspace.put("type", "pvc");
-          activityWorkspace.put("optional", false);
-          activityWorkspace.remove("enabled");
-          activityWorkspace.put("spec", activityWorkspace);
-          workspaces.add(activityWorkspace);
-        }
-        Document workflowStorage = (Document) storage.get("workflow");
-        if (workflowStorage.getBoolean("enabled", false)) {
-          Document workflowWorkspace = new Document();
-          workflowWorkspace.put("name", "workflow");
-          workflowWorkspace.put("type", "pvc");
-          workflowWorkspace.put("optional", false);
-          workflowStorage.remove("enabled");
-          workflowWorkspace.put("spec", workflowStorage);
-          workspaces.add(workflowWorkspace);
-        }
-        // }
-        workflowsEntity.remove("storage");
-      }
-
-      // Migrate Properties to Config and Parameters
-      List<Document> properties = (List<Document>) workflowsEntity.get("properties");
-      List<Document> params = new LinkedList<>();
-      if (!properties.isEmpty()) {
-        for (final Document property : properties) {
-          Document param = new Document();
-          param.put("name", property.get("key"));
-          param.put("type", "string");
-          param.put("description", property.get("description"));
-          param.put("defaultValue", property.get("defaultValue"));
-          params.add(param);
-        }
-      }
-      workflowsEntity.remove("properties");
-
-      // Migrate the Revisions
-      // Need to migrate the dag and config as config means a different thing post migration
-      for (final Document workflowRevisionEntity : workflowRevisionEntities) {
-        Document dag = (Document) workflowRevisionEntity.get("dag");
-        logger.info("Original v3 WorkflowRevision: " + workflowRevisionEntity.toJson());
-        workflowRevisionEntity.put("workflowRef", workflowRevisionEntity.get("workFlowId"));
-        workflowRevisionEntity.remove("workFlowId");
-        workflowRevisionEntity.replace("version", (Integer) workflowRevisionEntity.getLong("version").intValue());
-        
-        List<Document> dagTasks = (List<Document>) dag.get("tasks");
-        List<Document> dagTasksRef = (List<Document>) dag.get("tasks");
-        Document config = (Document) workflowRevisionEntity.get("config");
-        List<Document> configNodes = (List<Document>) dag.get("nodes");
-        List<Document> tasks = new LinkedList<>();
-        for (final Document dagTask : dagTasks) {
-          Document task = new Document();
-          Map<String, String> taskLabels = new HashMap<>();
-          Map<String, Object> taskAnnotations = new HashMap<>();
-          
-          if (dagTask.getString("type").equals("start")) {
-            task.put("name", "start");
-          } else if (dagTask.getString("type").equals("end")) {
-            task.put("name", "end");
-          } else {
-            task.put("name", dagTask.getString("label"));
-            
-            //Set Template Ref - need to find task template name 
-            Document taskTemplateEntity =
-                taskTemplatesCollection.find(eq("_id", dagTask.get("templateId"))).first();
-            task.put("templateRef", taskTemplateEntity.getString("name"));
-            task.replace("templateVersion", (Integer) dagTask.get("templateVersion"));
-            task.remove("templateId");
-            
-            //Migrate Results - no change
-            task.put("results", dagTask.get("results"));
-            
-            //Migrate Properties to Params
-            List<Document> dagProperties = (List<Document>) dagTask.get("properties");
-            List<Document> taskParams = new LinkedList<>();
-            if (dagProperties != null) {
-              for (final Document dagProperty : dagProperties) {
-                Document param = new Document();
-                param.put("name", dagProperty.get("key"));
-                param.put("value", dagProperty.get("value"));
-                taskParams.add(param);
-              }
-            }
-            task.put("params", taskParams);
-            task.remove("properties");
-          }
-          //TODO do we need to migrate Task Types?
-          task.put("type", dagTask.getString("type"));
-          
-          //Migrate Dependencies
-          List<Document> dependencies = (List<Document>) dagTask.get("dependencies");
-          if (dependencies != null) {
-            for (final Document dependency : dependencies) {
-              //TODO: confirm if we need the points metadata
-//              Document dependencyMetadata = (Document) dependency.get("metadata");
-//              if (dependencyMetadata != null) {
-//                taskAnnotations.put("io.boomerang/points", dependencyMetadata.get("points"));
-//              }
-              dependency.put("decisionCondition", dependency.get("switchCondition") != null ? dependency.get("switchCondition") : "");
-              Document dependentTask = dagTasksRef.stream().filter(e -> e.get("taskId").equals(dependency.get("taskId"))).findFirst().get();
-              logger.info("Dependent Task: " + dependentTask.get("label"));
-              dependency.put("taskRef", dependentTask.get("label"));
-              dependency.remove("taskId");
-              dependency.remove("switchCondition");
-              dependency.remove("conditionalExecution");
-              dependency.remove("additionalProperties");
-              dependency.remove("metadata");
-            }
-          }
-          task.put("dependencies", dependencies);
-          
-          //Migrate Position Metadata
-          Document metadata = (Document) dagTask.get("metadata");
-          if (metadata.get("position") != null) {
-            taskAnnotations.put("io.boomerang/position", metadata.get("position"));
-          }
-          
-          task.put("labels", taskLabels);
-          task.put("annotations", taskAnnotations);
-          tasks.add(task);
-        }
-        workflowRevisionEntity.remove("dag");
-        workflowRevisionEntity.remove("config");
-
-        workflowRevisionEntity.put("tasks", tasks);
-//        workflowRevisionEntity.put("workspaces", workspaces);
-//        workflowRevisionEntity.put("config", properties);
-        workflowRevisionEntity.put("params", params);
-        logger.info("Migrated v4 WorkflowRevision: " + workflowRevisionEntity.toJson());
-      }
-
-      // TODO move to relationships
-      workflowsEntity.remove("flowTeamId");
-      workflowsEntity.remove("ownerUserId");
-      
-      logger.info("Migrated v4 Workflow: " + workflowsEntity.toJson());
-
-      // workflowRevisionsCollection.replaceOne(eq("_id", workflowsEntity.getObjectId("_id")),
-      // workflowsEntity);
-    }
-
-    // workflowsRevisionsCollection.drop();
-  }
-
-  /*
    * Task Templates migration required for Flow v4
    */
-  @ChangeSet(order = "4005", id = "4005", author = "Tyson Lawrie")
+  @ChangeSet(order = "4004", id = "4004", author = "Tyson Lawrie")
   public void v4MigrationTaskTemplates(MongoDatabase db) throws IOException {
 
     logger.info("v4::Commencing v4 Migration Change Sets");
@@ -2376,7 +2170,6 @@ public class FlowDatabaseChangeLog {
         spec.put("script", revision.get("script"));
         newTaskTemplateEntity.put("spec", spec);
 
-        logger.info("Version: " + revision.get("version"));
         if (revision.get("version").equals(1)) {
           newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
           taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
@@ -2387,5 +2180,221 @@ public class FlowDatabaseChangeLog {
         }
       }
     }
+  }
+
+  /*
+   * Migrates workflows and workflows_revisions to v4 collections and structure Extremely complex
+   * migration!
+   * 
+   */
+  @ChangeSet(order = "4005", id = "4005", author = "Tyson Lawrie")
+  public void v4MigrateWorkflowsAndRevisions(MongoDatabase db) throws IOException {
+    String taskTemplateCollectionName = collectionPrefix + "task_templates";
+    MongoCollection<Document> taskTemplatesCollection =
+        db.getCollection(taskTemplateCollectionName);
+
+    String newRevisionCollectionName = collectionPrefix + "workflow_revisions";
+    MongoCollection<Document> workflowRevisionsCollection =
+        db.getCollection(newRevisionCollectionName);
+    if (workflowRevisionsCollection == null) {
+      db.createCollection(newRevisionCollectionName);
+    }
+    workflowRevisionsCollection = db.getCollection(newRevisionCollectionName);
+
+    String revisionCollectionName = collectionPrefix + "workflows_revisions";
+    MongoCollection<Document> workflowsRevisionsCollection =
+        db.getCollection(revisionCollectionName);
+    final FindIterable<Document> workflowsRevisionEntities =
+        workflowsRevisionsCollection.find();
+
+    String workflowsCollectionName = collectionPrefix + "workflows";
+    MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
+
+    final FindIterable<Document> workflowsEntities = workflowsCollection.find();
+    for (final Document workflowsEntity : workflowsEntities) {
+      logger.info("Migrating WorkflowId: " + workflowsEntity.get("_id"));
+
+      // Convert Labels
+      List<Document> labels = (List<Document>) workflowsEntity.get("labels");
+      Map<String, String> newLabels = new HashMap<>();
+      if (labels != null) {
+        for (final Document label : labels) {
+          newLabels.put(label.getString("key"), label.getString("value"));
+        }
+        workflowsEntity.replace("labels", newLabels);
+      } else {
+        workflowsEntity.put("labels", newLabels);
+      }
+
+      // Set an annotation that this Workflow existing prior to v4
+      Map<String, Object> annotations = new HashMap<>();
+      annotations.put("io#boomerang/v3", "true");
+      workflowsEntity.put("annotations", annotations);
+
+      // Storage to Workspaces conversion. Only added if enabled.
+      List<Document> workspaces = new LinkedList<>();
+      if (workflowsEntity.containsKey("storage")) {
+        Document storage = (Document) workflowsEntity.get("storage");
+        Document activityStorage = (Document) storage.get("activity");
+        if (activityStorage.getBoolean("enabled", false)) {
+          logger.info("Added Activity Workspace");
+          Document activityWorkspace = new Document();
+          activityWorkspace.put("name", "activity");
+          activityWorkspace.put("type", "pvc");
+          activityWorkspace.put("optional", false);
+          activityStorage.remove("enabled");
+          activityWorkspace.put("spec", activityStorage);
+          workspaces.add(activityWorkspace);
+        }
+        Document workflowStorage = (Document) storage.get("workflow");
+        if (workflowStorage.getBoolean("enabled", false)) {
+          logger.info("Added Workflow Workspace");
+          Document workflowWorkspace = new Document();
+          workflowWorkspace.put("name", "workflow");
+          workflowWorkspace.put("type", "pvc");
+          workflowWorkspace.put("optional", false);
+          workflowStorage.remove("enabled");
+          workflowWorkspace.put("spec", workflowStorage);
+          workspaces.add(workflowWorkspace);
+        }
+        workflowsEntity.remove("storage");
+      }
+
+      // Migrate Properties to Config and Parameters
+      List<Document> properties = (List<Document>) workflowsEntity.get("properties");
+      List<Document> params = new LinkedList<>();
+      if (!properties.isEmpty()) {
+        for (final Document property : properties) {
+          Document param = new Document();
+          param.put("name", property.get("key"));
+          param.put("type", "string");
+          param.put("description", property.get("description"));
+          param.put("defaultValue", property.get("defaultValue"));
+          params.add(param);
+        }
+      }
+      workflowsEntity.remove("properties");
+
+      // Migrate the Revisions
+      // Need to migrate the dag and config first as config means a different thing post migration
+      for (Document workflowRevisionEntity : workflowsRevisionEntities) {
+        if (!workflowRevisionEntity.get("workFlowId").equals(workflowsEntity.get("_id").toString())) {
+          continue;
+        }
+        logger.info("Version: " + workflowRevisionEntity.get("version") + " " + workflowRevisionEntity.get("version").getClass());
+        if (Long.valueOf(1).equals(workflowRevisionEntity.get("version"))) {
+          // Set Creation Date from first revisions changelog
+          Document firstRevisionChangelog = (Document) workflowRevisionEntity.get("changelog");
+          workflowsEntity.put("creationDate", firstRevisionChangelog.get("date"));
+        }
+        logger.info("Migrating Workflow Revision: " + workflowRevisionEntity.get("_id"));
+        Document dag = (Document) workflowRevisionEntity.get("dag");
+        workflowRevisionEntity.put("workflowRef", workflowRevisionEntity.get("workFlowId"));
+        workflowRevisionEntity.remove("workFlowId");
+        workflowRevisionEntity.replace("version",
+            (Integer) workflowRevisionEntity.getLong("version").intValue());
+
+        List<Document> dagTasks = (List<Document>) dag.get("tasks");
+        List<Document> dagTasksRef = (List<Document>) dag.get("tasks");
+        Document config = (Document) workflowRevisionEntity.get("config");
+        List<Document> configNodes = (List<Document>) dag.get("nodes");
+        List<Document> tasks = new LinkedList<>();
+        for (final Document dagTask : dagTasks) {
+          Document task = new Document();
+          Map<String, String> taskLabels = new HashMap<>();
+          Map<String, Object> taskAnnotations = new HashMap<>();
+
+          if (dagTask.getString("type").equals("start")) {
+            task.put("name", "start");
+          } else if (dagTask.getString("type").equals("end")) {
+            task.put("name", "end");
+          } else {
+            task.put("name", dagTask.getString("label"));
+
+            // Set Template Ref - need to find task template name
+            Document taskTemplateEntity = taskTemplatesCollection
+                .find(eq("_id", new ObjectId(dagTask.get("templateId").toString()))).first();
+            task.put("templateRef", taskTemplateEntity.getString("name"));
+            task.replace("templateVersion", (Integer) dagTask.get("templateVersion"));
+            task.remove("templateId");
+
+            // Migrate Results - no change
+            task.put("results", dagTask.get("results"));
+
+            // Migrate Properties to Params
+            List<Document> dagProperties = (List<Document>) dagTask.get("properties");
+            List<Document> taskParams = new LinkedList<>();
+            if (dagProperties != null) {
+              for (final Document dagProperty : dagProperties) {
+                Document param = new Document();
+                param.put("name", dagProperty.get("key"));
+                param.put("value", dagProperty.get("value"));
+                taskParams.add(param);
+              }
+            }
+            task.put("params", taskParams);
+            task.remove("properties");
+          }
+
+          // Migrate Type - no change
+          task.put("type", dagTask.getString("type"));
+
+          // Migrate Dependencies
+          List<Document> dependencies = (List<Document>) dagTask.get("dependencies");
+          if (dependencies != null) {
+            for (final Document dependency : dependencies) {
+              // TODO: confirm if we need the points metadata
+              // Document dependencyMetadata = (Document) dependency.get("metadata");
+              // if (dependencyMetadata != null) {
+              // taskAnnotations.put("io#boomerang/points", dependencyMetadata.get("points"));
+              // }
+              dependency.put("decisionCondition",
+                  dependency.get("switchCondition") != null ? dependency.get("switchCondition")
+                      : "");
+              Document dependentTask = dagTasksRef.stream()
+                  .filter(e -> e.get("taskId").equals(dependency.get("taskId"))).findFirst().get();
+              logger.info("Dependent Task: " + dependentTask.get("label"));
+              dependency.put("taskRef", dependentTask.get("label"));
+              dependency.remove("taskId");
+              dependency.remove("switchCondition");
+              dependency.remove("conditionalExecution");
+              dependency.remove("additionalProperties");
+              // dependency.remove("metadata");
+            }
+          }
+          task.put("dependencies", dependencies);
+
+          // Migrate Position Metadata
+          Document metadata = (Document) dagTask.get("metadata");
+          if (metadata.get("position") != null) {
+            taskAnnotations.put("io#boomerang/position", metadata.get("position"));
+          }
+
+          task.put("labels", taskLabels);
+          task.put("annotations", taskAnnotations);
+          tasks.add(task);
+        }
+        workflowRevisionEntity.remove("dag");
+        workflowRevisionEntity.remove("config");
+
+        workflowRevisionEntity.put("tasks", tasks);
+        workflowRevisionEntity.put("workspaces", workspaces);
+        workflowRevisionEntity.put("config", properties);
+        workflowRevisionEntity.put("params", params);
+
+        workflowRevisionsCollection.insertOne(workflowRevisionEntity);
+        logger.info("Migrated v4 WorkflowRevision: " + workflowRevisionEntity.toJson());
+      }
+
+      // TODO move to relationships
+      workflowsEntity.remove("flowTeamId");
+      workflowsEntity.remove("ownerUserId");
+
+      logger.info("Migrated v4 Workflow: " + workflowsEntity.toJson());
+      workflowsCollection.replaceOne(eq("_id", workflowsEntity.getObjectId("_id")),
+          workflowsEntity);
+    }
+
+    // workflowsRevisionsCollection.drop();
   }
 }
