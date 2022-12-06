@@ -31,7 +31,7 @@ public class BoomerangFlowConfig implements BoomerangMigration {
     MongoClient mongoclient = new MongoClient(uri);
 
     MongockBuilder mongockBuilder = new MongockBuilder(mongoclient, uri.getDatabase(),
-        "net.boomerangplatform.migration.changesets");
+        "io.boomerang.migration.changesets");
     
     String prefix = getCollectionPrefix();
     if (prefix != null) {
