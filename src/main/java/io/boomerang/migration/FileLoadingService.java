@@ -1,4 +1,4 @@
-package net.boomerangplatform.migration;
+package io.boomerang.migration;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

@@ -1,4 +1,4 @@
-package net.boomerangplatform.migration;
+package io.boomerang.migration;
 
 import com.github.cloudyrock.mongock.Mongock;
 
