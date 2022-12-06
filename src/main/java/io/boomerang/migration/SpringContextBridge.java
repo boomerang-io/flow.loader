@@ -1,4 +1,4 @@
-package net.boomerangplatform.migration;
+package io.boomerang.migration;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;

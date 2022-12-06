@@ -1,4 +1,4 @@
-package net.boomerangplatform.migration;
+package io.boomerang.migration;
 
 public interface SpringContextBridgedServices {
     FileLoadingService getFileLoadingService();

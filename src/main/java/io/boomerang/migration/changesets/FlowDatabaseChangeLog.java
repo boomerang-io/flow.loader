@@ -1,4 +1,4 @@
-package net.boomerangplatform.migration.changesets.flow;
+package io.boomerang.migration.changesets;
 
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
@@ -22,8 +22,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.Updates;
-import net.boomerangplatform.migration.FileLoadingService;
-import net.boomerangplatform.migration.SpringContextBridge;
+import io.boomerang.migration.FileLoadingService;
+import io.boomerang.migration.SpringContextBridge;
 
 @ChangeLog
 public class FlowDatabaseChangeLog {
