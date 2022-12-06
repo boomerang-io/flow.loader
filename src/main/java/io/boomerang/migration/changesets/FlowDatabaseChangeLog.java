@@ -1,4 +1,8 @@
+<<<<<<< HEAD:src/main/java/io/boomerang/migration/changesets/FlowDatabaseChangeLog.java
 package io.boomerang.migration.changesets;
+=======
+package net.boomerangplatform.migration.changesets;
+>>>>>>> 8bcae1323e1f6f35c26c0c4ca264aa92fa096228:src/main/java/net/boomerangplatform/migration/changesets/flow/FlowDatabaseChangeLog.java
 
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package io.boomerang.migration.changesets;
+package net.boomerangplatform.migration.changesets;
 
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
