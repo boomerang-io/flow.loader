@@ -2,11 +2,9 @@ package net.boomerangplatform.migration.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import com.github.cloudyrock.mongock.Mongock;
 import com.github.cloudyrock.mongock.MongockBuilder;
 import com.mongodb.MongoClient;
@@ -33,7 +31,7 @@ public class BoomerangFlowConfig implements BoomerangMigration {
     MongoClient mongoclient = new MongoClient(uri);
 
     MongockBuilder mongockBuilder = new MongockBuilder(mongoclient, uri.getDatabase(),
-        "net.boomerangplatform.migration.changesets.flow");
+        "net.boomerangplatform.migration.changesets");
     
     String prefix = getCollectionPrefix();
     if (prefix != null) {
