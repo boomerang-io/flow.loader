@@ -31,12 +31,15 @@ public class FlowDatabaseChangeLog {
   private static FileLoadingService fileloadingService;
 
   private static String collectionPrefix;
+  
+  private static boolean mongoCosmosDBTTL;
 
   private final Logger logger = LoggerFactory.getLogger(FlowDatabaseChangeLog.class);
 
   public FlowDatabaseChangeLog() {
     fileloadingService = SpringContextBridge.services().getFileLoadingService();
     collectionPrefix = SpringContextBridge.services().getCollectionPrefix();
+    mongoCosmosDBTTL = SpringContextBridge.services().getMongoCosmosDBTTL();
   }
 
   @ChangeSet(order = "001", id = "001", author = "Marcus Roy")
@@ -675,15 +678,18 @@ public class FlowDatabaseChangeLog {
     collection.replaceOne(eq("name", "Workers"), workers);
   }
 
-
-
   @ChangeSet(order = "038", id = "038", author = "Marcus Roy")
   public void createLockCollection(MongoDatabase db) throws IOException {
     String collectionName = collectionPrefix + "tasks_locks";
     db.createCollection(collectionName);
     final MongoCollection<Document> collection = db.getCollection(collectionName);
-    collection.createIndex(Indexes.ascending("expireAt"),
-        new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
+    if (mongoCosmosDBTTL) {
+      collection.createIndex(Indexes.ascending("_ts"),
+          new IndexOptions().expireAfter(120L, TimeUnit.SECONDS));
+    } else {
+      collection.createIndex(Indexes.ascending("expireAt"),
+          new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
+    }
   }
 
   @ChangeSet(order = "039", id = "039", author = "Adrienne Hudson")

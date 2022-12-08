@@ -15,6 +15,9 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
   @Value("${flow.mongo.collection.prefix}")
   private String workflowCollectionPrefix;
 
+  @Value("${flow.mongo.cosmosdbttl}")
+  private boolean mongoCosmosDBTTL;
+
   public static SpringContextBridgedServices services() {
     return applicationContext.getBean(SpringContextBridgedServices.class);
   }
@@ -38,5 +41,10 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
       return "";
     }
     return workflowCollectionPrefix + "_";
+  }
+
+  @Override
+  public boolean getMongoCosmosDBTTL() {
+    return mongoCosmosDBTTL;
   }
 }
