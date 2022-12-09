@@ -11,6 +11,11 @@ Every migration starts with creating a ChangeSet (annotated with @ChangeSet). It
 | order |   Returns the ChangeSet's execution order.|Yes |
 | author | Returns the ChangeSet's author. The combination of this and the author must be unique among the changesets. |No |
 
+## Database Support
+
+The Loader has been tested with MongoDB and Azure CosmosDB API for MongoDB.
+
+There is an additional flag for supporting CosmosDB `-Dflow.mongo.cosmosdbttl=true` as TTL indexes are a known limitation. Additionally, support for CosmosDB means we can't use renameCollection() in our changesets. 
 
 ## ChangeLog and Lock Collections
 
