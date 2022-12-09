@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
+import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -27,12 +28,15 @@ public class FlowDatabasev4ChangeLog {
   private static FileLoadingService fileloadingService;
 
   private static String collectionPrefix;
+  
+  private static boolean mongoCosmosDBTTL;
 
   private final Logger logger = LoggerFactory.getLogger(FlowDatabasev4ChangeLog.class);
 
   public FlowDatabasev4ChangeLog() {
     fileloadingService = SpringContextBridge.services().getFileLoadingService();
     collectionPrefix = SpringContextBridge.services().getCollectionPrefix();
+    mongoCosmosDBTTL = SpringContextBridge.services().getMongoCosmosDBTTL();
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -45,20 +49,35 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrates tasks_locks to task_locks to match the v4 collection naming
+   * 
+   * We have to use document migration to a new collection as Azure CosmosDB doesn't support renaming collections
    */
   @ChangeSet(order = "4000", id = "4000", author = "Tyson Lawrie")
   public void v4MigrateTaskLockCollection(MongoDatabase db) throws IOException {
-    String collectionName = collectionPrefix + "task_locks";
-    MongoCollection<Document> collection = db.getCollection(collectionName);
-    if (collection == null) {
-      db.createCollection(collectionName);
+    String origCollectionName = collectionPrefix + "tasks_locks";
+    String newCollectionName = collectionPrefix + "task_locks";
+    
+    MongoCollection<Document> origCollection = db.getCollection(origCollectionName);
+    
+    MongoCollection<Document> newCollection = db.getCollection(newCollectionName);
+    if (newCollection == null) {
+      db.createCollection(newCollectionName);
     }
-    collection = db.getCollection(collectionName);
-    collection.createIndex(Indexes.ascending("expireAt"),
-        new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
-
-    String collectionNameDrop = collectionPrefix + "tasks_locks";
-    db.getCollection(collectionNameDrop).drop();
+    newCollection = db.getCollection(newCollectionName);
+    if (mongoCosmosDBTTL) {
+      newCollection.createIndex(Indexes.ascending("_ts"),
+          new IndexOptions().expireAfter(120L, TimeUnit.SECONDS));
+    } else {
+      newCollection.createIndex(Indexes.ascending("expireAt"),
+          new IndexOptions().expireAfter(0L, TimeUnit.MILLISECONDS));
+    }
+    
+    final FindIterable<Document> locksEntities = origCollection.find();
+    for (final Document lockEntity : locksEntities) {
+      newCollection.insertOne(lockEntity);
+    }
+    
+    origCollection.drop();
   }
 
   /*
