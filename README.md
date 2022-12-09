@@ -15,7 +15,7 @@ Every migration starts with creating a ChangeSet (annotated with @ChangeSet). It
 
 The Loader has been tested with MongoDB and Azure CosmosDB API for MongoDB.
 
-There is an additional flag for supporting CosmosDB `-Dflow.mongo.cosmosdbttl=true` as TTL indexes are a known limitation. Additionally, support for CosmosDB means we can't use renameCollection() in our changesets. 
+There is an additional flag for supporting CosmosDB `-Dflow.mongo.cosmosdbttl=true` as [TTL indexes are a known limitation](https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/time-to-live). Additionally, support for CosmosDB means we can't use renameCollection() in our changesets. 
 
 ## ChangeLog and Lock Collections
 
