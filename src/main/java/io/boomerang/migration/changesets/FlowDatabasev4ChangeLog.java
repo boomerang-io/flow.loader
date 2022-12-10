@@ -55,7 +55,7 @@ public class FlowDatabasev4ChangeLog {
   @ChangeSet(order = "4000", id = "4000", author = "Tyson Lawrie")
   public void v4MigrateTaskLockCollection(MongoDatabase db) throws IOException {
     String origCollectionName = collectionPrefix + "tasks_locks";
-    String newCollectionName = collectionPrefix + "task_locks";
+    String newCollectionName = collectionPrefix + "locks";
     
     MongoCollection<Document> origCollection = db.getCollection(origCollectionName);
     
@@ -528,5 +528,26 @@ public class FlowDatabasev4ChangeLog {
     }
 
     // workflowsRevisionsCollection.drop();
+  }
+  
+  /*
+   * MongoDB supports sorting without indexes, it does recommend them. Cosmos needs them and can't automatic sort without them.
+   * 
+   * Ref: https://www.mongodb.com/docs/manual/tutorial/sort-results-with-indexes/
+   * Ref: https://mongodb.github.io/mongo-java-driver/3.5/driver/tutorials/indexes/#compound-indexes
+   * Ref: https://learn.microsoft.com/en-us/azure/cosmos-db/index-policy#order-by-queries-on-multiple-properties
+   */
+  @ChangeSet(order = "4006", id = "4006", author = "Tyson Lawrie")
+  public void v4CreateSortIndexes(MongoDatabase db) throws IOException {
+    String workflowRevisionsCollectionName = collectionPrefix + "workflow_revisions";
+    MongoCollection<Document> workflowRevisionsCollection =
+        db.getCollection(workflowRevisionsCollectionName);
+    workflowRevisionsCollection.createIndex(Indexes.descending("version"));
+  workflowRevisionsCollection.createIndex(Indexes.compoundIndex(Indexes.descending("workflowRef"), Indexes.descending("version")));
+    
+    String taskTemplatesCollectionName = collectionPrefix + "task_templates";
+    MongoCollection<Document> taskTemplatesCollection =
+        db.getCollection(taskTemplatesCollectionName);
+    taskTemplatesCollection.createIndex(Indexes.descending("version"));
   }
 }
