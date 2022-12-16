@@ -274,41 +274,43 @@ public class FlowDatabasev4ChangeLog {
       }
 
       List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
-      for (final Document revision : revisions) {
-        newTaskTemplateEntity.put("version", revision.get("version"));
-        newTaskTemplateEntity.put("changelog", revision.get("changelog"));
-        List<Document> configs = (List<Document>) revision.get("config");
-        newTaskTemplateEntity.put("config", configs);
-        List<Document> params = new LinkedList<>();
-        if (!configs.isEmpty()) {
-          for (final Document config : configs) {
-            Document param = new Document();
-            param.put("name", config.get("key"));
-            param.put("type", "string");
-            param.put("description", config.get("description"));
-            param.put("defaultValue", config.get("defaultValue"));
-            params.add(param);
+      if (revisions != null && !revisions.isEmpty()) {
+        for (final Document revision : revisions) {
+          newTaskTemplateEntity.put("version", revision.get("version"));
+          newTaskTemplateEntity.put("changelog", revision.get("changelog"));
+          List<Document> configs = (List<Document>) revision.get("config");
+          newTaskTemplateEntity.put("config", configs);
+          List<Document> params = new LinkedList<>();
+          if (!configs.isEmpty()) {
+            for (final Document config : configs) {
+              Document param = new Document();
+              param.put("name", config.get("key"));
+              param.put("type", "string");
+              param.put("description", config.get("description"));
+              param.put("defaultValue", config.get("defaultValue"));
+              params.add(param);
+            }
           }
-        }
-        Document spec = new Document();
-        spec.put("params", params);
-        spec.put("arguments", revision.get("arguments"));
-        spec.put("command", revision.get("command"));
-        spec.put("envs", revision.get("envs"));
-        spec.put("image", revision.get("image"));
-        spec.put("results", revision.get("results"));
-        spec.put("script", revision.get("script"));
-        spec.put("workingDir", revision.get("workingDir"));
-        spec.put("script", revision.get("script"));
-        newTaskTemplateEntity.put("spec", spec);
+          Document spec = new Document();
+          spec.put("params", params);
+          spec.put("arguments", revision.get("arguments"));
+          spec.put("command", revision.get("command"));
+          spec.put("envs", revision.get("envs"));
+          spec.put("image", revision.get("image"));
+          spec.put("results", revision.get("results"));
+          spec.put("script", revision.get("script"));
+          spec.put("workingDir", revision.get("workingDir"));
+          spec.put("script", revision.get("script"));
+          newTaskTemplateEntity.put("spec", spec);
 
-        if (revision.get("version").equals(1)) {
-          newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
-          taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
-              newTaskTemplateEntity);
-        } else {
-          newTaskTemplateEntity.remove("_id");
-          taskTemplatesCollection.insertOne(newTaskTemplateEntity);
+          if (revision.get("version").equals(1)) {
+            newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
+            taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
+                newTaskTemplateEntity);
+          } else {
+            newTaskTemplateEntity.remove("_id");
+            taskTemplatesCollection.insertOne(newTaskTemplateEntity);
+          }
         }
       }
     }
@@ -543,7 +545,7 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> workflowRevisionsCollection =
         db.getCollection(workflowRevisionsCollectionName);
     workflowRevisionsCollection.createIndex(Indexes.descending("version"));
-  workflowRevisionsCollection.createIndex(Indexes.compoundIndex(Indexes.descending("workflowRef"), Indexes.descending("version")));
+    workflowRevisionsCollection.createIndex(Indexes.compoundIndex(Indexes.descending("workflowRef"), Indexes.descending("version")));
     
     String taskTemplatesCollectionName = collectionPrefix + "task_templates";
     MongoCollection<Document> taskTemplatesCollection =
