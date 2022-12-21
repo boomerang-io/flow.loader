@@ -541,6 +541,11 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4006", id = "4006", author = "Tyson Lawrie")
   public void v4CreateSortIndexes(MongoDatabase db) throws IOException {
+    String workflowsCollectionName = collectionPrefix + "workflows";
+    MongoCollection<Document> workflowsCollection =
+        db.getCollection(workflowsCollectionName);
+    workflowsCollection.createIndex(Indexes.descending("creationDate"));
+    
     String workflowRevisionsCollectionName = collectionPrefix + "workflow_revisions";
     MongoCollection<Document> workflowRevisionsCollection =
         db.getCollection(workflowRevisionsCollectionName);
@@ -551,5 +556,16 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(taskTemplatesCollectionName);
     taskTemplatesCollection.createIndex(Indexes.descending("version"));
+    taskTemplatesCollection.createIndex(Indexes.descending("creationDate"));
+    
+    String taskRunsCollectionName = collectionPrefix + "task_runs";
+    MongoCollection<Document> taskRunsCollection =
+        db.getCollection(taskRunsCollectionName);
+    taskRunsCollection.createIndex(Indexes.descending("creationDate"));
+    
+    String workflowRunsCollectionName = collectionPrefix + "workflow_runs";
+    MongoCollection<Document> workflowRunsCollection =
+        db.getCollection(workflowRunsCollectionName);
+    workflowRunsCollection.createIndex(Indexes.descending("creationDate"));
   }
 }
