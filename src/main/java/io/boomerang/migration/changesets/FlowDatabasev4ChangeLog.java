@@ -108,6 +108,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document workflowsActivityEntity : workflowsActivityEntities) {
       List<Document> labels = (List<Document>) workflowsActivityEntity.get("labels");
       Map<String, String> newLabels = new HashMap<>();
+      if (labels != null && !labels.isEmpty())
       for (final Document label : labels) {
         newLabels.put(label.getString("key"), label.getString("value"));
       }
