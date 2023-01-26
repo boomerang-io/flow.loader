@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -54,6 +53,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4000", id = "4000", author = "Tyson Lawrie")
   public void v4MigrateTaskLockCollection(MongoDatabase db) throws IOException {
+    logger.info("Commencing v4 Migration Change Sets...");
     String origCollectionName = collectionPrefix + "tasks_locks";
     String newCollectionName = collectionPrefix + "locks";
     
@@ -94,6 +94,13 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4002", id = "4002", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActivity(MongoDatabase db) throws IOException {
+    String relationshipCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
+    if (relationshipCollection == null) {
+      db.createCollection(relationshipCollectionName);
+    }
+    relationshipCollection = db.getCollection(relationshipCollectionName);
+    
     String newCollectionName = collectionPrefix + "workflow_runs";
     MongoCollection<Document> workflowRunsCollection = db.getCollection(newCollectionName);
     if (workflowRunsCollection == null) {
@@ -116,11 +123,15 @@ public class FlowDatabasev4ChangeLog {
       Map<String, Object> annotations = new HashMap<>();
       workflowsActivityEntity.put("annotations", annotations);
 
-      // TODO: map this to a relationship
+      // Migrate initiated by
+      String initiatedByRef = "";
+      if (workflowsActivityEntity.get("initiatedByUserId") != null) {
+        initiatedByRef = (String) workflowsActivityEntity.get("initiatedByUserId");
+      } else { 
+        initiatedByRef = (String) workflowsActivityEntity.get("initiatedByUserName");
+      }
       workflowsActivityEntity.remove("initiatedByUserId");
       workflowsActivityEntity.remove("initiatedByUserName");
-      workflowsActivityEntity.remove("teamId");
-      workflowsActivityEntity.remove("userId");
 
       Long duration = (Long) workflowsActivityEntity.get("duration");
       long newDuration = 0;
@@ -159,12 +170,14 @@ public class FlowDatabasev4ChangeLog {
         workflowsActivityEntity.replace("statusOverride", statusOverride);
       }
 
+      //Change from ID to Ref based linkage
       workflowsActivityEntity.put("workflowRef", workflowsActivityEntity.get("workflowId"));
       workflowsActivityEntity.remove("workflowId");
       workflowsActivityEntity.put("workflowRevisionRef",
           workflowsActivityEntity.get("workflowRevisionId"));
       workflowsActivityEntity.remove("workflowRevisionId");
 
+      //Convert properties to params
       List<Document> properties = new LinkedList<>();
       List<Document> params = new LinkedList<>();
       for (final Document property : properties) {
@@ -174,6 +187,7 @@ public class FlowDatabasev4ChangeLog {
         params.add(param);
       }
 
+      //Convert outputProperties to Results
       List<Document> outputProperties = new LinkedList<>();
       List<Document> results = new LinkedList<>();
       for (final Document outputProperty : outputProperties) {
@@ -184,6 +198,24 @@ public class FlowDatabasev4ChangeLog {
       }
 
       workflowsActivityEntity.remove("switchValue");
+      
+      // Convert owner to relationship
+      Document relationship = new Document();
+      relationship.put("relationship", "belongs-to");
+      relationship.put("fromType", "workflow_run");
+      relationship.put("fromRef", workflowsActivityEntity.get("_id"));
+      if ("user".equals((String) workflowsActivityEntity.get("scope"))) {
+        relationship.put("toType", "user");
+        relationship.put("toRef", workflowsActivityEntity.get("userId"));
+      } else if ("team".equals((String) workflowsActivityEntity.get("scope"))) {
+        relationship.put("toType", "team");
+        relationship.put("toRef", workflowsActivityEntity.get("teamId"));
+      } else {
+        relationship.put("toType", workflowsActivityEntity.get("scope"));
+      }
+      relationshipCollection.insertOne(relationship);
+      workflowsActivityEntity.remove("teamId");
+      workflowsActivityEntity.remove("userId");
 
       // TODO: determine what to do with Workspaces
 
@@ -220,16 +252,14 @@ public class FlowDatabasev4ChangeLog {
           workflowsActivityApprovalEntity.get("activityId"));
       workflowsActivityApprovalEntity.remove("activityId");
       workflowsActivityApprovalEntity.put("taskRunRef",
-          workflowsActivityApprovalEntity.get("taskActivityid"));
-      workflowsActivityApprovalEntity.remove("taskActivityid");
+          workflowsActivityApprovalEntity.get("taskActivityId"));
+      workflowsActivityApprovalEntity.remove("taskActivityId");
       String type = (String) workflowsActivityApprovalEntity.get("type");
       if ("task".equals(type)) {
         workflowsActivityApprovalEntity.replace("status", "manual");
       }
 
-      // TODO: move to relationship
       workflowsActivityApprovalEntity.remove("teamId");
-
       workflowActionsCollection.insertOne(workflowsActivityApprovalEntity);
     }
 
@@ -241,8 +271,12 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4004", id = "4004", author = "Tyson Lawrie")
   public void v4MigrationTaskTemplates(MongoDatabase db) throws IOException {
-
-    logger.info("v4::Commencing v4 Migration Change Sets");
+    String relationshipCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
+    if (relationshipCollection == null) {
+      db.createCollection(relationshipCollectionName);
+    }
+    relationshipCollection = db.getCollection(relationshipCollectionName);
 
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(collectionPrefix + "task_templates");
@@ -258,7 +292,8 @@ public class FlowDatabasev4ChangeLog {
       newTaskTemplateEntity.put("category", taskTemplateEntity.get("category"));
       newTaskTemplateEntity.put("icon", taskTemplateEntity.get("icon"));
       newTaskTemplateEntity.put("verified", taskTemplateEntity.get("verified"));
-      newTaskTemplateEntity.put("scope", "global"); // all task_templates in loader are Global
+      String scope = (String) taskTemplateEntity.get("scope");
+      newTaskTemplateEntity.put("scope", scope != null || !scope.isEmpty() ? scope : "global");
       Map<String, String> labels = new HashMap<>();
       newTaskTemplateEntity.put("labels", labels);
       Map<String, Object> annotations = new HashMap<>();
@@ -273,6 +308,19 @@ public class FlowDatabasev4ChangeLog {
       } else {
         newTaskTemplateEntity.put("type", taskTemplateEntity.get("nodetype"));
       }
+     
+      // Convert owner to relationship
+      // Set fromRef later in the method once task template ID is known
+      Document relationship = new Document();
+      relationship.put("relationship", "belongs-to");
+      relationship.put("fromType", "task_template");
+      if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
+        relationship.put("toType", "team");
+        relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
+      } else {
+        relationship.put("toType", newTaskTemplateEntity.get("scope"));
+      }
+      relationshipCollection.insertOne(relationship);
 
       List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
       if (revisions != null && !revisions.isEmpty()) {
@@ -305,13 +353,17 @@ public class FlowDatabasev4ChangeLog {
           newTaskTemplateEntity.put("spec", spec);
 
           if (revision.get("version").equals(1)) {
-            newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
+            relationship.put("fromRef", newTaskTemplateEntity.get("_id"));
             taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
                 newTaskTemplateEntity);
           } else {
-            newTaskTemplateEntity.remove("_id");
+            newTaskTemplateEntity.put("_id", new ObjectId());
             taskTemplatesCollection.insertOne(newTaskTemplateEntity);
           }
+          
+          // Store relationship
+          relationship.put("fromRef", newTaskTemplateEntity.get("_id"));
+          relationshipCollection.insertOne(relationship);
         }
       }
     }
@@ -324,6 +376,13 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4005", id = "4005", author = "Tyson Lawrie")
   public void v4MigrateWorkflowsAndRevisions(MongoDatabase db) throws IOException {
+    String relationshipCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
+    if (relationshipCollection == null) {
+      db.createCollection(relationshipCollectionName);
+    }
+    relationshipCollection = db.getCollection(relationshipCollectionName);
+    
     String taskTemplateCollectionName = collectionPrefix + "task_templates";
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(taskTemplateCollectionName);
@@ -521,7 +580,21 @@ public class FlowDatabasev4ChangeLog {
         logger.info("Migrated v4 WorkflowRevision: " + workflowRevisionEntity.toJson());
       }
 
-      // TODO move to relationships
+   // Convert owner to relationship
+      Document relationship = new Document();
+      relationship.put("relationship", "belongs-to");
+      relationship.put("fromType", "workflow");
+      relationship.put("fromRef", workflowsEntity.get("_id"));
+      if ("user".equals((String) workflowsEntity.get("scope"))) {
+        relationship.put("toType", "user");
+        relationship.put("toRef", workflowsEntity.get("ownerUserId"));
+      } else if ("team".equals((String) workflowsEntity.get("scope"))) {
+        relationship.put("toType", "team");
+        relationship.put("toRef", workflowsEntity.get("flowTeamId"));
+      } else {
+        relationship.put("toType", workflowsEntity.get("scope"));
+      }
+      relationshipCollection.insertOne(relationship);
       workflowsEntity.remove("flowTeamId");
       workflowsEntity.remove("ownerUserId");
 
@@ -530,7 +603,7 @@ public class FlowDatabasev4ChangeLog {
           workflowsEntity);
     }
 
-    // workflowsRevisionsCollection.drop();
+//     workflowsRevisionsCollection.drop();
   }
   
   /*
@@ -568,5 +641,20 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> workflowRunsCollection =
         db.getCollection(workflowRunsCollectionName);
     workflowRunsCollection.createIndex(Indexes.descending("creationDate"));
+  }
+  
+  /*
+   * Creates the Relationship collection.
+   * 
+   * While the prior v4 loaders do reference this collection, it was introduced after the loader had been used by the community
+   * Hence we do safe check creation.
+   */
+  @ChangeSet(order = "4007", id = "4007", author = "Tyson Lawrie")
+  public void v4CreateRelationshipCollection(MongoDatabase db) throws IOException {
+    String relationshipCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
+    if (relationshipCollection == null) {
+      db.createCollection(relationshipCollectionName);
+    }    
   }
 }
