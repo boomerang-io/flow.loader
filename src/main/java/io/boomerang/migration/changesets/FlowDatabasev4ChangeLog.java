@@ -346,6 +346,7 @@ public class FlowDatabasev4ChangeLog {
           // Set fromRef later in the method once task template ID is known
           // Needs to be in inner loop so relationship document is refreshed each time
           Document relationship = new Document();
+          relationship.put("_id", new ObjectId());
           relationship.put("relationship", "belongs-to");
           relationship.put("fromType", "task_template");
           if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
