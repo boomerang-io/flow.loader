@@ -311,19 +311,6 @@ public class FlowDatabasev4ChangeLog {
       } else {
         newTaskTemplateEntity.put("type", taskTemplateEntity.get("nodetype"));
       }
-     
-      // Convert owner to relationship
-      // Set fromRef later in the method once task template ID is known
-      Document relationship = new Document();
-      relationship.put("relationship", "belongs-to");
-      relationship.put("fromType", "task_template");
-      if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
-        relationship.put("toType", "team");
-        relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
-      } else {
-        relationship.put("toType", newTaskTemplateEntity.get("scope"));
-      }
-      relationshipCollection.insertOne(relationship);
 
       List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
       if (revisions != null && !revisions.isEmpty()) {
@@ -354,6 +341,20 @@ public class FlowDatabasev4ChangeLog {
           spec.put("workingDir", revision.get("workingDir"));
           spec.put("script", revision.get("script"));
           newTaskTemplateEntity.put("spec", spec);
+          
+          // Convert owner to relationship
+          // Set fromRef later in the method once task template ID is known
+          // Needs to be in inner loop so relationship document is refreshed each time
+          Document relationship = new Document();
+          relationship.put("relationship", "belongs-to");
+          relationship.put("fromType", "task_template");
+          if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
+            relationship.put("toType", "team");
+            relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
+          } else {
+            relationship.put("toType", newTaskTemplateEntity.get("scope"));
+          }
+          relationshipCollection.insertOne(relationship);
 
           if (revision.get("version").equals(1)) {
             relationship.put("fromRef", newTaskTemplateEntity.get("_id"));
