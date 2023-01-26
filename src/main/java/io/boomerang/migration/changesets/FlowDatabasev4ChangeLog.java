@@ -292,8 +292,11 @@ public class FlowDatabasev4ChangeLog {
       newTaskTemplateEntity.put("category", taskTemplateEntity.get("category"));
       newTaskTemplateEntity.put("icon", taskTemplateEntity.get("icon"));
       newTaskTemplateEntity.put("verified", taskTemplateEntity.get("verified"));
-      String scope = (String) taskTemplateEntity.get("scope");
-      newTaskTemplateEntity.put("scope", scope != null || !scope.isEmpty() ? scope : "global");
+      if (taskTemplateEntity.get("scope") != null) {
+        newTaskTemplateEntity.put("scope", (String) taskTemplateEntity.get("scope"));
+      } else {
+        newTaskTemplateEntity.put("scope", "global");
+      }      
       Map<String, String> labels = new HashMap<>();
       newTaskTemplateEntity.put("labels", labels);
       Map<String, Object> annotations = new HashMap<>();
