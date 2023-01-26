@@ -203,7 +203,7 @@ public class FlowDatabasev4ChangeLog {
       Document relationship = new Document();
       relationship.put("relationship", "belongs-to");
       relationship.put("fromType", "workflow_run");
-      relationship.put("fromRef", workflowsActivityEntity.get("_id"));
+      relationship.put("fromRef", workflowsActivityEntity.getObjectId("_id"));
       if ("user".equals((String) workflowsActivityEntity.get("scope"))) {
         relationship.put("toType", "user");
         relationship.put("toRef", workflowsActivityEntity.get("userId"));
@@ -366,7 +366,7 @@ public class FlowDatabasev4ChangeLog {
           }
           
           // Store relationship
-          relationship.put("fromRef", newTaskTemplateEntity.get("_id"));
+          relationship.put("fromRef", newTaskTemplateEntity.getObjectId("_id"));
           relationshipCollection.insertOne(relationship);
         }
       }
@@ -588,7 +588,7 @@ public class FlowDatabasev4ChangeLog {
       Document relationship = new Document();
       relationship.put("relationship", "belongs-to");
       relationship.put("fromType", "workflow");
-      relationship.put("fromRef", workflowsEntity.get("_id"));
+      relationship.put("fromRef", workflowsEntity.getObjectId("_id"));
       if ("user".equals((String) workflowsEntity.get("scope"))) {
         relationship.put("toType", "user");
         relationship.put("toRef", workflowsEntity.get("ownerUserId"));
