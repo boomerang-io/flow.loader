@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.DuplicateKeyException;
@@ -212,16 +213,16 @@ public class FlowDatabasev4ChangeLog {
       // Convert owner to relationship
       Document relationship = new Document();
       relationship.put("relationship", "belongs-to");
-      relationship.put("fromType", "workflow_run");
+      relationship.put("fromType", "WorkflowRun");
       relationship.put("fromRef", workflowsActivityEntity.get("_id").toString());
       if ("user".equals((String) workflowsActivityEntity.get("scope"))) {
-        relationship.put("toType", "user");
+        relationship.put("toType", "User");
         relationship.put("toRef", workflowsActivityEntity.get("userId"));
       } else if ("team".equals((String) workflowsActivityEntity.get("scope"))) {
-        relationship.put("toType", "team");
+        relationship.put("toType", "Team");
         relationship.put("toRef", workflowsActivityEntity.get("teamId"));
       } else {
-        relationship.put("toType", workflowsActivityEntity.get("scope"));
+        relationship.put("toType", StringUtils.capitalize((String) workflowsActivityEntity.get("scope")));
       }
       relationshipCollection.insertOne(relationship);
       workflowsActivityEntity.remove("teamId");
@@ -356,12 +357,12 @@ public class FlowDatabasev4ChangeLog {
           // Convert owner to relationship
           Document relationship = new Document();
           relationship.put("relationship", "belongs-to");
-          relationship.put("fromType", "task_template");
+          relationship.put("fromType", "TaskTemplate");
           if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
-            relationship.put("toType", "team");
+            relationship.put("toType", "Team");
             relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
           } else {
-            relationship.put("toType", newTaskTemplateEntity.get("scope"));
+            relationship.put("toType", StringUtils.capitalize((String) newTaskTemplateEntity.get("scope")));
           }
 
           if (revision.get("version").equals(1)) {
@@ -611,16 +612,18 @@ public class FlowDatabasev4ChangeLog {
       // Convert owner to relationship
       Document relationship = new Document();
       relationship.put("relationship", "belongs-to");
-      relationship.put("fromType", "workflow");
+      relationship.put("fromType", "Workflow");
       relationship.put("fromRef", workflowsEntity.getObjectId("_id").toString());
       if ("user".equals((String) workflowsEntity.get("scope"))) {
-        relationship.put("toType", "user");
+        relationship.put("toType", "User");
         relationship.put("toRef", workflowsEntity.get("ownerUserId"));
       } else if ("team".equals((String) workflowsEntity.get("scope"))) {
-        relationship.put("toType", "team");
+        relationship.put("toType", "Team");
         relationship.put("toRef", workflowsEntity.get("flowTeamId"));
+      } else if ("template".equals((String) workflowsEntity.get("scope"))) {
+        relationship.put("toType", "System");
       } else {
-        relationship.put("toType", workflowsEntity.get("scope"));
+        relationship.put("toType", StringUtils.capitalize((String) workflowsEntity.get("scope")));
       }
       relationshipCollection.insertOne(relationship);
       workflowsEntity.remove("flowTeamId");
