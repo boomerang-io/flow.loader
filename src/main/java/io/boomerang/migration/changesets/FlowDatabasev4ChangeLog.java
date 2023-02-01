@@ -708,7 +708,7 @@ public class FlowDatabasev4ChangeLog {
     
     String workflowRunsCollectionName = collectionPrefix + "workflow_runs";
     MongoCollection<Document> workflowRunsCollection = db.getCollection(workflowRunsCollectionName);
-    workflowRunsCollection.createIndex(Indexes.descending("labels.$**"));
+    workflowRunsCollection.createIndex(Indexes.ascending("labels.$**"));
     workflowRunsCollection.createIndex(Indexes.descending("status"));
     workflowRunsCollection.createIndex(Indexes.descending("phase"));
   }
