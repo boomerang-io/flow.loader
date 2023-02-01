@@ -688,8 +688,28 @@ public class FlowDatabasev4ChangeLog {
       db.createCollection(relationshipCollectionName);
     }
     relationshipCollection = db.getCollection(relationshipCollectionName);
-    
     relationshipCollection.createIndex(Indexes.descending("fromRef"));
     relationshipCollection.createIndex(Indexes.descending("toRef"));
+  }
+
+  /*
+   * Creates additional indexes for the TaskRun & WorkflowRun Query.
+   * 
+   * While the prior v4 loaders do reference this collection, it was introduced after the loader had
+   * been used by the community Hence we do safe check creation.
+   */
+  @ChangeSet(order = "4008", id = "4008", author = "Tyson Lawrie")
+  public void v4CreateQueryIndexes(MongoDatabase db) throws IOException {
+    String taskRunsCollectionName = collectionPrefix + "task_runs";
+    MongoCollection<Document> taskRunsCollection = db.getCollection(taskRunsCollectionName);
+    taskRunsCollection.createIndex(Indexes.descending("labels.$**"));
+    taskRunsCollection.createIndex(Indexes.descending("status"));
+    taskRunsCollection.createIndex(Indexes.descending("phase"));
+    
+    String workflowRunsCollectionName = collectionPrefix + "workflow_runs";
+    MongoCollection<Document> workflowRunsCollection = db.getCollection(workflowRunsCollectionName);
+    workflowRunsCollection.createIndex(Indexes.descending("labels.$**"));
+    workflowRunsCollection.createIndex(Indexes.descending("status"));
+    workflowRunsCollection.createIndex(Indexes.descending("phase"));
   }
 }
