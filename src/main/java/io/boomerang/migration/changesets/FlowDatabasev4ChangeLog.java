@@ -702,7 +702,7 @@ public class FlowDatabasev4ChangeLog {
   public void v4CreateQueryIndexes(MongoDatabase db) throws IOException {
     String taskRunsCollectionName = collectionPrefix + "task_runs";
     MongoCollection<Document> taskRunsCollection = db.getCollection(taskRunsCollectionName);
-    taskRunsCollection.createIndex(Indexes.descending("labels.$**"));
+    taskRunsCollection.createIndex(Indexes.ascending("labels.$**"));
     taskRunsCollection.createIndex(Indexes.descending("status"));
     taskRunsCollection.createIndex(Indexes.descending("phase"));
     
