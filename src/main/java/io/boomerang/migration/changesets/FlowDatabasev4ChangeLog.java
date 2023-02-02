@@ -712,4 +712,22 @@ public class FlowDatabasev4ChangeLog {
     workflowRunsCollection.createIndex(Indexes.descending("status"));
     workflowRunsCollection.createIndex(Indexes.descending("phase"));
   }
+
+  /*
+   * Creates additional indexes for the TaskRun & WorkflowRun Query.
+   * 
+   * While the prior v4 loaders do reference this collection, it was introduced after the loader had
+   * been used by the community Hence we do safe check creation.
+   */
+  @ChangeSet(order = "4009", id = "4009", author = "Tyson Lawrie")
+  public void v4CreateQueryIndexes2(MongoDatabase db) throws IOException {
+    String taskRunsCollectionName = collectionPrefix + "task_runs";
+    MongoCollection<Document> taskRunsCollection = db.getCollection(taskRunsCollectionName);
+    taskRunsCollection.createIndex(Indexes.descending("name"));
+    taskRunsCollection.createIndex(Indexes.descending("workflowRunRef"));
+    
+    String taskTemplatesCollectionName = collectionPrefix + "task_templates";
+    MongoCollection<Document> taskTemplatesCollection = db.getCollection(taskTemplatesCollectionName);
+    taskTemplatesCollection.createIndex(Indexes.descending("name"));
+  }
 }
