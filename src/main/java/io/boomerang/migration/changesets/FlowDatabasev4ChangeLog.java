@@ -730,4 +730,18 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> taskTemplatesCollection = db.getCollection(taskTemplatesCollectionName);
     taskTemplatesCollection.createIndex(Indexes.descending("name"));
   }
+  
+  /*
+   * Load in v2 of the Sleep TaskTemplate migrating to a system task
+   */
+  @ChangeSet(order = "4010", id = "4010", author = "Tyson Lawrie")
+  public void updateSleepTaskTemplate(MongoDatabase db) throws IOException {
+    final List<String> files = fileloadingService.loadFiles("flow/4010/task_templates/*.json");
+    for (final String fileContents : files) {
+      final Document doc = Document.parse(fileContents);
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_templates");
+      collection.insertOne(doc);
+    }
+  }
 }
