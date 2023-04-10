@@ -798,17 +798,13 @@ public class FlowDatabasev4ChangeLog {
       teamsEntity.remove("isActive");
       
       // Migrate Properties to Parameters and bump into higher level
-      List<Document> settings = (List<Document>) teamsEntity.get("settings");
+      Document settings = (Document) teamsEntity.get("settings");
       if (settings != null) {
-        for (final Document setting : settings) {
-          if (setting != null) {
-            teamsEntity.put("parameters",
-                setting.get("properties") != null ? setting.get("properties")
-                    : new LinkedList<>());
-          } else {
-            teamsEntity.put("parameters", new LinkedList<>());
-          }
-        }
+        teamsEntity.put("parameters",
+            settings.get("properties") != null ? settings.get("properties")
+                : new LinkedList<>());
+      } else {
+        teamsEntity.put("parameters", new LinkedList<>());
       }
       teamsEntity.remove("settings");
       
