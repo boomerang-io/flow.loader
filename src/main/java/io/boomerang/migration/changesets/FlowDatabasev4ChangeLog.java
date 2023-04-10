@@ -2,6 +2,7 @@ package io.boomerang.migration.changesets;
 
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -742,6 +743,103 @@ public class FlowDatabasev4ChangeLog {
       final MongoCollection<Document> collection =
           db.getCollection(collectionPrefix + "task_templates");
       collection.insertOne(doc);
+    }
+  }
+
+  /*
+   * Migrate Teams
+   * 
+   * Need to check if Teams collection exists as for IBM Services Essentials it may not with the change to internalised teams.
+   * 
+   */
+  @ChangeSet(order = "4011", id = "4011", author = "Tyson Lawrie")
+  public void v4MigrateTeams(MongoDatabase db) throws IOException {
+    String relationshipCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
+
+    String teamsCollectionName = collectionPrefix + "teams";
+    MongoCollection<Document> teamsCollection =
+        db.getCollection(teamsCollectionName);
+    if (teamsCollection == null) {
+      db.createCollection(teamsCollectionName);
+    }
+    teamsCollection = db.getCollection(teamsCollectionName);
+
+    final FindIterable<Document> teamsEntities = teamsCollection.find();
+    for (final Document teamsEntity : teamsEntities) {
+      logger.info("Migrating Team - ID: " + teamsEntity.get("_id"));
+
+      teamsEntity.put("creationDate", new Date());
+      
+      // Convert Labels
+      List<Document> labels = (List<Document>) teamsEntity.get("labels");
+      Map<String, String> newLabels = new HashMap<>();
+      if (labels != null) {
+        for (final Document label : labels) {
+          newLabels.put(label.getString("key"), label.getString("value"));
+        }
+        teamsEntity.replace("labels", newLabels);
+      } else {
+        teamsEntity.put("labels", newLabels);
+      }
+
+      // Migrate HLG ID to externalRef
+      teamsEntity.put("externalRef",
+          teamsEntity.get("higherLevelGroupId"));
+      teamsEntity.remove("higherLevelGroupId");
+      
+      //Migrate Status
+      Boolean isActive = (Boolean) teamsEntity.get("isActive");
+      if (isActive) {
+        teamsEntity.put("status", "active");
+      } else {
+        teamsEntity.put("status", "inactive");
+      }
+      teamsEntity.remove("isActive");
+      
+      // Migrate Properties to Parameters and bump into higher level
+      List<Document> settings = (List<Document>) teamsEntity.get("settings");
+      if (settings != null) {
+        for (final Document setting : settings) {
+          if (setting != null) {
+            teamsEntity.put("parameters",
+                setting.get("properties") != null ? setting.get("properties")
+                    : new LinkedList<>());
+          } else {
+            teamsEntity.put("parameters", new LinkedList<>());
+          }
+        }
+      }
+      teamsEntity.remove("settings");
+      
+      //Migrate ApproverGroups
+      List<Document> approverGroups = (List<Document>) teamsEntity.get("approverGroups");
+      if (approverGroups != null) {
+        for (final Document approverGroup : approverGroups) {
+          approverGroup.put("creationDate", new Date());
+          List<Document> approvers = (List<Document>) approverGroup.get("approvers");
+          List<String> approverRefs = new LinkedList<>();
+          if (approvers != null) {
+            for (final Document approver : approvers) {
+              approverRefs.add(approver.get("userId").toString());
+            }
+          }
+          approverGroup.put("approverRefs", approverRefs);
+          approverGroup.remove("approvers");
+          ObjectId newId = new ObjectId();
+          approverGroup.put("_id", newId);
+          
+          //Add relationship between Team and ApproverGroup
+          Document relationship = new Document();
+          relationship.put("relationship", "belongs-to");
+          relationship.put("fromType", "ApproverGroup");
+          relationship.put("fromRef", newId);
+          relationship.put("toType", "Team");
+          relationship.put("toRef", teamsEntity.get("_id"));
+          relationshipCollection.insertOne(relationship);
+        }
+      }
+      teamsEntity.remove("approverGroups");
     }
   }
 }
