@@ -835,7 +835,10 @@ public class FlowDatabasev4ChangeLog {
           relationshipCollection.insertOne(relationship);
         }
       }
-      teamsEntity.remove("approverGroups");
+      teamsEntity.remove("approverGroups");      
+      logger.info("Migrated v4 Team: " + teamsEntity.toJson());
+      teamsCollection.replaceOne(eq("_id", teamsEntity.getObjectId("_id")),
+          teamsEntity);
     }
   }
 }
