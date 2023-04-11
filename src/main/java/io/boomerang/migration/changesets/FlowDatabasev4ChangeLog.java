@@ -228,6 +228,7 @@ public class FlowDatabasev4ChangeLog {
       relationshipCollection.insertOne(relationship);
       workflowsActivityEntity.remove("teamId");
       workflowsActivityEntity.remove("userId");
+      workflowsActivityEntity.remove("scope");
 
       workflowRunsCollection.insertOne(workflowsActivityEntity);
     }
@@ -327,7 +328,6 @@ public class FlowDatabasev4ChangeLog {
       List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
       if (revisions != null && !revisions.isEmpty()) {
         for (final Document revision : revisions) {
-
           newTaskTemplateEntity.put("version", revision.get("version"));
           newTaskTemplateEntity.put("changelog", revision.get("changelog"));
           List<Document> configs = (List<Document>) revision.get("config");
@@ -839,6 +839,80 @@ public class FlowDatabasev4ChangeLog {
       logger.info("Migrated v4 Team: " + teamsEntity.toJson());
       teamsCollection.replaceOne(eq("_id", teamsEntity.getObjectId("_id")),
           teamsEntity);
+    }
+  }
+
+  /*
+   * Migrate Relationships
+   * 
+   * - Add creationDate
+   * - Change relationship string
+   * 
+   */
+  @ChangeSet(order = "4011", id = "4011", author = "Tyson Lawrie")
+  public void v4MigrateRelationships(MongoDatabase db) throws IOException {
+    String relationshipCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
+    final FindIterable<Document> relationshipEntities = relationshipCollection.find();
+    for (final Document relationshipEntity : relationshipEntities) {
+      logger.info("Migrating Relationship - ID: " + relationshipEntity.get("_id"));
+
+      relationshipEntity.put("creationDate", new Date());
+      if ("belongs-to".equals(relationshipEntity.get("relationship").toString())) {
+        relationshipEntity.replace("relationship", "belongsTo");
+      }
+
+      relationshipCollection.replaceOne(eq("_id", relationshipEntity.getObjectId("_id")),
+          relationshipEntity);
+    }
+  }
+
+  /*
+   * Migrate Changelogs
+   * 
+   * - Remove userName (PI)
+   * - Rename userId to Author
+   * 
+   */
+  @ChangeSet(order = "4012", id = "4012", author = "Tyson Lawrie")
+  public void v4MigrateChangelog(MongoDatabase db) throws IOException {
+    String revisionCollectionName = collectionPrefix + "workflow_revisions";
+    MongoCollection<Document> workflowRevisionsCollection =
+        db.getCollection(revisionCollectionName);
+    
+    final FindIterable<Document> workflowRevisionEntities = workflowRevisionsCollection.find();
+    for (final Document workflowRevisionEntity : workflowRevisionEntities) {
+      if (workflowRevisionEntity.get("changelog") != null) {
+        Document changelog = (Document) workflowRevisionEntity.get("changelog");
+        if (changelog != null) {
+          if (changelog.get("userId") != null) {
+            changelog.put("author", changelog.get("userId"));
+            changelog.remove("userId");
+          }
+          changelog.remove("userName");
+          workflowRevisionEntity.replace("changelog", changelog);
+          workflowRevisionsCollection.replaceOne(eq("_id", workflowRevisionEntity.getObjectId("_id")),
+              workflowRevisionEntity);
+        }
+      }
+    }
+    
+    MongoCollection<Document> taskTemplatesCollection =
+        db.getCollection(collectionPrefix + "task_templates");
+
+    final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
+    for (final Document taskTemplateEntity : taskTemplateEntities) {
+        Document changelog = (Document) taskTemplateEntity.get("changelog");
+        if (changelog != null) {
+          if (changelog.get("userId") != null) {
+            changelog.put("author", changelog.get("userId"));
+            changelog.remove("userId");
+          }
+          changelog.remove("userName");
+          taskTemplateEntity.replace("changelog", changelog);
+          taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
+              taskTemplateEntity);
+        }
     }
   }
 }
