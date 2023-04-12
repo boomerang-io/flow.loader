@@ -859,7 +859,7 @@ public class FlowDatabasev4ChangeLog {
 
       relationshipEntity.put("creationDate", new Date());
       if ("belongs-to".equals(relationshipEntity.get("relationship").toString())) {
-        relationshipEntity.replace("relationship", "belongsTo");
+        relationshipEntity.replace("relationship", "BELONGSTO");
       }
 
       relationshipCollection.replaceOne(eq("_id", relationshipEntity.getObjectId("_id")),
