@@ -610,7 +610,6 @@ public class FlowDatabasev4ChangeLog {
         workflowRevisionEntity.put("params", params);
 
         workflowRevisionsCollection.insertOne(workflowRevisionEntity);
-        logger.info("Migrated v4 WorkflowRevision: " + workflowRevisionEntity.toJson());
       }
 
       // Convert owner to relationship
@@ -633,7 +632,6 @@ public class FlowDatabasev4ChangeLog {
       workflowsEntity.remove("flowTeamId");
       workflowsEntity.remove("ownerUserId");
 
-      logger.info("Migrated v4 Workflow: " + workflowsEntity.toJson());
       workflowsCollection.replaceOne(eq("_id", workflowsEntity.getObjectId("_id")),
           workflowsEntity);
     }
@@ -838,8 +836,7 @@ public class FlowDatabasev4ChangeLog {
           relationshipCollection.insertOne(relationship);
         }
       }
-      teamsEntity.remove("approverGroups");      
-      logger.info("Migrated v4 Team: " + teamsEntity.toJson());
+      teamsEntity.remove("approverGroups");
       teamsCollection.replaceOne(eq("_id", teamsEntity.getObjectId("_id")),
           teamsEntity);
     }
@@ -901,6 +898,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4013", id = "4013", author = "Tyson Lawrie")
   public void v4MigrateChangelog(MongoDatabase db) throws IOException {
+    logger.info("Migrating Workflow Revision Changelogs");
     String revisionCollectionName = collectionPrefix + "workflow_revisions";
     MongoCollection<Document> workflowRevisionsCollection =
         db.getCollection(revisionCollectionName);
@@ -925,6 +923,7 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(collectionPrefix + "task_templates");
 
+    logger.info("Migrating TaskTemplate Changelogs");
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
         Document changelog = (Document) taskTemplateEntity.get("changelog");
@@ -962,6 +961,7 @@ public class FlowDatabasev4ChangeLog {
     
     final FindIterable<Document> userEntities = usersCollection.find();
     for (final Document userEntity : userEntities) {
+      logger.info("Migrating Users - ID: " + userEntity.get("_id").toString());
       String userName = userEntity.getString("name");
       Document team = new Document();
       if (userEntity.get("quotas") != null) {
@@ -1010,6 +1010,7 @@ public class FlowDatabasev4ChangeLog {
       Bson wfQuery3 = Filters.eq("to", "USER");
       Bson wfQuery4 = Filters.eq("toRef", userEntity.get("_id").toString());
       Bson wfQueryAll = Filters.and(wfQuery1, wfQuery2, wfQuery3, wfQuery4);
+      logger.info("Migrating Users - Workflow Relationship Filter: " + wfQueryAll.toString());
       final FindIterable<Document> wfRelationships = relationshipsCollection.find(wfQueryAll);
       if (wfRelationships != null) {
         for (final Document eRel : wfRelationships) {
@@ -1025,6 +1026,7 @@ public class FlowDatabasev4ChangeLog {
       Bson wfRunQuery3 = Filters.eq("to", "USER");
       Bson wfRunQuery4 = Filters.eq("toRef", userEntity.get("_id").toString());
       Bson wfRunQueryAll = Filters.and(wfRunQuery1, wfRunQuery2, wfRunQuery3, wfRunQuery4);
+      logger.info("Migrating Users - WorkflowRun Relationship Filter: " + wfRunQueryAll.toString());
       final FindIterable<Document> wfRunRelationships = relationshipsCollection.find(wfRunQueryAll);
       if (wfRunRelationships != null) {
         for (final Document eRel : wfRunRelationships) {
@@ -1047,6 +1049,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4015", id = "4015", author = "Tyson Lawrie")
   public void v4MigrateSystemToATeam(MongoDatabase db) throws IOException {
+    logger.info("Migrating System");
     String teamsCollectionName = collectionPrefix + "teams";
     MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
     
@@ -1074,6 +1077,7 @@ public class FlowDatabasev4ChangeLog {
     Bson wfQuery2 = Filters.eq("from", "WORKFLOW");
     Bson wfQuery3 = Filters.eq("to", "SYSTEM");
     Bson wfQueryAll = Filters.and(wfQuery1, wfQuery2, wfQuery3);
+    logger.info("Migrating System - WorkflowRun Relationship Filter: " + wfQueryAll.toString());
     final FindIterable<Document> wfRelationships = relationshipsCollection.find(wfQueryAll);
     if (wfRelationships != null) {
       for (final Document eRel : wfRelationships) {
@@ -1088,6 +1092,7 @@ public class FlowDatabasev4ChangeLog {
     Bson wfRunQuery2 = Filters.eq("from", "WORKFLOWRUN");
     Bson wfRunQuery3 = Filters.eq("to", "SYSTEM");
     Bson wfRunQueryAll = Filters.and(wfRunQuery1, wfRunQuery2, wfRunQuery3);
+    logger.info("Migrating System - WorkflowRun Relationship Filter: " + wfQueryAll.toString());
     final FindIterable<Document> wfRunRelationships = relationshipsCollection.find(wfRunQueryAll);
     if (wfRunRelationships != null) {
       for (final Document eRel : wfRunRelationships) {
@@ -1109,6 +1114,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4016", id = "4016", author = "Tyson Lawrie")
   public void v4MigrateTemplateWorkflows(MongoDatabase db) throws IOException {
+    logger.info("Migrating Templates");
   String workflowsCollectionName = collectionPrefix + "workflows";
     MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
     
@@ -1127,6 +1133,7 @@ public class FlowDatabasev4ChangeLog {
     Bson query2 = Filters.eq("from", "WORKFLOW");
     Bson query3 = Filters.eq("to", "TEMPLATE");
     Bson queryAll = Filters.and(query1, query2, query3);
+    logger.info("Migrating Templates - WORKFLOW Relationship Filter: " + queryAll.toString());
     final FindIterable<Document> wfTemplateRelationships = relationshipsCollection.find(queryAll);
     if (wfTemplateRelationships != null) {
       for (final Document eRel : wfTemplateRelationships) {
