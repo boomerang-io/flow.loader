@@ -623,8 +623,6 @@ public class FlowDatabasev4ChangeLog {
       } else if ("team".equals((String) workflowsEntity.get("scope"))) {
         relationship.put("toType", "Team");
         relationship.put("toRef", workflowsEntity.get("flowTeamId"));
-      } else if ("template".equals((String) workflowsEntity.get("scope"))) {
-        relationship.put("toType", "System");
       } else {
         relationship.put("toType", StringUtils.capitalize((String) workflowsEntity.get("scope")));
       }
@@ -1068,7 +1066,7 @@ public class FlowDatabasev4ChangeLog {
     team.put("status", "active");
     team.put("creationDate", new Date());
     ObjectId newTeamId = new ObjectId();
-    team.put("_id", newTeamId.toString());
+    team.put("_id", newTeamId);
     teamsCollection.insertOne(team);
 
 
