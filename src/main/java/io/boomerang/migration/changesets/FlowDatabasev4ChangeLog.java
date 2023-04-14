@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +20,10 @@ import com.mongodb.DuplicateKeyException;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Updates;
 import io.boomerang.migration.FileLoadingService;
 import io.boomerang.migration.SpringContextBridge;
 
@@ -267,7 +270,7 @@ public class FlowDatabasev4ChangeLog {
       workflowsActivityApprovalEntity.remove("taskActivityId");
       String type = (String) workflowsActivityApprovalEntity.get("type");
       if ("task".equals(type)) {
-        workflowsActivityApprovalEntity.replace("status", "manual");
+        workflowsActivityApprovalEntity.replace("type", "manual");
       }
 
       workflowsActivityApprovalEntity.remove("teamId");
@@ -827,10 +830,10 @@ public class FlowDatabasev4ChangeLog {
           
           //Add relationship between Team and ApproverGroup
           Document relationship = new Document();
-          relationship.put("relationship", "belongs-to");
-          relationship.put("fromType", "ApproverGroup");
+          relationship.put("type", "BELONGSTO");
+          relationship.put("from", "APPROVERGROUP");
           relationship.put("fromRef", newId);
-          relationship.put("toType", "Team");
+          relationship.put("to", "TEAM");
           relationship.put("toRef", teamsEntity.get("_id"));
           relationshipCollection.insertOne(relationship);
         }
@@ -843,13 +846,13 @@ public class FlowDatabasev4ChangeLog {
   }
 
   /*
-   * Migrate Relationships
+   * Migrate Relationships in case prior loaders were run in early Beta versions
    * 
    * - Add creationDate
    * - Change relationship string
    * 
    */
-  @ChangeSet(order = "4011", id = "4011", author = "Tyson Lawrie")
+  @ChangeSet(order = "4012", id = "4012", author = "Tyson Lawrie")
   public void v4MigrateRelationships(MongoDatabase db) throws IOException {
     String relationshipCollectionName = collectionPrefix + "relationships";
     MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
@@ -857,14 +860,36 @@ public class FlowDatabasev4ChangeLog {
     for (final Document relationshipEntity : relationshipEntities) {
       logger.info("Migrating Relationship - ID: " + relationshipEntity.get("_id"));
 
-      relationshipEntity.put("creationDate", new Date());
-      if ("belongs-to".equals(relationshipEntity.get("relationship").toString())) {
-        relationshipEntity.replace("relationship", "BELONGSTO");
+      if (relationshipEntity.get("creationDate") == null) {
+        relationshipEntity.put("creationDate", new Date());
       }
+      if ("belongs-to".equals(relationshipEntity.get("relationship").toString())) {
+        relationshipEntity.put("type", "BELONGSTO");
+        relationshipEntity.remove("relationship");
+      }
+      if (relationshipEntity.get("fromType") != null) {
+        relationshipEntity.put("from", relationshipEntity.get("fromType"));
+        relationshipEntity.remove("fromType");
+      }
+      relationshipEntity.put("from", relationshipEntity.get("from").toString().toUpperCase());
+      if (relationshipEntity.get("toType") != null) {
+        relationshipEntity.put("to", relationshipEntity.get("toType"));
+        relationshipEntity.remove("toType");
+      }
+      relationshipEntity.put("to", relationshipEntity.get("to").toString().toUpperCase());
 
       relationshipCollection.replaceOne(eq("_id", relationshipEntity.getObjectId("_id")),
           relationshipEntity);
     }
+
+    // Update Indexes
+    relationshipCollection.dropIndexes();
+    relationshipCollection.createIndex(Indexes.descending("toRef"));
+    relationshipCollection.createIndex(Indexes.descending("type"));
+    relationshipCollection.createIndex(Indexes.descending("from"));
+    relationshipCollection.createIndex(Indexes.descending("to"));
+    relationshipCollection.createIndex(Indexes.descending("fromType"));
+    relationshipCollection.createIndex(Indexes.descending("toType"));
   }
 
   /*
@@ -874,7 +899,7 @@ public class FlowDatabasev4ChangeLog {
    * - Rename userId to Author
    * 
    */
-  @ChangeSet(order = "4012", id = "4012", author = "Tyson Lawrie")
+  @ChangeSet(order = "4013", id = "4013", author = "Tyson Lawrie")
   public void v4MigrateChangelog(MongoDatabase db) throws IOException {
     String revisionCollectionName = collectionPrefix + "workflow_revisions";
     MongoCollection<Document> workflowRevisionsCollection =
@@ -913,6 +938,199 @@ public class FlowDatabasev4ChangeLog {
           taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
               taskTemplateEntity);
         }
+    }
+  }
+
+  /*
+   * Migrate Users
+   * 
+   * - Each User needs to have a uniquely named team
+   * - Migrate users teams list to Relationships
+   * - Any previous Workflow Relationship to a User, needs to be to the new Team
+   * 
+   */
+  @ChangeSet(order = "4014", id = "4014", author = "Tyson Lawrie")
+  public void v4MigrateUsersToTeam(MongoDatabase db) throws IOException {
+    String usersCollectionName = collectionPrefix + "users";
+    MongoCollection<Document> usersCollection = db.getCollection(usersCollectionName);
+    
+    String teamsCollectionName = collectionPrefix + "teams";
+    MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
+    
+    String relationshipsCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipsCollection = db.getCollection(relationshipsCollectionName);
+    
+    final FindIterable<Document> userEntities = usersCollection.find();
+    for (final Document userEntity : userEntities) {
+      String userName = userEntity.getString("name");
+      String quotas = userEntity.getString("quotas");
+      userEntity.remove("quotes");
+      Document team = new Document();
+      String teamName =  userName.replace("@", "-") + "Personal Team";
+      team.put("name", teamName);
+      team.put("quotas", quotas);
+      if (userEntity.get("status") != null && "active".equals(userEntity.get("status"))) {
+        team.put("status", "active");
+      } else {
+        team.put("status", "inactive");
+      }
+      team.put("creationDate", new Date());
+
+      ObjectId newTeamId = new ObjectId();
+      team.put("_id", newTeamId);
+      teamsCollection.insertOne(team);
+      
+      Document relationship = new Document();
+      relationship.put("type", "MEMBEROF");
+      relationship.put("from", "USER");
+      relationship.put("fromRef", userEntity.get("_id"));
+      relationship.put("to", "TEAM");
+      relationship.put("toRef", newTeamId);
+      relationshipsCollection.insertOne(relationship);
+      
+      // If User was a member of existing Teams, add Relationship for those too
+      if (userEntity.get("flowTeams") != null) {
+        List<String> teamsList = (List<String>) userEntity.get("flowTeams");
+        for (String teamId : teamsList) {
+          relationship.put("toRef", teamId);
+          relationshipsCollection.insertOne(relationship);
+        }
+      }
+      
+      usersCollection.replaceOne(eq("_id", userEntity.getObjectId("_id")), userEntity);
+      
+      // Migrate all prior Workflow to User Relationships
+      Bson wfQuery1 = Filters.eq("type", "BELONGSTO");
+      Bson wfQuery2 = Filters.eq("from", "WORKFLOW");
+      Bson wfQuery3 = Filters.eq("to", "USER");
+      Bson wfQuery4 = Filters.eq("toRef", userEntity.get("_id"));
+      Bson wfQueryAll = Filters.and(wfQuery1, wfQuery2, wfQuery3, wfQuery4);
+      final FindIterable<Document> wfRelationships = relationshipsCollection.find(wfQueryAll);
+      if (wfRelationships != null) {
+        for (final Document eRel : wfRelationships) {
+          eRel.put("to", "TEAM");
+          eRel.put("toRef", newTeamId);
+          relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
+        }
+      }
+      
+   // Migrate all prior Workflow to User Relationships
+      Bson wfRunQuery1 = Filters.eq("type", "BELONGSTO");
+      Bson wfRunQuery2 = Filters.eq("from", "WORKFLOWRUN");
+      Bson wfRunQuery3 = Filters.eq("to", "USER");
+      Bson wfRunQuery4 = Filters.eq("toRef", userEntity.get("_id"));
+      Bson wfRunQueryAll = Filters.and(wfRunQuery1, wfRunQuery2, wfRunQuery3, wfRunQuery4);
+      final FindIterable<Document> wfRunRelationships = relationshipsCollection.find(wfRunQueryAll);
+      if (wfRunRelationships != null) {
+        for (final Document eRel : wfRunRelationships) {
+          eRel.put("to", "TEAM");
+          eRel.put("toRef", newTeamId);
+          relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
+        }
+      }
+    }
+  }
+
+  /*
+   * Migrate System to new System Team
+   * 
+   * - Create new "system" team. Will mark it as never be able to delete.
+   * - Change relationship string
+   * 
+   * Note: this needs to happen after migrating Teams and Users
+   * 
+   */
+  @ChangeSet(order = "4015", id = "4015", author = "Tyson Lawrie")
+  public void v4MigrateSystemToATeam(MongoDatabase db) throws IOException {
+    String teamsCollectionName = collectionPrefix + "teams";
+    MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
+    
+    String relationshipsCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipsCollection = db.getCollection(relationshipsCollectionName);
+    
+    Document team = new Document();
+    team.put("name", "system");
+    Document quotas = new Document();
+    team.put("maxWorkflowCount", Integer.MAX_VALUE);
+    team.put("maxWorkflowExecutionMonthly", Integer.MAX_VALUE);
+    team.put("maxWorkflowStorage", Integer.MAX_VALUE);
+    team.put("maxWorkflowExecutionTime", Integer.MAX_VALUE);
+    team.put("maxConcurrentWorkflows", Integer.MAX_VALUE);
+    team.put("quotas", quotas);
+    team.put("status", "active");
+    team.put("creationDate", new Date());
+    ObjectId newTeamId = new ObjectId();
+    team.put("_id", newTeamId);
+    teamsCollection.insertOne(team);
+
+
+    // Migrate all prior System Workflows to Team Relationships
+    Bson wfQuery1 = Filters.eq("type", "BELONGSTO");
+    Bson wfQuery2 = Filters.eq("from", "WORKFLOW");
+    Bson wfQuery3 = Filters.eq("to", "SYSTEM");
+    Bson wfQueryAll = Filters.and(wfQuery1, wfQuery2, wfQuery3);
+    final FindIterable<Document> wfRelationships = relationshipsCollection.find(wfQueryAll);
+    if (wfRelationships != null) {
+      for (final Document eRel : wfRelationships) {
+        eRel.put("to", "TEAM");
+        eRel.put("toRef", newTeamId);
+        relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
+      }
+    }
+    
+ // Migrate all prior Workflow to User Relationships
+    Bson wfRunQuery1 = Filters.eq("type", "BELONGSTO");
+    Bson wfRunQuery2 = Filters.eq("from", "WORKFLOWRUN");
+    Bson wfRunQuery3 = Filters.eq("to", "SYSTEM");
+    Bson wfRunQueryAll = Filters.and(wfRunQuery1, wfRunQuery2, wfRunQuery3);
+    final FindIterable<Document> wfRunRelationships = relationshipsCollection.find(wfRunQueryAll);
+    if (wfRunRelationships != null) {
+      for (final Document eRel : wfRunRelationships) {
+        eRel.put("to", "TEAM");
+        eRel.put("toRef", newTeamId);
+        relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
+      }
+    }
+  }
+
+  /*
+   * Migrate Template Workflows to new entity
+   * 
+   * - Create new "system" team. Will mark it as never be able to delete.
+   * - Change relationship string
+   * 
+   * Note: this needs to happen after migrating Teams and Users
+   * 
+   */
+  @ChangeSet(order = "4016", id = "4016", author = "Tyson Lawrie")
+  public void v4MigrateTemplateWorkflows(MongoDatabase db) throws IOException {
+  String workflowsCollectionName = collectionPrefix + "workflows";
+    MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
+    
+  String wfTemplatesCollectionName = collectionPrefix + "workflow_templates";
+    MongoCollection<Document> wfTemplatesCollection = db.getCollection(wfTemplatesCollectionName);
+    if (wfTemplatesCollection == null) {
+      db.createCollection(wfTemplatesCollectionName);
+    }
+    wfTemplatesCollection = db.getCollection(wfTemplatesCollectionName);
+    
+    String relationshipsCollectionName = collectionPrefix + "relationships";
+    MongoCollection<Document> relationshipsCollection = db.getCollection(relationshipsCollectionName);
+
+    // Migrate all prior System Workflow to User Relationships
+    Bson query1 = Filters.eq("type", "BELONGSTO");
+    Bson query2 = Filters.eq("from", "WORKFLOW");
+    Bson query3 = Filters.eq("to", "TEMPLATE");
+    Bson queryAll = Filters.and(query1, query2, query3);
+    final FindIterable<Document> wfTemplateRelationships = relationshipsCollection.find(queryAll);
+    if (wfTemplateRelationships != null) {
+      for (final Document eRel : wfTemplateRelationships) {
+        String workflowId = eRel.get("fromRef").toString();
+        Document wfTemplate = (Document) workflowsCollection.find(eq("_id", workflowId));
+        wfTemplatesCollection.insertOne(wfTemplate);
+        workflowsCollection.deleteOne(eq("_id", workflowId));
+        relationshipsCollection.deleteOne(eq("_id", eRel.getObjectId("_id")));
+      }
     }
   }
 }
