@@ -979,24 +979,27 @@ public class FlowDatabasev4ChangeLog {
       ObjectId newTeamId = new ObjectId();
       team.put("_id", newTeamId);
       teamsCollection.insertOne(team);
-      
-      Document relationship = new Document();
-      relationship.put("type", "MEMBEROF");
-      relationship.put("from", "USER");
-      relationship.put("fromRef", userEntity.get("_id"));
-      relationship.put("to", "TEAM");
-      relationship.put("toRef", newTeamId);
-      relationshipsCollection.insertOne(relationship);
+      Document newTeamRelationship = new Document();
+      newTeamRelationship.put("type", "MEMBEROF");
+      newTeamRelationship.put("from", "USER");
+      newTeamRelationship.put("fromRef", userEntity.get("_id"));
+      newTeamRelationship.put("to", "TEAM");
+      newTeamRelationship.put("toRef", newTeamId);
+      relationshipsCollection.insertOne(newTeamRelationship);
       
       // If User was a member of existing Teams, add Relationship for those too
       if (userEntity.get("flowTeams") != null) {
         List<String> teamsList = (List<String>) userEntity.get("flowTeams");
         for (String teamId : teamsList) {
+          Document relationship = new Document();
+          relationship.put("type", "MEMBEROF");
+          relationship.put("from", "USER");
+          relationship.put("fromRef", userEntity.get("_id"));
+          relationship.put("to", "TEAM");
           relationship.put("toRef", teamId);
           relationshipsCollection.insertOne(relationship);
         }
       }
-      
       usersCollection.replaceOne(eq("_id", userEntity.getObjectId("_id")), userEntity);
       
       // Migrate all prior Workflow to User Relationships
