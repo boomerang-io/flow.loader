@@ -963,12 +963,14 @@ public class FlowDatabasev4ChangeLog {
     final FindIterable<Document> userEntities = usersCollection.find();
     for (final Document userEntity : userEntities) {
       String userName = userEntity.getString("name");
-      String quotas = userEntity.getString("quotas");
-      userEntity.remove("quotes");
       Document team = new Document();
+      if (userEntity.get("quotas") != null) {
+        Document quotas = (Document) userEntity.get("quotas");
+        userEntity.remove("quotes");
+        team.put("quotas", quotas);
+      }
       String teamName =  userName.replace("@", "-") + "Personal Team";
       team.put("name", teamName);
-      team.put("quotas", quotas);
       if (userEntity.get("status") != null && "active".equals(userEntity.get("status"))) {
         team.put("status", "active");
       } else {
