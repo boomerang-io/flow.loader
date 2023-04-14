@@ -986,7 +986,7 @@ public class FlowDatabasev4ChangeLog {
       newTeamRelationship.put("from", "USER");
       newTeamRelationship.put("fromRef", userEntity.get("_id").toString());
       newTeamRelationship.put("to", "TEAM");
-      newTeamRelationship.put("toRef", newTeamId);
+      newTeamRelationship.put("toRef", newTeamId.toString());
       relationshipsCollection.insertOne(newTeamRelationship);
       
       // If User was a member of existing Teams, add Relationship for those too
@@ -998,7 +998,7 @@ public class FlowDatabasev4ChangeLog {
           relationship.put("from", "USER");
           relationship.put("fromRef", userEntity.get("_id").toString());
           relationship.put("to", "TEAM");
-          relationship.put("toRef", teamId);
+          relationship.put("toRef", teamId.toString());
           relationshipsCollection.insertOne(relationship);
         }
       }
@@ -1015,7 +1015,7 @@ public class FlowDatabasev4ChangeLog {
       if (wfRelationships != null) {
         for (final Document eRel : wfRelationships) {
           eRel.put("to", "TEAM");
-          eRel.put("toRef", newTeamId);
+          eRel.put("toRef", newTeamId.toString());
           relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
         }
       }
@@ -1031,7 +1031,7 @@ public class FlowDatabasev4ChangeLog {
       if (wfRunRelationships != null) {
         for (final Document eRel : wfRunRelationships) {
           eRel.put("to", "TEAM");
-          eRel.put("toRef", newTeamId);
+          eRel.put("toRef", newTeamId.toString());
           relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
         }
       }
@@ -1068,7 +1068,7 @@ public class FlowDatabasev4ChangeLog {
     team.put("status", "active");
     team.put("creationDate", new Date());
     ObjectId newTeamId = new ObjectId();
-    team.put("_id", newTeamId);
+    team.put("_id", newTeamId.toString());
     teamsCollection.insertOne(team);
 
 
@@ -1082,7 +1082,7 @@ public class FlowDatabasev4ChangeLog {
     if (wfRelationships != null) {
       for (final Document eRel : wfRelationships) {
         eRel.put("to", "TEAM");
-        eRel.put("toRef", newTeamId);
+        eRel.put("toRef", newTeamId.toString());
         relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
       }
     }
@@ -1097,7 +1097,7 @@ public class FlowDatabasev4ChangeLog {
     if (wfRunRelationships != null) {
       for (final Document eRel : wfRunRelationships) {
         eRel.put("to", "TEAM");
-        eRel.put("toRef", newTeamId);
+        eRel.put("toRef", newTeamId.toString());
         relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
       }
     }
@@ -1138,7 +1138,9 @@ public class FlowDatabasev4ChangeLog {
     if (wfTemplateRelationships != null) {
       for (final Document eRel : wfTemplateRelationships) {
         String workflowId = eRel.get("fromRef").toString();
+        logger.info("Migrating Templates - Template ID: " + workflowId.toString());
         Document wfTemplate = (Document) workflowsCollection.find(eq("_id", workflowId));
+        logger.info("Migrating Templates - Template: " + wfTemplate.toString());
         wfTemplatesCollection.insertOne(wfTemplate);
         workflowsCollection.deleteOne(eq("_id", workflowId));
         relationshipsCollection.deleteOne(eq("_id", eRel.getObjectId("_id")));
