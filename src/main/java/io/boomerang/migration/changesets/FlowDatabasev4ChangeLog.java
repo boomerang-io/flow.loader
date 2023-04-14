@@ -1056,11 +1056,11 @@ public class FlowDatabasev4ChangeLog {
     Document team = new Document();
     team.put("name", "system");
     Document quotas = new Document();
-    team.put("maxWorkflowCount", Integer.MAX_VALUE);
-    team.put("maxWorkflowExecutionMonthly", Integer.MAX_VALUE);
-    team.put("maxWorkflowStorage", Integer.MAX_VALUE);
-    team.put("maxWorkflowExecutionTime", Integer.MAX_VALUE);
-    team.put("maxConcurrentWorkflows", Integer.MAX_VALUE);
+    quotas.put("maxWorkflowCount", Integer.MAX_VALUE);
+    quotas.put("maxWorkflowExecutionMonthly", Integer.MAX_VALUE);
+    quotas.put("maxWorkflowStorage", Integer.MAX_VALUE);
+    quotas.put("maxWorkflowExecutionTime", Integer.MAX_VALUE);
+    quotas.put("maxConcurrentWorkflows", Integer.MAX_VALUE);
     team.put("quotas", quotas);
     team.put("status", "active");
     team.put("creationDate", new Date());
