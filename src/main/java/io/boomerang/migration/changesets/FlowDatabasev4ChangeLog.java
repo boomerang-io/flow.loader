@@ -969,7 +969,7 @@ public class FlowDatabasev4ChangeLog {
         userEntity.remove("quotes");
         team.put("quotas", quotas);
       }
-      String teamName =  userName.replace("@", "-") + "Personal Team";
+      String teamName =  userName.replace("@", "-").replace(".", "-") + " Personal Team";
       team.put("name", teamName);
       if (userEntity.get("status") != null && "active".equals(userEntity.get("status"))) {
         team.put("status", "active");
@@ -984,7 +984,7 @@ public class FlowDatabasev4ChangeLog {
       Document newTeamRelationship = new Document();
       newTeamRelationship.put("type", "MEMBEROF");
       newTeamRelationship.put("from", "USER");
-      newTeamRelationship.put("fromRef", userEntity.get("_id"));
+      newTeamRelationship.put("fromRef", userEntity.get("_id").toString());
       newTeamRelationship.put("to", "TEAM");
       newTeamRelationship.put("toRef", newTeamId);
       relationshipsCollection.insertOne(newTeamRelationship);
@@ -996,7 +996,7 @@ public class FlowDatabasev4ChangeLog {
           Document relationship = new Document();
           relationship.put("type", "MEMBEROF");
           relationship.put("from", "USER");
-          relationship.put("fromRef", userEntity.get("_id"));
+          relationship.put("fromRef", userEntity.get("_id").toString());
           relationship.put("to", "TEAM");
           relationship.put("toRef", teamId);
           relationshipsCollection.insertOne(relationship);
@@ -1008,7 +1008,7 @@ public class FlowDatabasev4ChangeLog {
       Bson wfQuery1 = Filters.eq("type", "BELONGSTO");
       Bson wfQuery2 = Filters.eq("from", "WORKFLOW");
       Bson wfQuery3 = Filters.eq("to", "USER");
-      Bson wfQuery4 = Filters.eq("toRef", userEntity.get("_id"));
+      Bson wfQuery4 = Filters.eq("toRef", userEntity.get("_id").toString());
       Bson wfQueryAll = Filters.and(wfQuery1, wfQuery2, wfQuery3, wfQuery4);
       final FindIterable<Document> wfRelationships = relationshipsCollection.find(wfQueryAll);
       if (wfRelationships != null) {
@@ -1023,7 +1023,7 @@ public class FlowDatabasev4ChangeLog {
       Bson wfRunQuery1 = Filters.eq("type", "BELONGSTO");
       Bson wfRunQuery2 = Filters.eq("from", "WORKFLOWRUN");
       Bson wfRunQuery3 = Filters.eq("to", "USER");
-      Bson wfRunQuery4 = Filters.eq("toRef", userEntity.get("_id"));
+      Bson wfRunQuery4 = Filters.eq("toRef", userEntity.get("_id").toString());
       Bson wfRunQueryAll = Filters.and(wfRunQuery1, wfRunQuery2, wfRunQuery3, wfRunQuery4);
       final FindIterable<Document> wfRunRelationships = relationshipsCollection.find(wfRunQueryAll);
       if (wfRunRelationships != null) {
