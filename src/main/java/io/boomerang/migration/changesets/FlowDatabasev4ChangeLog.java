@@ -1126,7 +1126,7 @@ public class FlowDatabasev4ChangeLog {
     String relationshipsCollectionName = collectionPrefix + "relationships";
     MongoCollection<Document> relationshipsCollection = db.getCollection(relationshipsCollectionName);
 
-    // Migrate all prior System Workflow to User Relationships
+    // Migrate all TEMPLATE Workflows to new Workflow_Template collection
     Bson query1 = Filters.eq("type", "BELONGSTO");
     Bson query2 = Filters.eq("from", "WORKFLOW");
     Bson query3 = Filters.eq("to", "TEMPLATE");
@@ -1136,10 +1136,12 @@ public class FlowDatabasev4ChangeLog {
     if (wfTemplateRelationships != null) {
       for (final Document eRel : wfTemplateRelationships) {
         String workflowId = eRel.get("fromRef").toString();
-        logger.info("Migrating Templates - Template ID: " + workflowId.toString());
-        Document wfTemplate = (Document) workflowsCollection.find(eq("_id", workflowId));
-        logger.info("Migrating Templates - Template: " + wfTemplate.toString());
-        wfTemplatesCollection.insertOne(wfTemplate);
+        logger.info("Migrating Templates - Template ID: " + workflowId);
+        final FindIterable<Document> wfTemplates =  workflowsCollection.find(eq("_id", new ObjectId(workflowId)));
+        for (final Document wfTemplate : wfTemplates) {
+          logger.info("Migrating Templates - Template: " + wfTemplate.toString());
+          wfTemplatesCollection.insertOne(wfTemplate);
+        }
         workflowsCollection.deleteOne(eq("_id", workflowId));
         relationshipsCollection.deleteOne(eq("_id", eRel.getObjectId("_id")));
       }
