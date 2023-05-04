@@ -1043,7 +1043,6 @@ public class FlowDatabasev4ChangeLog {
    * - Change relationship string
    * 
    * Note: this needs to happen after migrating Teams and Users
-   * 
    */
   @ChangeSet(order = "4015", id = "4015", author = "Tyson Lawrie")
   public void v4MigrateSystemToATeam(MongoDatabase db) throws IOException {
@@ -1146,5 +1145,18 @@ public class FlowDatabasev4ChangeLog {
         relationshipsCollection.deleteOne(eq("_id", eRel.getObjectId("_id")));
       }
     }
+  }
+
+  /*
+   * Drop all legacy tokens - no migration path
+   */
+  @ChangeSet(order = "4017", id = "4017", author = "Tyson Lawrie")
+  public void v4DropLegacyTokens(MongoDatabase db) throws IOException {
+    logger.info("Drop Legacy Tokens");
+  String tokensCollectionName = collectionPrefix + "tokens";
+    MongoCollection<Document> tokensCollection = db.getCollection(tokensCollectionName);
+    
+    tokensCollection.drop();
+    db.createCollection(tokensCollectionName);
   }
 }
