@@ -189,25 +189,29 @@ public class FlowDatabasev4ChangeLog {
       workflowsActivityEntity.remove("workflowRevisionid");
 
       // Convert properties to params
-      List<Document> properties = new LinkedList<>();
+      List<Document> properties = (List<Document>) workflowsActivityEntity.get("properties");
       List<Document> params = new LinkedList<>();
-      for (final Document property : properties) {
-        Document param = new Document();
-        param.put("name", property.get("key"));
-        param.put("value", property.get("value"));
-        params.add(param);
+      if (properties != null && !properties.isEmpty()) {
+        for (final Document property : properties) {
+          Document param = new Document();
+          param.put("name", property.get("key"));
+          param.put("value", property.get("value"));
+          params.add(param);
+        }
       }
       workflowsActivityEntity.put("params", params);
       workflowsActivityEntity.remove("properties");
       
       // Convert outputProperties to Results
-      List<Document> outputProperties = new LinkedList<>();
+      List<Document> outputProperties = (List<Document>) workflowsActivityEntity.get("outputProperties");
       List<Document> results = new LinkedList<>();
-      for (final Document outputProperty : outputProperties) {
-        Document result = new Document();
-        result.put("name", outputProperty.get("key"));
-        result.put("value", outputProperty.get("value"));
-        results.add(result);
+      if (outputProperties != null && !outputProperties.isEmpty()) {
+        for (final Document outputProperty : outputProperties) {
+          Document result = new Document();
+          result.put("name", outputProperty.get("key"));
+          result.put("value", outputProperty.get("value"));
+          results.add(result);
+        }
       }
       workflowsActivityEntity.put("results", results);
       workflowsActivityEntity.remove("outputProperties");
@@ -1148,15 +1152,69 @@ public class FlowDatabasev4ChangeLog {
   }
 
   /*
-   * Drop all legacy tokens - no migration path
+   * Migrate Workflow Schedules to new entity
    */
   @ChangeSet(order = "4017", id = "4017", author = "Tyson Lawrie")
-  public void v4DropLegacyTokens(MongoDatabase db) throws IOException {
-    logger.info("Drop Legacy Tokens");
-  String tokensCollectionName = collectionPrefix + "tokens";
-    MongoCollection<Document> tokensCollection = db.getCollection(tokensCollectionName);
+  public void v4MigrateWorkflowSchedules(MongoDatabase db) throws IOException {
+    logger.info("Migrating Workflow Schedules");
+  String origWorkflowSchedulesCollectionName = collectionPrefix + "workflows_schedules";
+    MongoCollection<Document> origWorkflowSchedulesCollection = db.getCollection(origWorkflowSchedulesCollectionName);
     
-    tokensCollection.drop();
-    db.createCollection(tokensCollectionName);
+  String newWorkflowSchedulesCollectionName = collectionPrefix + "workflow_schedules";
+    MongoCollection<Document> newWorkflowSchedulesCollection = db.getCollection(newWorkflowSchedulesCollectionName);
+    if (newWorkflowSchedulesCollection == null) {
+      db.createCollection(newWorkflowSchedulesCollectionName);
+    }
+    newWorkflowSchedulesCollection = db.getCollection(newWorkflowSchedulesCollectionName);
+
+    final FindIterable<Document> scheduleEntities = newWorkflowSchedulesCollection.find();
+    for (final Document scheduleEntity : scheduleEntities) {
+      // Change from ID to Ref based linkage
+      scheduleEntity.put("workflowRef", scheduleEntity.get("workflowId"));
+      scheduleEntity.remove("workflowId");
+      
+      // Convert Labels
+      List<Document> labels = (List<Document>) scheduleEntity.get("labels");
+      Map<String, String> newLabels = new HashMap<>();
+      if (labels != null) {
+        for (final Document label : labels) {
+          newLabels.put(label.getString("key"), label.getString("value"));
+        }
+        scheduleEntity.replace("labels", newLabels);
+      } else {
+        scheduleEntity.put("labels", newLabels);
+      }
+
+      // Convert parameters from List<KeyValuePair> to List<RunParam>
+      List<Document> parameters = (List<Document>) scheduleEntity.get("parameters");
+      List<Document> params = new LinkedList<>();
+      if (parameters != null && !parameters.isEmpty()) {
+        for (final Document parameter : parameters) {
+          Document param = new Document();
+          param.put("name", parameter.get("key"));
+          param.put("value", parameter.get("value"));
+          param.put("type", parameter.get("string"));
+          params.add(param);
+        }
+      }
+      scheduleEntity.put("params", params);
+      scheduleEntity.remove("properties");
+      
+      newWorkflowSchedulesCollection.insertOne(scheduleEntity);
+    }
+    origWorkflowSchedulesCollection.drop();
   }
+
+   /*
+    * Drop all legacy tokens - no migration path
+    */
+   @ChangeSet(order = "4018", id = "4018", author = "Tyson Lawrie")
+   public void v4DropLegacyTokens(MongoDatabase db) throws IOException {
+     logger.info("Drop Legacy Tokens");
+   String tokensCollectionName = collectionPrefix + "tokens";
+     MongoCollection<Document> tokensCollection = db.getCollection(tokensCollectionName);
+     
+     tokensCollection.drop();
+     db.createCollection(tokensCollectionName);
+   }
 }
