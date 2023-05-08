@@ -1004,6 +1004,13 @@ public class FlowDatabasev4ChangeLog {
           relationshipsCollection.insertOne(relationship);
         }
       }
+      userEntity.remove("flowTeams");
+      userEntity.remove("quotas");
+      userEntity.put("creationDate", userEntity.get("firstLoginDate"));
+      Document settings = new Document();
+      settings.put("isFirstVisit", userEntity.get("isFirstVisit"));
+      settings.put("hasConsented", userEntity.get("hasConsented"));
+      userEntity.put("settings", settings);
       usersCollection.replaceOne(eq("_id", userEntity.getObjectId("_id")), userEntity);
       
       // Migrate all prior Workflow to User Relationships
@@ -1216,5 +1223,17 @@ public class FlowDatabasev4ChangeLog {
      
      tokensCollection.drop();
      db.createCollection(tokensCollectionName);
+   }
+
+   /*
+    * Drop User Quota Settings
+    */
+   @ChangeSet(order = "4019", id = "4019", author = "Tyson Lawrie")
+   public void v4DropUserQuotaSettings(MongoDatabase db) throws IOException {
+     logger.info("Drop User Quota Settings");
+   String collectionName = collectionPrefix + "settings";
+     MongoCollection<Document> collection = db.getCollection(collectionName);
+     
+     collection.deleteOne(eq("_id", "6123c1e20b07a54cdce637c0"));
    }
 }
