@@ -1007,9 +1007,12 @@ public class FlowDatabasev4ChangeLog {
       userEntity.remove("flowTeams");
       userEntity.remove("quotas");
       userEntity.put("creationDate", userEntity.get("firstLoginDate"));
+      userEntity.remove("firstLoginDate");
       Document settings = new Document();
       settings.put("isFirstVisit", userEntity.get("isFirstVisit"));
+      userEntity.remove("isFirstVisit");
       settings.put("hasConsented", userEntity.get("hasConsented"));
+      userEntity.remove("hasConsented");
       userEntity.put("settings", settings);
       usersCollection.replaceOne(eq("_id", userEntity.getObjectId("_id")), userEntity);
       
