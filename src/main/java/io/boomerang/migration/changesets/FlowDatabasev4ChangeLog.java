@@ -1014,6 +1014,13 @@ public class FlowDatabasev4ChangeLog {
       settings.put("hasConsented", userEntity.get("hasConsented"));
       userEntity.remove("hasConsented");
       userEntity.put("settings", settings);
+      List<Document> labels = (List<Document>) userEntity.get("labels");
+      Map<String, String> newLabels = new HashMap<>();
+      if (labels != null && !labels.isEmpty())
+        for (final Document label : labels) {
+          newLabels.put(label.getString("key"), label.getString("value"));
+        }
+      userEntity.replace("labels", newLabels);
       usersCollection.replaceOne(eq("_id", userEntity.getObjectId("_id")), userEntity);
       
       // Migrate all prior Workflow to User Relationships
