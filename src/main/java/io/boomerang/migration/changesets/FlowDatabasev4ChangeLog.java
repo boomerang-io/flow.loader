@@ -1273,12 +1273,12 @@ public class FlowDatabasev4ChangeLog {
    String collectionName = collectionPrefix + "settings";
      MongoCollection<Document> collection = db.getCollection(collectionName);
      
-     Document workflowRunWorkspaceConfig = (Document) collection.find(eq("_id", "60245957226920beece4fdf9")).first();
+     Document workflowRunWorkspaceConfig = (Document) collection.find(eq("_id",  new ObjectId("60245957226920beece4fdf9"))).first();
      workflowRunWorkspaceConfig.replace("key", "workflowrun");
-     collection.replaceOne(eq("_id", "60245957226920beece4fdf9"), workflowRunWorkspaceConfig);
+     collection.replaceOne(eq("_id", new ObjectId("60245957226920beece4fdf9")), workflowRunWorkspaceConfig);
      
-     Document taskConfig = (Document) collection.find(eq("_id", "5f32cb19d09662744c0df51d")).first();
-     workflowRunWorkspaceConfig.replace("key", "task");
-     collection.replaceOne(eq("_id", "5f32cb19d09662744c0df51d"), taskConfig);
+     Document taskConfig = (Document) collection.find(eq("_id", new ObjectId("5f32cb19d09662744c0df51d"))).first();
+     taskConfig.replace("key", "task");
+     collection.replaceOne(eq("_id", new ObjectId("5f32cb19d09662744c0df51d")), taskConfig);
    }
 }
