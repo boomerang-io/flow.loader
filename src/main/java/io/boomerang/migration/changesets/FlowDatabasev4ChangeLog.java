@@ -467,13 +467,13 @@ public class FlowDatabasev4ChangeLog {
         Document activityStorage = (Document) storage.get("activity");
         if (activityStorage.getBoolean("enabled", false)) {
           logger.info("Added Activity Workspace");
-          Document activityWorkspace = new Document();
-          activityWorkspace.put("name", "activity");
-          activityWorkspace.put("type", "workflowRun");
-          activityWorkspace.put("optional", false);
+          Document wfRunWorkspace = new Document();
+          wfRunWorkspace.put("name", "workflowrun");
+          wfRunWorkspace.put("type", "workflowrun");
+          wfRunWorkspace.put("optional", false);
           activityStorage.remove("enabled");
-          activityWorkspace.put("spec", activityStorage);
-          workspaces.add(activityWorkspace);
+          wfRunWorkspace.put("spec", activityStorage);
+          workspaces.add(wfRunWorkspace);
         }
         Document workflowStorage = (Document) storage.get("workflow");
         if (workflowStorage.getBoolean("enabled", false)) {
@@ -1074,6 +1074,9 @@ public class FlowDatabasev4ChangeLog {
     String relationshipsCollectionName = collectionPrefix + "relationships";
     MongoCollection<Document> relationshipsCollection = db.getCollection(relationshipsCollectionName);
     
+    String usersCollectionName = collectionPrefix + "users";
+    MongoCollection<Document> usersCollection = db.getCollection(usersCollectionName);
+    
     Document team = new Document();
     team.put("name", "system");
     Document quotas = new Document();
@@ -1117,6 +1120,20 @@ public class FlowDatabasev4ChangeLog {
         eRel.put("to", "TEAM");
         eRel.put("toRef", newTeamId.toString());
         relationshipsCollection.replaceOne(eq("_id", eRel.getObjectId("_id")), eRel);
+      }
+    }
+
+    final FindIterable<Document> userEntities = usersCollection.find();
+    for (final Document userEntity : userEntities) {
+      String type = (String) userEntity.get("type");
+      if (type.equals("admin")) {
+        Document newTeamRelationship = new Document();
+        newTeamRelationship.put("type", "MEMBEROF");
+        newTeamRelationship.put("from", "USER");
+        newTeamRelationship.put("fromRef", userEntity.get("_id").toString());
+        newTeamRelationship.put("to", "TEAM");
+        newTeamRelationship.put("toRef", newTeamId.toString());
+        relationshipsCollection.insertOne(newTeamRelationship);
       }
     }
   }
@@ -1245,5 +1262,23 @@ public class FlowDatabasev4ChangeLog {
      MongoCollection<Document> collection = db.getCollection(collectionName);
      
      collection.deleteOne(eq("_id", "6123c1e20b07a54cdce637c0"));
+   }
+
+   /*
+    * Drop User Quota Settings
+    */
+   @ChangeSet(order = "4020", id = "4020", author = "Tyson Lawrie")
+   public void v4AdjustSettingsKeys(MongoDatabase db) throws IOException {
+     logger.info("Adjust Workspace Settings Keys");
+   String collectionName = collectionPrefix + "settings";
+     MongoCollection<Document> collection = db.getCollection(collectionName);
+     
+     Document workflowRunWorkspaceConfig = (Document) collection.find(eq("_id", "60245957226920beece4fdf9"));
+     workflowRunWorkspaceConfig.replace("key", "workflowrun");
+     collection.replaceOne(eq("_id", "60245957226920beece4fdf9"), workflowRunWorkspaceConfig);
+     
+     Document taskConfig = (Document) collection.find(eq("_id", "5f32cb19d09662744c0df51d"));
+     workflowRunWorkspaceConfig.replace("key", "task");
+     collection.replaceOne(eq("_id", "5f32cb19d09662744c0df51d"), taskConfig);
    }
 }
