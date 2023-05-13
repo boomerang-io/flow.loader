@@ -23,7 +23,6 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.Updates;
 import io.boomerang.migration.FileLoadingService;
 import io.boomerang.migration.SpringContextBridge;
 
@@ -466,7 +465,6 @@ public class FlowDatabasev4ChangeLog {
         Document storage = (Document) workflowsEntity.get("storage");
         Document activityStorage = (Document) storage.get("activity");
         if (activityStorage.getBoolean("enabled", false)) {
-          logger.info("Added Activity Workspace");
           Document wfRunWorkspace = new Document();
           wfRunWorkspace.put("name", "workflowrun");
           wfRunWorkspace.put("type", "workflowrun");
@@ -477,7 +475,6 @@ public class FlowDatabasev4ChangeLog {
         }
         Document workflowStorage = (Document) storage.get("workflow");
         if (workflowStorage.getBoolean("enabled", false)) {
-          logger.info("Added Workflow Workspace");
           Document workflowWorkspace = new Document();
           workflowWorkspace.put("name", "workflow");
           workflowWorkspace.put("type", "workflow");
@@ -511,8 +508,6 @@ public class FlowDatabasev4ChangeLog {
             .equals(workflowsEntity.get("_id").toString())) {
           continue;
         }
-        logger.info("Version: " + workflowRevisionEntity.get("version") + " "
-            + workflowRevisionEntity.get("version").getClass());
         if (Long.valueOf(1).equals(workflowRevisionEntity.get("version"))) {
           // Set Creation Date from first revisions changelog
           Document firstRevisionChangelog = (Document) workflowRevisionEntity.get("changelog");
@@ -1029,7 +1024,6 @@ public class FlowDatabasev4ChangeLog {
       Bson wfQuery3 = Filters.eq("to", "USER");
       Bson wfQuery4 = Filters.eq("toRef", userEntity.get("_id").toString());
       Bson wfQueryAll = Filters.and(wfQuery1, wfQuery2, wfQuery3, wfQuery4);
-      logger.info("Migrating Users - Workflow Relationship Filter: " + wfQueryAll.toString());
       final FindIterable<Document> wfRelationships = relationshipsCollection.find(wfQueryAll);
       if (wfRelationships != null) {
         for (final Document eRel : wfRelationships) {
@@ -1045,7 +1039,6 @@ public class FlowDatabasev4ChangeLog {
       Bson wfRunQuery3 = Filters.eq("to", "USER");
       Bson wfRunQuery4 = Filters.eq("toRef", userEntity.get("_id").toString());
       Bson wfRunQueryAll = Filters.and(wfRunQuery1, wfRunQuery2, wfRunQuery3, wfRunQuery4);
-      logger.info("Migrating Users - WorkflowRun Relationship Filter: " + wfRunQueryAll.toString());
       final FindIterable<Document> wfRunRelationships = relationshipsCollection.find(wfRunQueryAll);
       if (wfRunRelationships != null) {
         for (final Document eRel : wfRunRelationships) {
@@ -1098,7 +1091,6 @@ public class FlowDatabasev4ChangeLog {
     Bson wfQuery2 = Filters.eq("from", "WORKFLOW");
     Bson wfQuery3 = Filters.eq("to", "SYSTEM");
     Bson wfQueryAll = Filters.and(wfQuery1, wfQuery2, wfQuery3);
-    logger.info("Migrating System - WorkflowRun Relationship Filter: " + wfQueryAll.toString());
     final FindIterable<Document> wfRelationships = relationshipsCollection.find(wfQueryAll);
     if (wfRelationships != null) {
       for (final Document eRel : wfRelationships) {
@@ -1113,7 +1105,6 @@ public class FlowDatabasev4ChangeLog {
     Bson wfRunQuery2 = Filters.eq("from", "WORKFLOWRUN");
     Bson wfRunQuery3 = Filters.eq("to", "SYSTEM");
     Bson wfRunQueryAll = Filters.and(wfRunQuery1, wfRunQuery2, wfRunQuery3);
-    logger.info("Migrating System - WorkflowRun Relationship Filter: " + wfQueryAll.toString());
     final FindIterable<Document> wfRunRelationships = relationshipsCollection.find(wfRunQueryAll);
     if (wfRunRelationships != null) {
       for (final Document eRel : wfRunRelationships) {
@@ -1153,6 +1144,11 @@ public class FlowDatabasev4ChangeLog {
   String workflowsCollectionName = collectionPrefix + "workflows";
     MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
     
+
+    String revisionCollectionName = collectionPrefix + "workflow_revisions";
+    MongoCollection<Document> workflowRevisionsCollection =
+        db.getCollection(revisionCollectionName);
+    
   String wfTemplatesCollectionName = collectionPrefix + "workflow_templates";
     MongoCollection<Document> wfTemplatesCollection = db.getCollection(wfTemplatesCollectionName);
     if (wfTemplatesCollection == null) {
@@ -1174,12 +1170,29 @@ public class FlowDatabasev4ChangeLog {
       for (final Document eRel : wfTemplateRelationships) {
         String workflowId = eRel.get("fromRef").toString();
         logger.info("Migrating Templates - Template ID: " + workflowId);
-        final FindIterable<Document> wfTemplates =  workflowsCollection.find(eq("_id", new ObjectId(workflowId)));
-        for (final Document wfTemplate : wfTemplates) {
-          logger.info("Migrating Templates - Template: " + wfTemplate.toString());
-          wfTemplatesCollection.insertOne(wfTemplate);
+        Document wfTemplate = workflowsCollection.find(eq("_id", new ObjectId(workflowId))).first();
+        final FindIterable<Document> wfRevisions =  workflowRevisionsCollection.find(eq("workflowRef", workflowId));
+        for (final Document revision : wfRevisions) {
+          // Create new WorkflowTemplateEntity using a combination of WorkflowEntity and WorkflowRevisionEntity
+          // Don't add triggers and remove workflowRef
+          logger.info("Migrating Templates - Revision: " + revision.toString());
+          revision.put("name", wfTemplate.get("name").toString().toLowerCase().replace(' ', '-'));
+          revision.put("displayName", wfTemplate.get("name"));
+          revision.put("status", wfTemplate.get("status"));
+          revision.put("creationDate", wfTemplate.get("creationDate"));
+          revision.put("icon", wfTemplate.get("icon"));
+          revision.put("description", wfTemplate.get("description"));
+          revision.put("shortDescription", wfTemplate.get("shortDescription"));
+          revision.put("labels", wfTemplate.get("labels"));
+          Map<String, Object> annotations = new HashMap<>();
+          annotations.put("io#boomerang/generation", "3");
+          annotations.put("io#boomerang/kind", "WorkflowTemplate");
+          revision.put("annotations", annotations);
+          revision.remove("workflowRef");
+          wfTemplatesCollection.insertOne(revision);
+          workflowRevisionsCollection.deleteOne(eq("_id", revision.get("_id")));
         }
-        workflowsCollection.deleteOne(eq("_id", workflowId));
+        workflowsCollection.deleteOne(eq("_id", new ObjectId(workflowId)));
         relationshipsCollection.deleteOne(eq("_id", eRel.getObjectId("_id")));
       }
     }
