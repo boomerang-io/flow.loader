@@ -1178,7 +1178,6 @@ public class FlowDatabasev4ChangeLog {
           logger.info("Migrating Templates - Revision: " + revision.toString());
           revision.put("name", wfTemplate.get("name").toString().toLowerCase().replace(' ', '-'));
           revision.put("displayName", wfTemplate.get("name"));
-          revision.put("status", wfTemplate.get("status"));
           revision.put("creationDate", wfTemplate.get("creationDate"));
           revision.put("icon", wfTemplate.get("icon"));
           revision.put("description", wfTemplate.get("description"));
