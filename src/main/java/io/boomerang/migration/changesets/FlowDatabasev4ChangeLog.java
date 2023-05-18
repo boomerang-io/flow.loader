@@ -302,7 +302,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document taskTemplateEntity : taskTemplateEntities) {
       Document newTaskTemplateEntity = new Document();
       newTaskTemplateEntity.put("name",
-          taskTemplateEntity.get("name").toString().toLowerCase().replace(' ', '-'));
+          taskTemplateEntity.get("name").toString().trim().toLowerCase().replace(' ', '-'));
       newTaskTemplateEntity.put("displayName", taskTemplateEntity.get("name"));
       newTaskTemplateEntity.put("status", taskTemplateEntity.get("status"));
       newTaskTemplateEntity.put("description", taskTemplateEntity.get("description"));
@@ -1176,12 +1176,16 @@ public class FlowDatabasev4ChangeLog {
           // Create new WorkflowTemplateEntity using a combination of WorkflowEntity and WorkflowRevisionEntity
           // Don't add triggers and remove workflowRef
           logger.info("Migrating Templates - Revision: " + revision.toString());
-          revision.put("name", wfTemplate.get("name").toString().toLowerCase().replace(' ', '-'));
+          revision.put("name", wfTemplate.get("name").toString().trim().toLowerCase().replace(' ', '-'));
           revision.put("displayName", wfTemplate.get("name"));
           revision.put("creationDate", wfTemplate.get("creationDate"));
           revision.put("icon", wfTemplate.get("icon"));
-          revision.put("description", wfTemplate.get("description"));
-          revision.put("shortDescription", wfTemplate.get("shortDescription"));
+          //Migrate shortDescription to description if description is empty
+          if (wfTemplate.get("description") != null && !wfTemplate.get("description").toString().isEmpty()) {
+            revision.put("description", wfTemplate.get("description"));
+          } else {
+            revision.put("description", wfTemplate.get("shortDescription"));
+          }
           revision.put("labels", wfTemplate.get("labels"));
           Map<String, Object> annotations = new HashMap<>();
           annotations.put("io#boomerang/generation", "3");
@@ -1292,5 +1296,28 @@ public class FlowDatabasev4ChangeLog {
      Document taskConfig = (Document) collection.find(eq("_id", new ObjectId("5f32cb19d09662744c0df51d"))).first();
      taskConfig.replace("key", "task");
      collection.replaceOne(eq("_id", new ObjectId("5f32cb19d09662744c0df51d")), taskConfig);
+   }
+
+   /*
+    * Migrate Workflow Short Description
+    */
+   @ChangeSet(order = "4021", id = "4021", author = "Tyson Lawrie")
+   public void v4MigrateWorkflowShortDescription(MongoDatabase db) throws IOException {
+     logger.info("Migrating Workflow descriptions");
+     String workflowsCollectionName = collectionPrefix + "workflows";
+       MongoCollection<Document> collection = db.getCollection(workflowsCollectionName);
+
+       final FindIterable<Document> workflowEntities = collection.find();
+       for (final Document entity : workflowEntities) {
+
+         //Migrate shortDescription to description if description is empty
+         if (entity.get("description") != null && !entity.get("description").toString().isEmpty()) {
+           entity.replace("description", entity.get("description"));
+         } else {
+           entity.put("description", entity.get("shortDescription"));
+         }
+         entity.remove("shortDescription");
+         collection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
+       }
    }
 }
