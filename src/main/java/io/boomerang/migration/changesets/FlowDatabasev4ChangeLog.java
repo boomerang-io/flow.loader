@@ -366,46 +366,45 @@ public class FlowDatabasev4ChangeLog {
           spec.put("script", revision.get("script"));
           newTaskTemplateEntity.put("spec", spec);
 
-          // Convert owner to relationship
-          Document relationship = new Document();
-          relationship.put("relationship", "belongs-to");
-          relationship.put("fromType", "TaskTemplate");
-          if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
-            relationship.put("toType", "Team");
-            relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
-          } else {
-            relationship.put("toType", StringUtils.capitalize((String) newTaskTemplateEntity.get("scope")));
-          }
-
           if (revision.get("version").equals(1)) {
             logger.info("Inserting template: ", taskTemplateEntity.get("name").toString(), "@", revision.get("version").toString());
             newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
             taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
                 newTaskTemplateEntity);
-            relationship.put("fromRef", taskTemplateEntity.getObjectId("_id").toString());
           } else {
             logger.info("Inserting template: ", taskTemplateEntity.get("name").toString(), "@", revision.get("version").toString());
             ObjectId newId = new ObjectId();
             newTaskTemplateEntity.put("_id", newId);
             taskTemplatesCollection.insertOne(newTaskTemplateEntity);
-            relationship.put("fromRef", newId.toString());
-          }
-
-          // Store relationship
-          // Needs to sleep as the ObjectID is created using Date in Seconds which unfortunately can
-          // cause non unique keys to be generated. Hence we sleep for a second.
-          try {
-            relationshipCollection.insertOne(relationship);
-          } catch (DuplicateKeyException dke) {
-            try {
-              Thread.sleep(1000);
-            } catch (InterruptedException e) {
-              e.printStackTrace();
-              Thread.currentThread().interrupt();
-            }
-            relationshipCollection.insertOne(relationship);
           }
         }
+      }
+      // Convert owner to relationship
+      Document relationship = new Document();
+      relationship.put("relationship", "belongs-to");
+      relationship.put("fromType", "TaskTemplate");
+      if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
+        relationship.put("toType", "Team");
+        relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
+      } else {
+        relationship.put("toType", StringUtils.capitalize((String) newTaskTemplateEntity.get("scope")));
+      }
+      relationship.put("fromRef", newTaskTemplateEntity.get("name").toString());
+
+
+      // Store relationship
+      // Needs to sleep as the ObjectID is created using Date in Seconds which unfortunately can
+      // cause non unique keys to be generated. Hence we sleep for a second.
+      try {
+        relationshipCollection.insertOne(relationship);
+      } catch (DuplicateKeyException dke) {
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+          Thread.currentThread().interrupt();
+        }
+        relationshipCollection.insertOne(relationship);
       }
     }
   }
