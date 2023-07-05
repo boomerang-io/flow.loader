@@ -306,7 +306,7 @@ public class FlowDatabasev4ChangeLog {
 
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
-      logger.info("Found template: ", taskTemplateEntity.get("name").toString());
+      logger.info("Found template: {0}" + taskTemplateEntity.get("name").toString());
       Document newTaskTemplateEntity = new Document();
       newTaskTemplateEntity.put("name",
           taskTemplateEntity.get("name").toString().trim().toLowerCase().replace(' ', '-'));
@@ -369,12 +369,12 @@ public class FlowDatabasev4ChangeLog {
           newTaskTemplateEntity.put("spec", spec);
 
           if (revision.get("version").equals(1)) {
-            logger.info("Inserting template: ", taskTemplateEntity.get("name").toString(), "@", revision.get("version").toString());
+            logger.info("Replacing template: " + taskTemplateEntity.get("name").toString() +  "@" + revision.get("version").toString());
             newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
             taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
                 newTaskTemplateEntity);
           } else {
-            logger.info("Inserting template: ", taskTemplateEntity.get("name").toString(), "@", revision.get("version").toString());
+            logger.info("Inserting template: " + taskTemplateEntity.get("name").toString() + "@" + revision.get("version").toString());
             ObjectId newId = new ObjectId();
             newTaskTemplateEntity.put("_id", newId);
             taskTemplatesCollection.insertOne(newTaskTemplateEntity);
@@ -1023,10 +1023,11 @@ public class FlowDatabasev4ChangeLog {
       userEntity.put("settings", settings);
       List<Document> labels = (List<Document>) userEntity.get("labels");
       Map<String, String> newLabels = new HashMap<>();
-      if (labels != null && !labels.isEmpty())
+      if (labels != null && !labels.isEmpty()) {
         for (final Document label : labels) {
           newLabels.put(label.getString("key"), label.getString("value"));
         }
+      }
       userEntity.replace("labels", newLabels);
       usersCollection.replaceOne(eq("_id", userEntity.getObjectId("_id")), userEntity);
       
