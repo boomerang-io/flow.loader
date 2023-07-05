@@ -5,8 +5,8 @@
     "description" : "Sleep for specified duration in milliseconds",
     "labels" : {},
     "annotations" : {
-        "io#boomerang/kind" : "TaskTemplate",
-        "io#boomerang/generation" : "4"
+        "boomerang#io/kind" : "TaskTemplate",
+        "boomerang#io/generation" : "4"
     },
     "version" : 2,
     "creationDate" : ISODate("2023-03-28T02:25:28.044Z"),
