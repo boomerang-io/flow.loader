@@ -131,8 +131,8 @@ public class FlowDatabasev4ChangeLog {
         }
       workflowsActivityEntity.replace("labels", newLabels);
       Map<String, Object> annotations = new HashMap<>();
-      annotations.put("io#boomerang/generation", "3");
-      annotations.put("io#boomerang/kind", "WorkflowRun");
+      annotations.put("boomerang#io/generation", "3");
+      annotations.put("boomerang#io/kind", "WorkflowRun");
       workflowsActivityEntity.put("annotations", annotations);
 
       // Migrate initiated by
@@ -322,8 +322,8 @@ public class FlowDatabasev4ChangeLog {
       Map<String, String> labels = new HashMap<>();
       newTaskTemplateEntity.put("labels", labels);
       Map<String, Object> annotations = new HashMap<>();
-      annotations.put("io#boomerang/generation", "3");
-      annotations.put("io#boomerang/kind", "TaskTemplate");
+      annotations.put("boomerang#io/generation", "3");
+      annotations.put("boomerang#io/kind", "TaskTemplate");
       newTaskTemplateEntity.put("annotations", annotations);
 
       newTaskTemplateEntity.put("creationDate", taskTemplateEntity.get("createdDate"));
@@ -461,8 +461,8 @@ public class FlowDatabasev4ChangeLog {
 
       // Set an annotation that this Workflow existing prior to v4
       Map<String, Object> annotations = new HashMap<>();
-      annotations.put("io#boomerang/generation", "3");
-      annotations.put("io#boomerang/kind", "Workflow");
+      annotations.put("boomerang#io/generation", "3");
+      annotations.put("boomerang#io/kind", "Workflow");
       workflowsEntity.put("annotations", annotations);
 
       // Storage to Workspaces conversion. Only added if enabled.
@@ -578,7 +578,7 @@ public class FlowDatabasev4ChangeLog {
               // TODO: confirm if we need the points metadata
               // Document dependencyMetadata = (Document) dependency.get("metadata");
               // if (dependencyMetadata != null) {
-              // taskAnnotations.put("io#boomerang/points", dependencyMetadata.get("points"));
+              // taskAnnotations.put("boomerang#io/points", dependencyMetadata.get("points"));
               // }
               dependency.put("decisionCondition",
                   dependency.get("switchCondition") != null ? dependency.get("switchCondition")
@@ -598,7 +598,7 @@ public class FlowDatabasev4ChangeLog {
           // Migrate Position Metadata
           Document metadata = (Document) dagTask.get("metadata");
           if (metadata.get("position") != null) {
-            taskAnnotations.put("io#boomerang/position", metadata.get("position"));
+            taskAnnotations.put("boomerang#io/position", metadata.get("position"));
           }
 
           task.put("labels", taskLabels);
@@ -1196,8 +1196,8 @@ public class FlowDatabasev4ChangeLog {
           }
           revision.put("labels", wfTemplate.get("labels"));
           Map<String, Object> annotations = new HashMap<>();
-          annotations.put("io#boomerang/generation", "3");
-          annotations.put("io#boomerang/kind", "WorkflowTemplate");
+          annotations.put("boomerang#io/generation", "3");
+          annotations.put("boomerang#io/kind", "WorkflowTemplate");
           revision.put("annotations", annotations);
           revision.remove("workflowRef");
           wfTemplatesCollection.insertOne(revision);
