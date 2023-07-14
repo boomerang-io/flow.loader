@@ -577,17 +577,17 @@ public class FlowDatabasev4ChangeLog {
           List<Document> dependencies = (List<Document>) dagTask.get("dependencies");
           if (dependencies != null) {
             for (final Document dependency : dependencies) {
-              // TODO: confirm if we need the points metadata
-              // Document dependencyMetadata = (Document) dependency.get("metadata");
-              // if (dependencyMetadata != null) {
-              // taskAnnotations.put(ANNOTATION_PREFIX + "/points", dependencyMetadata.get("points"));
-              // }
               dependency.put("decisionCondition",
                   dependency.get("switchCondition") != null ? dependency.get("switchCondition")
                       : "");
               Document dependentTask = dagTasksRef.stream()
                   .filter(e -> e.get("taskId").equals(dependency.get("taskId"))).findFirst().get();
-              dependency.put("taskRef", dependentTask.get("label"));
+              // Start / End nodes did not have labels in v3. Cannot be dependent on End node. 
+              if (dependentTask.getString("type").equals("start")) {
+                dependency.put("taskRef", "start");
+              } else {
+                dependency.put("taskRef", dependentTask.get("label"));
+              }
               dependency.remove("taskId");
               dependency.remove("switchCondition");
               dependency.remove("conditionalExecution");
