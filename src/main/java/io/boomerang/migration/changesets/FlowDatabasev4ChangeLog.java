@@ -1288,7 +1288,7 @@ public class FlowDatabasev4ChangeLog {
    String collectionName = collectionPrefix + "settings";
      MongoCollection<Document> collection = db.getCollection(collectionName);
      
-     collection.deleteOne(eq("_id", "6123c1e20b07a54cdce637c0"));
+     collection.deleteOne(eq("_id", new ObjectId("6123c1e20b07a54cdce637c0")));
    }
 
    /*
