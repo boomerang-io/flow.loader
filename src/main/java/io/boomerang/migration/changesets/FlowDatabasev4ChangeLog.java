@@ -831,7 +831,7 @@ public class FlowDatabasev4ChangeLog {
               approverRefs.add(approver.get("userId").toString());
             }
           }
-          approverGroup.put("approverRefs", approverRefs);
+          approverGroup.put("approvers", approverRefs);
           approverGroup.remove("approvers");
           ObjectId newId = new ObjectId();
           approverGroup.put("_id", newId);
