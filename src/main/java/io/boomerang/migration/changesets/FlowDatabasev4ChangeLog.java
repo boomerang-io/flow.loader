@@ -309,7 +309,7 @@ public class FlowDatabasev4ChangeLog {
 
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
-      logger.info("Found template: {0}" + taskTemplateEntity.get("name").toString());
+      logger.info("Found template: " + taskTemplateEntity.get("name").toString());
       //Create TaskTemplateEntity
       Document newTaskTemplateEntity = new Document();
       newTaskTemplateEntity.put("name",
@@ -345,7 +345,7 @@ public class FlowDatabasev4ChangeLog {
         relationship.put("toType", "Team");
         relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
       } else {
-        relationship.put("toType", StringUtils.capitalize((String) taskTemplateEntity.get("scope")));
+        relationship.put("toType", "Global");
       }
       // Store relationship
       // Needs to sleep as the ObjectID is created using Date in Seconds which unfortunately can
