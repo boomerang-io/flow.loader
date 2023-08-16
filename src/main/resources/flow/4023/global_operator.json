@@ -1,0 +1,6 @@
+{
+  "type": "global",
+  "name": "operator",
+  "description": "",
+  "permissions": ["**/**/Read", "**/**/Write", "**/**/Action"]
+}

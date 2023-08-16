@@ -304,32 +304,26 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(collectionPrefix + "task_templates");
 
+    MongoCollection<Document> taskTemplateRevisionsCollection =
+        db.getCollection(collectionPrefix + "task_template_revisions");
+
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
       logger.info("Found template: {0}" + taskTemplateEntity.get("name").toString());
+      //Create TaskTemplateEntity
       Document newTaskTemplateEntity = new Document();
+      Document newTaskTemplateRevisionEntity = new Document();
       newTaskTemplateEntity.put("name",
           taskTemplateEntity.get("name").toString().trim().toLowerCase().replace(' ', '-'));
-      newTaskTemplateEntity.put("displayName", taskTemplateEntity.get("name"));
       newTaskTemplateEntity.put("status", taskTemplateEntity.get("status"));
-      newTaskTemplateEntity.put("description", taskTemplateEntity.get("description"));
-      newTaskTemplateEntity.put("category", taskTemplateEntity.get("category"));
-      newTaskTemplateEntity.put("icon", taskTemplateEntity.get("icon"));
       newTaskTemplateEntity.put("verified", taskTemplateEntity.get("verified"));
-      if (taskTemplateEntity.get("scope") != null) {
-        newTaskTemplateEntity.put("scope", (String) taskTemplateEntity.get("scope"));
-      } else {
-        newTaskTemplateEntity.put("scope", "global");
-      }
       Map<String, String> labels = new HashMap<>();
       newTaskTemplateEntity.put("labels", labels);
       Map<String, Object> annotations = new HashMap<>();
       annotations.put(ANNOTATION_PREFIX + "/generation", "3");
       annotations.put(ANNOTATION_PREFIX + "/kind", "TaskTemplate");
       newTaskTemplateEntity.put("annotations", annotations);
-
       newTaskTemplateEntity.put("creationDate", taskTemplateEntity.get("createdDate"));
-
       if ("templateTask".equals(taskTemplateEntity.get("nodetype"))) {
         newTaskTemplateEntity.put("type", "template");
       } else if ("customTask".equals(taskTemplateEntity.get("nodetype"))) {
@@ -337,14 +331,52 @@ public class FlowDatabasev4ChangeLog {
       } else {
         newTaskTemplateEntity.put("type", taskTemplateEntity.get("nodetype"));
       }
+      
+      logger.info("Migrating template: " + taskTemplateEntity.get("name").toString());
+      newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
+      taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
+          newTaskTemplateEntity);
+      
+      // Convert scope & owner to relationship
+      Document relationship = new Document();
+      relationship.put("relationship", "belongs-to");
+      relationship.put("fromType", "TaskTemplate");
+      relationship.put("fromRef", newTaskTemplateEntity.get("name").toString());
+      if ("team".equals((String) taskTemplateEntity.get("scope"))) {
+        relationship.put("toType", "Team");
+        relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
+      } else {
+        relationship.put("toType", StringUtils.capitalize((String) newTaskTemplateEntity.get("scope")));
+      }
+      // Store relationship
+      // Needs to sleep as the ObjectID is created using Date in Seconds which unfortunately can
+      // cause non unique keys to be generated. Hence we sleep for a second.
+      try {
+        relationshipCollection.insertOne(relationship);
+      } catch (DuplicateKeyException dke) {
+        try {
+          Thread.sleep(1000);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+          Thread.currentThread().interrupt();
+        }
+        relationshipCollection.insertOne(relationship);
+      }
+      
+      //Create TasktemplateRevisionEntity
+      newTaskTemplateRevisionEntity.put("parent", newTaskTemplateEntity.get("name"));
+      newTaskTemplateRevisionEntity.put("displayName", taskTemplateEntity.get("name"));
+      newTaskTemplateRevisionEntity.put("description", taskTemplateEntity.get("description"));
+      newTaskTemplateRevisionEntity.put("category", taskTemplateEntity.get("category"));
+      newTaskTemplateRevisionEntity.put("icon", taskTemplateEntity.get("icon"));
 
       List<Document> revisions = (List<Document>) taskTemplateEntity.get("revisions");
       if (revisions != null && !revisions.isEmpty()) {
         for (final Document revision : revisions) {
-          newTaskTemplateEntity.put("version", revision.get("version"));
-          newTaskTemplateEntity.put("changelog", revision.get("changelog"));
+          newTaskTemplateRevisionEntity.put("version", revision.get("version"));
+          newTaskTemplateRevisionEntity.put("changelog", revision.get("changelog"));
           List<Document> configs = (List<Document>) revision.get("config");
-          newTaskTemplateEntity.put("config", configs);
+          newTaskTemplateRevisionEntity.put("config", configs);
           List<Document> params = new LinkedList<>();
           if (!configs.isEmpty()) {
             for (final Document config : configs) {
@@ -366,47 +398,13 @@ public class FlowDatabasev4ChangeLog {
           spec.put("script", revision.get("script"));
           spec.put("workingDir", revision.get("workingDir"));
           spec.put("script", revision.get("script"));
-          newTaskTemplateEntity.put("spec", spec);
-
-          if (revision.get("version").equals(1)) {
-            logger.info("Replacing template: " + taskTemplateEntity.get("name").toString() +  "@" + revision.get("version").toString());
-            newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
-            taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
-                newTaskTemplateEntity);
-          } else {
-            logger.info("Inserting template: " + taskTemplateEntity.get("name").toString() + "@" + revision.get("version").toString());
-            ObjectId newId = new ObjectId();
-            newTaskTemplateEntity.put("_id", newId);
-            taskTemplatesCollection.insertOne(newTaskTemplateEntity);
-          }
+          newTaskTemplateRevisionEntity.put("spec", spec);
+          
+          logger.info("Inserting template revision: " + newTaskTemplateEntity.get("name").toString() + "@" + revision.get("version").toString());
+          ObjectId newId = new ObjectId();
+          newTaskTemplateRevisionEntity.put("_id", newId);
+          taskTemplateRevisionsCollection.insertOne(newTaskTemplateRevisionEntity);
         }
-      }
-      // Convert owner to relationship
-      Document relationship = new Document();
-      relationship.put("relationship", "belongs-to");
-      relationship.put("fromType", "TaskTemplate");
-      if ("team".equals((String) newTaskTemplateEntity.get("scope"))) {
-        relationship.put("toType", "Team");
-        relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
-      } else {
-        relationship.put("toType", StringUtils.capitalize((String) newTaskTemplateEntity.get("scope")));
-      }
-      relationship.put("fromRef", newTaskTemplateEntity.get("name").toString());
-
-
-      // Store relationship
-      // Needs to sleep as the ObjectID is created using Date in Seconds which unfortunately can
-      // cause non unique keys to be generated. Hence we sleep for a second.
-      try {
-        relationshipCollection.insertOne(relationship);
-      } catch (DuplicateKeyException dke) {
-        try {
-          Thread.sleep(1000);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-          Thread.currentThread().interrupt();
-        }
-        relationshipCollection.insertOne(relationship);
       }
     }
   }
@@ -669,7 +667,6 @@ public class FlowDatabasev4ChangeLog {
     String taskTemplatesCollectionName = collectionPrefix + "task_templates";
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(taskTemplatesCollectionName);
-    taskTemplatesCollection.createIndex(Indexes.descending("version"));
     taskTemplatesCollection.createIndex(Indexes.descending("creationDate"));
 
     String taskRunsCollectionName = collectionPrefix + "task_runs";
@@ -739,6 +736,8 @@ public class FlowDatabasev4ChangeLog {
     String taskTemplatesCollectionName = collectionPrefix + "task_templates";
     MongoCollection<Document> taskTemplatesCollection = db.getCollection(taskTemplatesCollectionName);
     taskTemplatesCollection.createIndex(Indexes.descending("name"));
+    taskTemplatesCollection.createIndex(Indexes.descending("parent"));
+    taskTemplatesCollection.createIndex(Indexes.descending("version"));
   }
   
   /*
@@ -883,7 +882,9 @@ public class FlowDatabasev4ChangeLog {
         relationshipEntity.put("to", relationshipEntity.get("toType"));
         relationshipEntity.remove("toType");
       }
-      relationshipEntity.put("to", relationshipEntity.get("to").toString().toUpperCase());
+      if (relationshipEntity.get("to") != null) {        
+        relationshipEntity.put("to", relationshipEntity.get("to").toString().toUpperCase());
+      }
       relationshipCollection.replaceOne(eq("_id", relationshipEntity.getObjectId("_id")),
           relationshipEntity);
     }
@@ -930,9 +931,9 @@ public class FlowDatabasev4ChangeLog {
     }
     
     MongoCollection<Document> taskTemplatesCollection =
-        db.getCollection(collectionPrefix + "task_templates");
+        db.getCollection(collectionPrefix + "task_template_revisions");
 
-    logger.info("Migrating TaskTemplate Changelogs");
+    logger.info("Migrating TaskTemplateRevision Changelogs");
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
         Document changelog = (Document) taskTemplateEntity.get("changelog");
@@ -1346,5 +1347,20 @@ public class FlowDatabasev4ChangeLog {
          entity.replace("jobClass", "io.boomerang.quartz.QuartzSchedulerJob");
          collection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
        }
+   }
+   
+   /*
+    * Load Roles
+    */
+   @ChangeSet(order = "4023", id = "4023", author = "Tyson Lawrie")
+   public void loadRoles(MongoDatabase db) throws IOException {
+     logger.info("Loading Roles");
+     final List<String> files = fileloadingService.loadFiles("flow/4023/*.json");
+     for (final String file : files) {
+       final Document doc = Document.parse(file);
+       final MongoCollection<Document> collection =
+           db.getCollection(collectionPrefix + "roles");
+       collection.insertOne(doc);
+     }
    }
 }

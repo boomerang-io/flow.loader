@@ -1,0 +1,6 @@
+{
+  "type": "global",
+  "name": "admin",
+  "description": "",
+  "permissions": ["**/**/**"]
+}
