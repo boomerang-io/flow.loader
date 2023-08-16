@@ -312,7 +312,6 @@ public class FlowDatabasev4ChangeLog {
       logger.info("Found template: {0}" + taskTemplateEntity.get("name").toString());
       //Create TaskTemplateEntity
       Document newTaskTemplateEntity = new Document();
-      Document newTaskTemplateRevisionEntity = new Document();
       newTaskTemplateEntity.put("name",
           taskTemplateEntity.get("name").toString().trim().toLowerCase().replace(' ', '-'));
       newTaskTemplateEntity.put("status", taskTemplateEntity.get("status"));
@@ -346,7 +345,7 @@ public class FlowDatabasev4ChangeLog {
         relationship.put("toType", "Team");
         relationship.put("toRef", taskTemplateEntity.get("flowTeamId"));
       } else {
-        relationship.put("toType", StringUtils.capitalize((String) newTaskTemplateEntity.get("scope")));
+        relationship.put("toType", StringUtils.capitalize((String) taskTemplateEntity.get("scope")));
       }
       // Store relationship
       // Needs to sleep as the ObjectID is created using Date in Seconds which unfortunately can
@@ -364,6 +363,7 @@ public class FlowDatabasev4ChangeLog {
       }
       
       //Create TasktemplateRevisionEntity
+      Document newTaskTemplateRevisionEntity = new Document();
       newTaskTemplateRevisionEntity.put("parent", newTaskTemplateEntity.get("name"));
       newTaskTemplateRevisionEntity.put("displayName", taskTemplateEntity.get("name"));
       newTaskTemplateRevisionEntity.put("description", taskTemplateEntity.get("description"));
