@@ -1307,6 +1307,23 @@ public class FlowDatabasev4ChangeLog {
      
      Document taskConfig = (Document) collection.find(eq("_id", new ObjectId("5f32cb19d09662744c0df51d"))).first();
      taskConfig.replace("key", "task");
+     List<Document> configs = (List<Document>) taskConfig.get("config");
+     if (configs != null && !configs.isEmpty()) {
+       for (final Document config : configs) {
+         if (config.get("key").equals("job.deletion.policy")) {
+           config.replace("key", "deletion.policy");
+         } else if (config.get("key").equals("enable.tasks")) {
+           config.replace("key", "edit.verified");
+         } else if (config.get("key").equals("task.timeout.configuration")) {
+           config.replace("key", "default.timeout");
+         } else if (config.get("key").equals("worker.image")) {
+           config.replace("key", "default.image");
+         } else if (config.get("key").equals("enable.debug")) {
+           config.replace("key", "debug");
+         }
+       }
+     }
+     taskConfig.replace("config", configs);
      collection.replaceOne(eq("_id", new ObjectId("5f32cb19d09662744c0df51d")), taskConfig);
    }
 
