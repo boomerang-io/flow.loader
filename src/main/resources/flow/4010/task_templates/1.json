@@ -1,46 +1,13 @@
 {
-    "_id" : ObjectId("64225fbf59693175e616e3a7"),
+    "_id" : ObjectId("5bd97bea5a5df954ad592c06"),
     "name" : "sleep",
-    "displayName" : "Sleep",
-    "description" : "Sleep for specified duration in milliseconds",
+    "status" : "active",
+    "verified" : true,
     "labels" : {},
     "annotations" : {
-        "boomerang#io/kind" : "TaskTemplate",
-        "boomerang#io/generation" : "4"
+        "boomerang#io/generation" : "3",
+        "boomerang#io/kind" : "TaskTemplate"
     },
-    "version" : 2,
-    "creationDate" : ISODate("2023-03-28T02:25:28.044Z"),
-    "changelog" : {
-        "reason" : "Initial Task Template",
-        "date" : ISODate("2023-03-28T02:25:28.044Z")
-    },
-    "category" : "Workflow",
-    "type" : "sleep",
-    "spec" : {
-        "arguments" : [],
-        "command" : [],
-        "params" : [ 
-            {
-                "name" : "duration",
-                "type" : "string",
-                "description" : ""
-            }
-        ],
-        "image" : ""
-    },
-    "status" : "active",
-    "config" : [ 
-        {
-            "description" : "",
-            "key" : "duration",
-            "label" : "Duration",
-            "type" : "text",
-            "placeholder" : "",
-            "readOnly" : false
-        }
-    ],
-    "icon" : "Power on/off",
-    "verified" : true,
-    "scope" : "global",
-    "_class" : "io.boomerang.model.TaskTemplate"
+    "creationDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "type" : "sleep"
 }

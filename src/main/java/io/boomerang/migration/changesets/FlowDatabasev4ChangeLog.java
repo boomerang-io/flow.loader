@@ -746,11 +746,21 @@ public class FlowDatabasev4ChangeLog {
   @ChangeSet(order = "4010", id = "4010", author = "Tyson Lawrie")
   public void updateSleepTaskTemplate(MongoDatabase db) throws IOException {
     logger.info("Update Sleep Task Template");
-    final List<String> files = fileloadingService.loadFiles("flow/4010/task_templates/*.json");
-    for (final String fileContents : files) {
-      final Document doc = Document.parse(fileContents);
+    final List<String> taskTemplates =
+        fileloadingService.loadFiles("flow/4010/task_templates/*.json");
+    for (final String template : taskTemplates) {
+      final Document doc = Document.parse(template);
       final MongoCollection<Document> collection =
           db.getCollection(collectionPrefix + "task_templates");
+      collection.replaceOne(eq("_id", doc.getObjectId("_id")), doc);
+    }
+    final List<String> taskTemplateRevisions =
+        fileloadingService.loadFiles("flow/4010/task_template_revisions/*.json");
+    for (final String revision : taskTemplateRevisions) {
+      final Document doc = Document.parse(revision);
+      final MongoCollection<Document> collection =
+          db.getCollection(collectionPrefix + "task_template_revisions");
+      collection.deleteOne(eq("parent", "sleep"));
       collection.insertOne(doc);
     }
   }
@@ -780,6 +790,15 @@ public class FlowDatabasev4ChangeLog {
       logger.info("Migrating Team - ID: " + teamsEntity.get("_id"));
 
       teamsEntity.put("creationDate", new Date());
+      
+      // Migrate Name
+      teamsEntity.put("displayName", teamsEntity.get("name"));
+      String uniqueName = teamsEntity.get("name").toString();
+      uniqueName = uniqueName.replaceAll("[^A-Za-z0-9' \\-]", "");
+      uniqueName = uniqueName.replaceAll("\\s+", "-");
+      uniqueName = uniqueName.replaceAll("'", "-");
+      uniqueName = uniqueName.replaceAll("\\-+", "-");
+      teamsEntity.replace("name", uniqueName.toLowerCase());
       
       // Convert Labels
       List<Document> labels = (List<Document>) teamsEntity.get("labels");
@@ -978,9 +997,22 @@ public class FlowDatabasev4ChangeLog {
         Document quotas = (Document) userEntity.get("quotas");
         userEntity.remove("quotes");
         team.put("quotas", quotas);
+      } else {
+        Document quotas = new Document();
+        quotas.put("maxWorkflowCount", 10);
+        quotas.put("maxWorkflowExecutionMonthly", 20);
+        quotas.put("maxWorkflowStorage", 25);
+        quotas.put("maxWorkflowExecutionTime", 30);
+        quotas.put("maxConcurrentWorkflows", 4);
+        team.put("quotas", quotas);
       }
       String teamName =  userName.replace("@", "-").replace(".", "-") + " Personal Team";
-      team.put("name", teamName);
+      team.put("displayName", teamName);
+      teamName = teamName.replaceAll("[^A-Za-z0-9' \\-]", "");
+      teamName = teamName.replaceAll("\\s+", "-");
+      teamName = teamName.replaceAll("'", "-");
+      teamName = teamName.replaceAll("\\-+", "-");
+      team.put("name", teamName.toLowerCase());
       if (userEntity.get("status") != null && "active".equals(userEntity.get("status"))) {
         team.put("status", "active");
       } else {
@@ -1086,6 +1118,7 @@ public class FlowDatabasev4ChangeLog {
     
     Document team = new Document();
     team.put("name", "system");
+    team.put("displayName", "System Team");
     Document quotas = new Document();
     quotas.put("maxWorkflowCount", Integer.MAX_VALUE);
     quotas.put("maxWorkflowExecutionMonthly", Integer.MAX_VALUE);

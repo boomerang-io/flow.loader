@@ -1,0 +1,40 @@
+{
+    "parent" : "sleep",
+    "displayName" : "Sleep",
+    "description" : "Sleep for specified duration in milliseconds",
+    "category" : "Workflow",
+    "icon" : "Power on/off",
+    "version" : 1,
+    "changelog" : {
+        "reason" : "",
+        "date" : ISODate("2021-05-15T01:53:29.735Z"),
+        "author" : "608ca23d70bfa94ac91f8eef"
+    },
+    "config" : [ 
+        {
+            "description" : "",
+            "key" : "duration",
+            "label" : "Duration",
+            "type" : "text",
+            "placeholder" : "",
+            "readOnly" : false
+        }
+    ],
+    "spec" : {
+        "params" : [ 
+            {
+                "name" : "duration",
+                "type" : "string",
+                "description" : "",
+                "defaultValue" : null
+            }
+        ],
+        "arguments" : [],
+        "command" : [],
+        "envs" : null,
+        "image" : "",
+        "results" : null,
+        "script" : null,
+        "workingDir" : null
+    }
+}
