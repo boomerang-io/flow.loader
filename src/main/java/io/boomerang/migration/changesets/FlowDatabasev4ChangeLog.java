@@ -1118,7 +1118,7 @@ public class FlowDatabasev4ChangeLog {
     
     Document team = new Document();
     team.put("name", "system");
-    team.put("displayName", "System Team");
+    team.put("displayName", "System and Administration");
     Document quotas = new Document();
     quotas.put("maxWorkflowCount", Integer.MAX_VALUE);
     quotas.put("maxWorkflowExecutionMonthly", Integer.MAX_VALUE);
