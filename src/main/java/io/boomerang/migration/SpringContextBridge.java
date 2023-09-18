@@ -35,21 +35,23 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     setContext(applicationContext);
   }
-  
+
   private static synchronized void setContext(ApplicationContext context) {
     SpringContextBridge.applicationContext = context;
-  } 
-
-  @Override
-  public String getCollectionPrefix() {
-    if (workflowCollectionPrefix == null || workflowCollectionPrefix.isBlank()) {
-      return "";
-    }
-    return workflowCollectionPrefix + "_";
   }
 
   @Override
   public boolean getMongoCosmosDBTTL() {
     return mongoCosmosDBTTL;
+  }
+  
+  @Override
+  public String getCollectionPrefix() {
+
+    if ("flow_".equals(workflowCollectionPrefix) || workflowCollectionPrefix == null
+        || workflowCollectionPrefix.isBlank()) {
+      return "";
+    }
+    return workflowCollectionPrefix + "_";
   }
 }
