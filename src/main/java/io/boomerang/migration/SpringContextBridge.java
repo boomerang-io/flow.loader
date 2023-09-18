@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class SpringContextBridge implements SpringContextBridgedServices, ApplicationContextAware {
 
@@ -32,8 +33,12 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
+    setContext(applicationContext);
   }
+  
+  private static synchronized void setContext(ApplicationContext context) {
+    SpringContextBridge.applicationContext = context;
+  } 
 
   @Override
   public String getCollectionPrefix() {
