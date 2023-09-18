@@ -1196,7 +1196,7 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> workflowRevisionsCollection =
         db.getCollection(revisionCollectionName);
     
-  String wfTemplatesCollectionName = collectionPrefix + "workflow_templates";
+    String wfTemplatesCollectionName = collectionPrefix + "workflow_templates";
     MongoCollection<Document> wfTemplatesCollection = db.getCollection(wfTemplatesCollectionName);
     if (wfTemplatesCollection == null) {
       db.createCollection(wfTemplatesCollectionName);
@@ -1326,7 +1326,7 @@ public class FlowDatabasev4ChangeLog {
    }
 
    /*
-    * Drop User Quota Settings
+    * Adjust the task settings
     */
    @ChangeSet(order = "4020", id = "4020", author = "Tyson Lawrie")
    public void v4AdjustSettingsKeys(MongoDatabase db) throws IOException {
@@ -1411,6 +1411,28 @@ public class FlowDatabasev4ChangeLog {
        final MongoCollection<Document> collection =
            db.getCollection(collectionPrefix + "roles");
        collection.insertOne(doc);
+     }
+   }
+   
+   /*
+    * Migrate all Team relationships from ID to name
+    */
+   @ChangeSet(order = "4024", id = "4024", author = "Tyson Lawrie")
+   public void migrateTeamRelationships(MongoDatabase db) throws IOException {
+     logger.info("Migrating Team Relationships");
+     String teamsCollectionName = collectionPrefix + "teams";
+     MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
+     
+     String relationshipsCollectionName = collectionPrefix + "relationships";
+     MongoCollection<Document> relationshipsCollection = db.getCollection(relationshipsCollectionName);
+
+     final FindIterable<Document> teamRelationships = relationshipsCollection.find(eq("to", "TEAM"));
+     for (final Document rel : teamRelationships) {
+       Document team = (Document) teamsCollection.find(eq("_id", new ObjectId(rel.get("toRef").toString()))).first();
+       if (team != null) {
+         rel.replace("toRef", team.get("name"));
+         relationshipsCollection.replaceOne(eq("_id", rel.getObjectId("_id")), rel);
+       }
      }
    }
 }
