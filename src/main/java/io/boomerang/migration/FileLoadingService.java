@@ -22,8 +22,7 @@ public class FileLoadingService {
 
         final List<String> files = new LinkedList<>();
 
-        final Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
-                .getResources(pattern);
+        final Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(pattern);
         for (final Resource resource : resources) {
             final String json = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
             files.add(json);
