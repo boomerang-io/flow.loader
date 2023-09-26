@@ -52,6 +52,6 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
         || workflowCollectionPrefix.isBlank()) {
       return "";
     }
-    return workflowCollectionPrefix + "_";
+    return workflowCollectionPrefix.endsWith("_") ? workflowCollectionPrefix : workflowCollectionPrefix + "_";
   }
 }
