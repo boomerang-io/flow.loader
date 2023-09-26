@@ -446,6 +446,9 @@ public class FlowDatabasev4ChangeLog {
     final FindIterable<Document> workflowsEntities = workflowsCollection.find();
     for (final Document workflowsEntity : workflowsEntities) {
       logger.info("Migrating WorkflowId: " + workflowsEntity.get("_id"));
+      
+      // Remove legacy tokens
+      workflowsEntity.remove("tokens");
 
       // Convert Labels
       List<Document> labels = (List<Document>) workflowsEntity.get("labels");
