@@ -1463,4 +1463,39 @@ public class FlowDatabasev4ChangeLog {
       }
     }
   }
+  
+  /*
+   * Adjust Extension setting to Integration Setting
+   */
+  @ChangeSet(order = "4025", id = "4025", author = "Tyson Lawrie")
+  public void v4AdjustExtensionSettings(MongoDatabase db) throws IOException {
+    logger.info("Adjust Extension Settings");
+    String collectionName = workflowCollectionPrefix + "settings";
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+
+    Document setting =
+        (Document) collection.find(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b"))).first();
+    setting.replace("key", "integration");
+    setting.replace("name", "Integration Configuration");
+    List<Document> configs = (List<Document>) setting.get("config");
+    Document ghAppIdConfig = new Document();
+    ghAppIdConfig.put("key", "github.appId");
+    ghAppIdConfig.put("description", "The GitHub App ID");
+    ghAppIdConfig.put("label", "GitHub App ID");
+    ghAppIdConfig.put("type", "text");
+    ghAppIdConfig.put("value", "");
+    ghAppIdConfig.put("readOnly", false);
+    configs.add(ghAppIdConfig);
+    Document ghPrivateKeyConfig = new Document();
+    ghPrivateKeyConfig.put("key", "github.jwt");
+    ghPrivateKeyConfig.put("description", "Private key used to sign access token requests");
+    ghPrivateKeyConfig.put("label", "GitHub Private Key");
+    ghPrivateKeyConfig.put("type", "secured");
+    ghPrivateKeyConfig.put("value", "");
+    ghPrivateKeyConfig.put("readOnly", false);
+    configs.add(ghPrivateKeyConfig);
+    setting.replace("config", configs);
+    collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")),
+        setting);
+  }
 }
