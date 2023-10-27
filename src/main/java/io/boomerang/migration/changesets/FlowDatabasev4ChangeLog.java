@@ -1487,7 +1487,7 @@ public class FlowDatabasev4ChangeLog {
     ghAppIdConfig.put("readOnly", false);
     configs.add(ghAppIdConfig);
     Document ghPrivateKeyConfig = new Document();
-    ghPrivateKeyConfig.put("key", "github.jwt");
+    ghPrivateKeyConfig.put("key", "github.pem");
     ghPrivateKeyConfig.put("description", "Private key used to sign access token requests");
     ghPrivateKeyConfig.put("label", "GitHub Private Key");
     ghPrivateKeyConfig.put("type", "secured");
@@ -1497,5 +1497,72 @@ public class FlowDatabasev4ChangeLog {
     setting.replace("config", configs);
     collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")),
         setting);
+  }
+  
+  /*
+   * Migrate Triggers
+   */
+  @ChangeSet(order = "4026", id = "4026", author = "Tyson Lawrie")
+  public void v4MigrateWorkflowTriggers(MongoDatabase db) throws IOException {
+    logger.info("Adjust Extension Settings");
+
+    String workflowsCollectionName = workflowCollectionPrefix + "workflows";
+    MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
+
+    final FindIterable<Document> workflowsEntities = workflowsCollection.find();
+    for (final Document workflowsEntity : workflowsEntities) {
+      logger.info("Migrating Triggers for WorkflowId: " + workflowsEntity.get("_id"));
+      if (workflowsEntity.get("triggers") != null) {
+        Document triggers = (Document) workflowsEntity.get("triggers");
+        if (triggers.get("manual") != null) {
+          Document manual = (Document) triggers.get("manual");
+          Document migratedManual = new Document();
+          migratedManual.put("enabled", manual.getBoolean("enable", false));
+          migratedManual.put("conditions", new LinkedList<>());
+          triggers.put("manual", migratedManual);
+        }
+        if (triggers.get("scheduler") != null) {
+          Document scheduler = (Document) triggers.get("scheduler");
+          Document migratedScheduler = new Document();
+          migratedScheduler.put("enabled", scheduler.getBoolean("enable", false));
+          migratedScheduler.put("conditions", new LinkedList<>());
+          triggers.put("schedule", migratedScheduler);
+          triggers.remove("scheduler");
+        }
+        if (triggers.get("webhook") != null) {
+          Document webhook = (Document) triggers.get("webhook");
+          Document migratedWebhook = new Document();
+          migratedWebhook.put("enabled", webhook.getBoolean("enable", false));
+          migratedWebhook.put("conditions", new LinkedList<>());
+          triggers.put("webhook", migratedWebhook);
+        }
+        Document migratedEvent = new Document();
+        migratedEvent.put("enabled", false);
+        migratedEvent.put("conditions", new LinkedList<>());
+        triggers.put("event", migratedEvent);
+        workflowsEntity.replace("triggers", triggers);
+        workflowsCollection.replaceOne(eq("_id", workflowsEntity.getObjectId("_id")),
+            workflowsEntity);
+      }
+    }
+  }
+  
+  /*
+   * Load Integration Templates
+   */
+  @ChangeSet(order = "4027", id = "4027", author = "Tyson Lawrie")
+  public void loadIntegrationTemplates(MongoDatabase db) throws IOException {
+    logger.info("Loading Integration Templates");
+    String collectionName = workflowCollectionPrefix + "integration_templates";
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+    if (collection == null) {
+      db.createCollection(collectionName);
+    }
+    collection = db.getCollection(collectionName);
+    final List<String> files = fileloadingService.loadFiles("flow/4027/*.json");
+    for (final String file : files) {
+      final Document doc = Document.parse(file);
+      collection.insertOne(doc);
+    }
   }
 }
