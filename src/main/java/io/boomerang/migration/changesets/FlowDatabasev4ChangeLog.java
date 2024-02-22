@@ -1565,4 +1565,23 @@ public class FlowDatabasev4ChangeLog {
       collection.insertOne(doc);
     }
   }
+  
+  /*
+   * Load Integration Templates
+   */
+  @ChangeSet(order = "4028", id = "4028", author = "Tyson Lawrie")
+  public void loadManualApprovalTaskTemplateRevision(MongoDatabase db) throws IOException {
+    logger.info("Loading Task Template Revision");
+    String collectionName = workflowCollectionPrefix + "task_template_revisions";
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+    if (collection == null) {
+      db.createCollection(collectionName);
+    }
+    collection = db.getCollection(collectionName);
+    final List<String> files = fileloadingService.loadFiles("flow/4028/*.json");
+    for (final String file : files) {
+      final Document doc = Document.parse(file);
+      collection.insertOne(doc);
+    }
+  }
 }
