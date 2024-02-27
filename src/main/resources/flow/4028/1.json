@@ -62,11 +62,7 @@
             "description" : "",
             "label" : "Approver Group (optional)",
             "type" : "select",
-            "options" : [ 
-                {
-                    "key" : "test",
-                    "value" : "test"
-                }
+            "options" : [
             ],
             "required" : false,
             "placeholder" : "",
@@ -82,7 +78,8 @@
             "placeholder" : "",
             "helpertext" : "Only respected if Approval Group is specified",
             "defaultValue" : "",
-            "readOnly" : false
+            "readOnly" : false,
+            "minValueLength": 1
         }
     ],
     "_class" : "io.boomerang.data.entity.TaskTemplateRevisionEntity"
