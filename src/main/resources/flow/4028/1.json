@@ -1,7 +1,7 @@
 {
     "parent" : "manual-approval",
     "displayName" : "Manual Approval",
-    "description" : "Pauses workflow until approval is actioned. If no approval group is specified then this task can be approved by anyone in the team, and only requires 1 approval.",
+    "description" : "Pauses workflow until approval is actioned. If no approver group is specified then this task can be approved by anyone in the team, and only requires 1 approval.",
     "category" : "Workflow",
     "icon" : "Edit",
     "version" : 2,
@@ -17,7 +17,7 @@
         "command" : [],
         "params" : [ 
             {
-                "name" : "approvalGroupId",
+                "name" : "approverGroupId",
                 "type" : "string",
                 "description" : ""
             }, 
@@ -58,7 +58,7 @@
     },
     "config" : [ 
         {
-            "key" : "approvalGroupId",
+            "key" : "approverGroupId",
             "description" : "",
             "label" : "Approver Group (optional)",
             "type" : "select",
@@ -76,7 +76,7 @@
             "type" : "number",
             "required" : false,
             "placeholder" : "",
-            "helpertext" : "Only respected if Approval Group is specified",
+            "helpertext" : "Only respected if Approver Group is specified",
             "defaultValue" : "",
             "readOnly" : false,
             "minValueLength": 1
