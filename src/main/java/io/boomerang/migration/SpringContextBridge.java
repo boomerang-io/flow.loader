@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class SpringContextBridge implements SpringContextBridgedServices, ApplicationContextAware {
 
@@ -14,6 +15,9 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
 
   @Value("${flow.mongo.collection.prefix}")
   private String workflowCollectionPrefix;
+
+  @Value("${flow.mongo.cosmosdbttl}")
+  private boolean mongoCosmosDBTTL;
 
   public static SpringContextBridgedServices services() {
     return applicationContext.getBean(SpringContextBridgedServices.class);
@@ -29,14 +33,25 @@ public class SpringContextBridge implements SpringContextBridgedServices, Applic
 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-    this.applicationContext = applicationContext;
+    setContext(applicationContext);
+  }
+
+  private static synchronized void setContext(ApplicationContext context) {
+    SpringContextBridge.applicationContext = context;
   }
 
   @Override
+  public boolean getMongoCosmosDBTTL() {
+    return mongoCosmosDBTTL;
+  }
+  
+  @Override
   public String getCollectionPrefix() {
-    if (workflowCollectionPrefix == null || workflowCollectionPrefix.isBlank()) {
+
+    if ("flow_".equals(workflowCollectionPrefix) || workflowCollectionPrefix == null
+        || workflowCollectionPrefix.isBlank()) {
       return "";
     }
-    return workflowCollectionPrefix + "_";
+    return workflowCollectionPrefix.endsWith("_") ? workflowCollectionPrefix : workflowCollectionPrefix + "_";
   }
 }

@@ -1,0 +1,13 @@
+{
+    "_id" : ObjectId("5bd97bea5a5df954ad592c06"),
+    "name" : "sleep",
+    "status" : "active",
+    "verified" : true,
+    "labels" : {},
+    "annotations" : {
+        "boomerang#io/generation" : "3",
+        "boomerang#io/kind" : "TaskTemplate"
+    },
+    "creationDate" : ISODate("2020-01-09T00:01:00.000Z"),
+    "type" : "sleep"
+}
