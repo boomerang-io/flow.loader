@@ -2,6 +2,7 @@ package io.boomerang.migration.changesets;
 
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,7 +14,6 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
@@ -1582,6 +1582,186 @@ public class FlowDatabasev4ChangeLog {
     for (final String file : files) {
       final Document doc = Document.parse(file);
       collection.insertOne(doc);
+    }
+  }
+  
+  /*
+   * Create a unqiue index for a User
+   */
+  @ChangeSet(order = "4029", id = "4029", author = "Tyson Lawrie")
+  public void v4CreateUserUniqueIndex(MongoDatabase db) throws IOException {
+    logger.info("Create Indexes");
+    String collectionName = workflowCollectionPrefix + "users";
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+    try {
+      collection.createIndex(Indexes.ascending("email"), new IndexOptions().unique(true));
+    } catch (Exception e) {
+
+    }
+  }
+  
+  /*
+   * Convert TaskTemplate to parentRef
+   */
+  @ChangeSet(order = "4030", id = "4030", author = "Tyson Lawrie")
+  public void v4ConvertTaskTemplateToParentRef(MongoDatabase db) throws IOException {
+    logger.info("Converting TaskTemplate Revision Parent References");
+    String ttrCollectionName = workflowCollectionPrefix + "task_template_revisions";
+    MongoCollection<Document> ttrCollection = db.getCollection(ttrCollectionName);
+    String ttCollectionName = workflowCollectionPrefix + "task_templates";
+    MongoCollection<Document> ttCollection = db.getCollection(ttCollectionName);
+    final FindIterable<Document> ttrEntities = ttrCollection.find();
+    for (final Document ttrEntity : ttrEntities) {
+      Document ttEntity = (Document) ttCollection.find(eq("name", ttrEntity.get("parent"))).first();
+      ttrEntity.put("parentRef", ttEntity.get("_id").toString());
+      ttrEntity.remove("parent");
+      ttrCollection.replaceOne(eq("_id", ttrEntity.getObjectId("_id")), ttrEntity);
+    }
+  }
+  /*
+   * Convert Relationships from Single Collection to separate collections
+   */
+  @ChangeSet(order = "4031", id = "4031", author = "Tyson Lawrie")
+  public void v4ConvertRelationships(MongoDatabase db) throws IOException {
+    logger.info("Converting Relationships");
+    //Original Collection
+    String relCollectionName = workflowCollectionPrefix + "relationships";
+    MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
+    //New Collections
+    String relV2Name = workflowCollectionPrefix + "relationships_v2";
+    MongoCollection<Document> relV2Collection = db.getCollection(relV2Name);
+    if (relV2Collection == null) {
+      db.createCollection(relV2Name);
+    }
+    relV2Collection = db.getCollection(relV2Name);
+    
+    // Loop through Users, Teams, Workflows, WorkflowRuns and create Nodes.    
+    // Create Team Nodes
+    String teamCollectionName = workflowCollectionPrefix + "teams";
+    MongoCollection<Document> teamCollection = db.getCollection(teamCollectionName);
+    final FindIterable<Document> teamEntities = teamCollection.find();
+    for (final Document entity : teamEntities) {
+      Document node = new Document();
+      node.put("creationDate", new Date());
+      node.put("type", "TEAM");
+      node.put("data", new HashMap<>());
+      node.put("connections", new ArrayList<>());
+      node.put("ref", entity.getObjectId("_id").toString());
+      node.put("slug", entity.get("name").toString());
+      relV2Collection.insertOne(node);
+    }
+    
+    // Create User Nodes
+    String usersCollectionName = workflowCollectionPrefix + "users";
+    MongoCollection<Document> usersCollection = db.getCollection(usersCollectionName);
+    final FindIterable<Document> userEntities = usersCollection.find();
+    for (final Document entity : userEntities) {
+      Document node = new Document();
+      node.put("creationDate", new Date());
+      node.put("type", "USER");
+      node.put("data", new HashMap<>());
+      node.put("connections", new ArrayList<>());
+      node.put("ref", entity.getObjectId("_id").toString());
+      node.put("slug", entity.get("email").toString());
+      relV2Collection.insertOne(node);
+    }
+    
+    // Create TaskTemplate Nodes
+    String ttCollectionName = workflowCollectionPrefix + "task_templates";
+    MongoCollection<Document> ttCollection = db.getCollection(ttCollectionName);
+    final FindIterable<Document> ttEntities = ttCollection.find();
+    for (final Document entity : ttEntities) {
+      Document node = new Document();
+      node.put("creationDate", new Date());
+      node.put("type", "TASK");
+      node.put("data", new HashMap<>());
+      node.put("connections", new ArrayList<>());
+      node.put("ref", entity.getObjectId("_id").toString());
+      node.put("slug", entity.get("name").toString());
+      relV2Collection.insertOne(node);
+    }
+    
+    // Create Workflow Nodes
+    String wfCollectionName = workflowCollectionPrefix + "workflows";
+    MongoCollection<Document> wfCollection = db.getCollection(wfCollectionName);
+    final FindIterable<Document> wfEntities = wfCollection.find();
+    for (final Document entity : wfEntities) {
+      Document node = new Document();
+      node.put("creationDate", new Date());
+      node.put("type", "WORKFLOW");
+      node.put("data", new HashMap<>());
+      node.put("connections", new ArrayList<>());
+      node.put("ref", entity.getObjectId("_id").toString());
+      node.put("slug", entity.get("name").toString());
+      relV2Collection.insertOne(node);
+    }
+    
+    // Create WorkflowRun Nodes
+    String wfRunCollectionName = workflowCollectionPrefix + "workflow_runs";
+    MongoCollection<Document> wfRunCollection = db.getCollection(wfRunCollectionName);
+    final FindIterable<Document> wfRunEntities = wfRunCollection.find();
+    for (final Document entity : wfRunEntities) {
+      Document node = new Document();
+      node.put("creationDate", new Date());
+      node.put("type", "WORKFLOWRUN");
+      node.put("data", new HashMap<>());
+      node.put("connections", new ArrayList<>());
+      node.put("ref", entity.getObjectId("_id").toString());
+      node.put("slug", ""); //WORKFLOWRUNS don't have a slug currently
+      relV2Collection.insertOne(node);
+    }
+    
+    // Create ApproverGroup Nodes
+    String agCollectionName = workflowCollectionPrefix + "approver_groups";
+    MongoCollection<Document> agCollection = db.getCollection(agCollectionName);
+    final FindIterable<Document> agEntities = agCollection.find();
+    for (final Document entity : agEntities) {
+      Document node = new Document();
+      node.put("creationDate", new Date());
+      node.put("type", "APPROVERGROUP");
+      node.put("data", new HashMap<>());
+      node.put("connections", new ArrayList<>());
+      node.put("ref", entity.getObjectId("_id").toString());
+      node.put("slug", entity.get("name").toString());
+      relV2Collection.insertOne(node);
+    }
+    
+    // Loop through and match to the nodes and add paths
+    // Assumes the nodes all exist
+    final FindIterable<Document> relEntities = relCollection.find();
+    for (final Document entity : relEntities) {
+      if (entity.get("from").toString().equals("TASKTEMPLATE") && entity.get("to").toString().equals("GLOBAL")) {
+        // Global Task Templates become GLOBALTASK  
+        Document v2Node = relV2Collection.find(eq("slug", entity.get("fromRef"))).first();
+        if (v2Node != null) {
+          v2Node.put("type", "GLOBALTASK");
+          relV2Collection.replaceOne(eq("_id", v2Node.getObjectId("_id")), v2Node);
+        } else {
+          logger.error("Unable to find matching Task with slug: {}", entity.get("fromRef"));
+        }
+      } else {
+        // Create Relationships to the Team
+        String type = entity.get("from").toString();
+        if (type.equals("TASKTEMPLATE")) {
+          type = "TASK";
+        }
+        logger.info("Attempting to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
+        Document v2FromNode = relV2Collection.find(Filters.and(eq("type", type), Filters.or(eq("ref", entity.get("fromRef")), eq("slug", entity.get("fromRef"))))).first();
+        Document v2ToNode = relV2Collection.find(Filters.and(eq("type", entity.get("to")), Filters.or(eq("ref", entity.get("toRef")), eq("slug", entity.get("toRef"))))).first();
+        if (v2FromNode != null && v2ToNode != null) {
+          Document connection = new Document();
+          connection.put("creationDate", new Date());
+          connection.put("label", entity.get("type"));
+          connection.put("to", v2ToNode.getObjectId("_id"));
+          connection.put("data", entity.get("data"));
+          List<Document> connections = (List<Document>) v2FromNode.get("connections");
+          connections.add(connection);
+          v2FromNode.replace("connections", connections);
+          relV2Collection.replaceOne(eq("_id", v2FromNode.getObjectId("_id")), v2FromNode);
+        } else {
+          logger.error("Unable to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
+        }
+      }
     }
   }
 }
