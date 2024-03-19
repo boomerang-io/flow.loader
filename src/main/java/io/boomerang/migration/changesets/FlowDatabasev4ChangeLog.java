@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.DuplicateKeyException;
+import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -326,7 +327,7 @@ public class FlowDatabasev4ChangeLog {
       newTaskTemplateEntity.put("labels", labels);
       Map<String, Object> annotations = new HashMap<>();
       annotations.put(ANNOTATION_PREFIX + "/generation", "3");
-      annotations.put(ANNOTATION_PREFIX + "/kind", "TaskTemplate");
+      annotations.put(ANNOTATION_PREFIX + "/kind", "Task");
       newTaskTemplateEntity.put("annotations", annotations);
       newTaskTemplateEntity.put("creationDate", taskTemplateEntity.get("createdDate"));
       if ("templateTask".equals(taskTemplateEntity.get("nodetype"))) {
@@ -1762,6 +1763,119 @@ public class FlowDatabasev4ChangeLog {
           logger.error("Unable to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
         }
       }
+    }
+  }
+  
+  /*
+   * Change TaskTemplate to Task
+   */
+  @ChangeSet(order = "4032", id = "4032", author = "Tyson Lawrie")
+  public void v4ChangeTaskTemplateToTask(MongoDatabase db) throws IOException {
+    logger.info("Change TaskTemplate to Task");
+    String ttrCollectionName = workflowCollectionPrefix + "task_template_revisions";
+    MongoCollection<Document> ttrCollection = db.getCollection(ttrCollectionName);
+    MongoNamespace taskRevisionNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "task_revisions");
+    ttrCollection.renameCollection(taskRevisionNamespace);
+    String ttCollectionName = workflowCollectionPrefix + "task_templates";
+    MongoCollection<Document> ttCollection = db.getCollection(ttCollectionName);
+    MongoNamespace taskNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "tasks");
+    ttCollection.renameCollection(taskNamespace);
+  }
+  
+  /*
+   * Change templateRef to taskRef in TaskRuns
+   */
+  @ChangeSet(order = "4033", id = "4033", author = "Tyson Lawrie")
+  public void v4ConvertTRTemplateRefToTaskRef(MongoDatabase db) throws IOException {
+    logger.info("Change WorkflowTask Ref Implementation");
+    String trCollectionName = workflowCollectionPrefix + "task_runs";
+    MongoCollection<Document> trCollection = db.getCollection(trCollectionName);
+    String tskCollectionName = workflowCollectionPrefix + "tasks";
+    MongoCollection<Document> tskCollection = db.getCollection(tskCollectionName);
+
+    final FindIterable<Document> entities = trCollection.find();
+    for (final Document entity : entities) {
+      if (entity.get("templateRef") != null) {
+        Document tskEntity =
+            (Document) tskCollection.find(eq("name", entity.get("templateRef"))).first();
+        if (tskEntity != null) {
+          entity.put("taskRef", tskEntity.get("_id").toString());
+          entity.remove("templateRef");
+        } else {
+          logger.error("Unable to find task with name: {}", entity.get("templateRef"));
+        }
+      }
+      if (entity.get("templateVersion") != null) {
+        entity.put("taskVersion", entity.get("taskVersion"));
+        entity.remove("templateVersion");
+      }
+      trCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
+    }
+  }
+  
+  /*
+   * Change TaskTemplate to Task in Workflows
+   */
+  @ChangeSet(order = "4034", id = "4034", author = "Tyson Lawrie")
+  public void v4ConvertWorkflowTaskRef(MongoDatabase db) throws IOException {
+    logger.info("Change WorkflowTask Ref Implementation");
+    String wfrCollectionName = workflowCollectionPrefix + "workflow_revisions";
+    MongoCollection<Document> wfrCollection = db.getCollection(wfrCollectionName);
+    String tskCollectionName = workflowCollectionPrefix + "tasks";
+    MongoCollection<Document> tskCollection = db.getCollection(tskCollectionName);
+
+    final FindIterable<Document> entities = wfrCollection.find();
+    for (final Document entity : entities) {
+      List<Document> wfTasks = (List<Document>) entity.get("tasks");
+      for (final Document wfTask : wfTasks) {
+        if (wfTask.get("templateRef") != null && (!wfTask.get("name").toString().equals("start") || !wfTask.get("name").toString().equals("end"))) {
+          Document tskEntity = (Document) tskCollection.find(eq("name", wfTask.get("templateRef"))).first();
+          if (tskEntity != null) {
+            wfTask.put("taskRef", tskEntity.get("_id").toString());
+            wfTask.remove("templateRef");
+          } else {
+            logger.error("Unable to find task with name: {}", wfTask.get("templateRef"));
+          }
+        }
+        if (wfTask.get("templateVersion") != null) {
+          wfTask.put("taskVersion", wfTask.get("taskVersion"));
+          wfTask.remove("templateVersion");
+        }
+      }
+      wfrCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
+    }
+  }
+  
+  /*
+   * Change TaskTemplate to Task in WorkflowTemplate
+   */
+  @ChangeSet(order = "4035", id = "4035", author = "Tyson Lawrie")
+  public void v4ConvertWorkflowTemplateTaskRef(MongoDatabase db) throws IOException {
+    logger.info("Change WorkflowTask Ref Implementation");
+    String wftCollectionName = workflowCollectionPrefix + "workflow_templates";
+    MongoCollection<Document> wftCollection = db.getCollection(wftCollectionName);
+    String tskCollectionName = workflowCollectionPrefix + "tasks";
+    MongoCollection<Document> tskCollection = db.getCollection(tskCollectionName);
+
+    final FindIterable<Document> entities = wftCollection.find();
+    for (final Document entity : entities) {
+      List<Document> wfTasks = (List<Document>) entity.get("tasks");
+      for (final Document wfTask : wfTasks) {
+        if (wfTask.get("templateRef") != null && (!wfTask.get("name").toString().equals("start") || !wfTask.get("name").toString().equals("end"))) {
+          Document tskEntity = (Document) tskCollection.find(eq("name", wfTask.get("templateRef"))).first();
+          if (tskEntity != null) {
+            wfTask.put("taskRef", tskEntity.get("_id").toString());
+            wfTask.remove("templateRef");
+          } else {
+            logger.error("Unable to find task with name: {}", wfTask.get("templateRef"));
+          }
+        }
+        if (wfTask.get("templateVersion") != null) {
+          wfTask.put("taskVersion", wfTask.get("taskVersion"));
+          wfTask.remove("templateVersion");
+        }
+      }
+      wftCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
     }
   }
 }
