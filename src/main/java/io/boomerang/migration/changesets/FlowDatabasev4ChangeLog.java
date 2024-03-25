@@ -1878,4 +1878,47 @@ public class FlowDatabasev4ChangeLog {
       wftCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
     }
   }
+  
+  /*
+   * Update Integration Template
+   */
+  @ChangeSet(order = "4036", id = "4036", author = "Tyson Lawrie")
+  public void updateIntegrationTemplates(MongoDatabase db) throws IOException {
+    logger.info("Update Sleep Task Template");
+    final List<String> taskTemplates =
+        fileloadingService.loadFiles("flow/4036/*.json");
+    for (final String template : taskTemplates) {
+      final Document doc = Document.parse(template);
+      final MongoCollection<Document> collection =
+          db.getCollection(workflowCollectionPrefix + "integration_templates");
+      collection.replaceOne(eq("name", doc.get("name")), doc);
+    }
+  }
+  
+
+  
+  /*
+   * Add GitHub App Name to Integration Setting
+   */
+  @ChangeSet(order = "4037", id = "4037", author = "Tyson Lawrie")
+  public void v4AdjustIntegrationSettings(MongoDatabase db) throws IOException {
+    logger.info("Adjust Extension Settings");
+    String collectionName = workflowCollectionPrefix + "settings";
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+
+    Document setting =
+        (Document) collection.find(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b"))).first();
+    List<Document> configs = (List<Document>) setting.get("config");
+    Document ghAppNameConfig = new Document();
+    ghAppNameConfig.put("key", "github.appName");
+    ghAppNameConfig.put("description", "The GitHub App Name");
+    ghAppNameConfig.put("label", "GitHub App Name");
+    ghAppNameConfig.put("type", "text");
+    ghAppNameConfig.put("value", "");
+    ghAppNameConfig.put("readOnly", false);
+    configs.add(ghAppNameConfig);
+    setting.replace("config", configs);
+    collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")),
+        setting);
+  }
 }
