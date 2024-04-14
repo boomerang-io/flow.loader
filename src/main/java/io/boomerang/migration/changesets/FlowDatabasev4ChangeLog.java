@@ -3,11 +3,13 @@ package io.boomerang.migration.changesets;
 import static com.mongodb.client.model.Filters.eq;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -22,9 +24,12 @@ import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.GraphLookupOptions;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.result.InsertOneResult;
 import io.boomerang.migration.FileLoadingService;
 import io.boomerang.migration.SpringContextBridge;
 
@@ -40,7 +45,7 @@ public class FlowDatabasev4ChangeLog {
   private static boolean mongoCosmosDBTTL;
 
 
-  private final Logger logger = LoggerFactory.getLogger(FlowDatabasev4ChangeLog.class);
+  private final Logger LOGGER = LoggerFactory.getLogger(FlowDatabasev4ChangeLog.class);
 
   public FlowDatabasev4ChangeLog() {
     fileloadingService = SpringContextBridge.services().getFileLoadingService();
@@ -65,7 +70,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4000", id = "4000", author = "Tyson Lawrie")
   public void v4MigrateTaskLockCollection(MongoDatabase db) throws IOException {
-    logger.info("Commencing v4 Migration Change Sets...");
+    LOGGER.info("Commencing v4 Migration Change Sets...");
     String origCollectionName = workflowCollectionPrefix + "tasks_locks";
     String newCollectionName = workflowCollectionPrefix + "locks";
 
@@ -97,7 +102,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4001", id = "4001", author = "Tyson Lawrie")
   public void v4DropWorkflowsActivityTask(MongoDatabase db) throws IOException {
-    logger.info("Dropping Workflow Task Activity");
+    LOGGER.info("Dropping Workflow Task Activity");
     String collectionName = workflowCollectionPrefix + "workflows_activity_task";
     db.getCollection(collectionName).drop();
   }
@@ -110,7 +115,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4002", id = "4002", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActivity(MongoDatabase db) throws IOException {
-    logger.info("Migrating Relationships");
+    LOGGER.info("Migrating Relationships");
     String relationshipCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
     if (relationshipCollection == null) {
@@ -259,7 +264,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4003", id = "4003", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActions(MongoDatabase db) throws IOException {
-    logger.info("Migrating Actions");
+    LOGGER.info("Migrating Actions");
     String newCollectionName = workflowCollectionPrefix + "actions";
     MongoCollection<Document> workflowActionsCollection = db.getCollection(newCollectionName);
     if (workflowActionsCollection == null) {
@@ -300,7 +305,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4004", id = "4004", author = "Tyson Lawrie")
   public void v4MigrationTaskTemplates(MongoDatabase db) throws IOException {
-    logger.info("Migrating Task Templates");
+    LOGGER.info("Migrating Task Templates");
     String relationshipCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
     if (relationshipCollection == null) {
@@ -316,7 +321,7 @@ public class FlowDatabasev4ChangeLog {
 
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
-      logger.info("Found template: " + taskTemplateEntity.get("name").toString());
+      LOGGER.info("Found template: " + taskTemplateEntity.get("name").toString());
       // Create TaskTemplateEntity
       Document newTaskTemplateEntity = new Document();
       newTaskTemplateEntity.put("name",
@@ -338,7 +343,7 @@ public class FlowDatabasev4ChangeLog {
         newTaskTemplateEntity.put("type", taskTemplateEntity.get("nodetype"));
       }
 
-      logger.info("Migrating template: " + taskTemplateEntity.get("name").toString());
+      LOGGER.info("Migrating template: " + taskTemplateEntity.get("name").toString());
       newTaskTemplateEntity.put("_id", taskTemplateEntity.get("_id"));
       taskTemplatesCollection.replaceOne(eq("_id", taskTemplateEntity.getObjectId("_id")),
           newTaskTemplateEntity);
@@ -407,7 +412,7 @@ public class FlowDatabasev4ChangeLog {
           spec.put("script", revision.get("script"));
           newTaskTemplateRevisionEntity.put("spec", spec);
 
-          logger.info("Inserting template revision: " + newTaskTemplateEntity.get("name").toString()
+          LOGGER.info("Inserting template revision: " + newTaskTemplateEntity.get("name").toString()
               + "@" + revision.get("version").toString());
           ObjectId newId = new ObjectId();
           newTaskTemplateRevisionEntity.put("_id", newId);
@@ -453,7 +458,7 @@ public class FlowDatabasev4ChangeLog {
 
     final FindIterable<Document> workflowsEntities = workflowsCollection.find();
     for (final Document workflowsEntity : workflowsEntities) {
-      logger.info("Migrating WorkflowId: " + workflowsEntity.get("_id"));
+      LOGGER.info("Migrating WorkflowId: " + workflowsEntity.get("_id"));
       
       // Remove legacy tokens
       workflowsEntity.remove("tokens");
@@ -530,7 +535,7 @@ public class FlowDatabasev4ChangeLog {
           Document firstRevisionChangelog = (Document) workflowRevisionEntity.get("changelog");
           workflowsEntity.put("creationDate", firstRevisionChangelog.get("date"));
         }
-        logger.info("Migrating Workflow Revision: " + workflowRevisionEntity.get("_id"));
+        LOGGER.info("Migrating Workflow Revision: " + workflowRevisionEntity.get("_id"));
         Document dag = (Document) workflowRevisionEntity.get("dag");
         workflowRevisionEntity.put("workflowRef", workflowRevisionEntity.get("workFlowId"));
         workflowRevisionEntity.remove("workFlowId");
@@ -663,7 +668,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4006", id = "4006", author = "Tyson Lawrie")
   public void v4CreateSortIndexes(MongoDatabase db) throws IOException {
-    logger.info("Create CosmosDB Sorting Indexes");
+    LOGGER.info("Create CosmosDB Sorting Indexes");
     String workflowsCollectionName = workflowCollectionPrefix + "workflows";
     MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
     workflowsCollection.createIndex(Indexes.descending("creationDate"));
@@ -697,7 +702,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4007", id = "4007", author = "Tyson Lawrie")
   public void v4CreateRelationshipCollection(MongoDatabase db) throws IOException {
-    logger.info("Create Relationships Collection");
+    LOGGER.info("Create Relationships Collection");
     String relationshipCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
     if (relationshipCollection == null) {
@@ -716,7 +721,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4008", id = "4008", author = "Tyson Lawrie")
   public void v4CreateQueryIndexes(MongoDatabase db) throws IOException {
-    logger.info("Create Indexes");
+    LOGGER.info("Create Indexes");
     String taskRunsCollectionName = workflowCollectionPrefix + "task_runs";
     MongoCollection<Document> taskRunsCollection = db.getCollection(taskRunsCollectionName);
     try {
@@ -746,7 +751,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4009", id = "4009", author = "Tyson Lawrie")
   public void v4CreateQueryIndexes2(MongoDatabase db) throws IOException {
-    logger.info("Create Additional Indexes");
+    LOGGER.info("Create Additional Indexes");
     String taskRunsCollectionName = workflowCollectionPrefix + "task_runs";
     MongoCollection<Document> taskRunsCollection = db.getCollection(taskRunsCollectionName);
     taskRunsCollection.createIndex(Indexes.descending("name"));
@@ -765,7 +770,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4010", id = "4010", author = "Tyson Lawrie")
   public void updateSleepTaskTemplate(MongoDatabase db) throws IOException {
-    logger.info("Update Sleep Task Template");
+    LOGGER.info("Update Sleep Task Template");
     final List<String> taskTemplates =
         fileloadingService.loadFiles("flow/4010/task_templates/*.json");
     for (final String template : taskTemplates) {
@@ -794,7 +799,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4011", id = "4011", author = "Tyson Lawrie")
   public void v4MigrateTeams(MongoDatabase db) throws IOException {
-    logger.info("Migrating Teams");
+    LOGGER.info("Migrating Teams");
     String relationshipCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
 
@@ -807,7 +812,7 @@ public class FlowDatabasev4ChangeLog {
 
     final FindIterable<Document> teamsEntities = teamsCollection.find();
     for (final Document teamsEntity : teamsEntities) {
-      logger.info("Migrating Team - ID: " + teamsEntity.get("_id"));
+      LOGGER.info("Migrating Team - ID: " + teamsEntity.get("_id"));
 
       teamsEntity.put("creationDate", new Date());
 
@@ -895,7 +900,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4012", id = "4012", author = "Tyson Lawrie")
   public void v4MigrateRelationships(MongoDatabase db) throws IOException {
-    logger.info("Migrating Relationships");
+    LOGGER.info("Migrating Relationships");
     String relationshipCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relationshipCollection = db.getCollection(relationshipCollectionName);
     final FindIterable<Document> relationshipEntities = relationshipCollection.find();
@@ -943,7 +948,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4013", id = "4013", author = "Tyson Lawrie")
   public void v4MigrateChangelog(MongoDatabase db) throws IOException {
-    logger.info("Migrating Workflow Revision Changelogs");
+    LOGGER.info("Migrating Workflow Revision Changelogs");
     String revisionCollectionName = workflowCollectionPrefix + "workflow_revisions";
     MongoCollection<Document> workflowRevisionsCollection =
         db.getCollection(revisionCollectionName);
@@ -968,7 +973,7 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> taskTemplatesCollection =
         db.getCollection(workflowCollectionPrefix + "task_template_revisions");
 
-    logger.info("Migrating TaskTemplateRevision Changelogs");
+    LOGGER.info("Migrating TaskTemplateRevision Changelogs");
     final FindIterable<Document> taskTemplateEntities = taskTemplatesCollection.find();
     for (final Document taskTemplateEntity : taskTemplateEntities) {
       Document changelog = (Document) taskTemplateEntity.get("changelog");
@@ -1006,7 +1011,7 @@ public class FlowDatabasev4ChangeLog {
 
     final FindIterable<Document> userEntities = usersCollection.find();
     for (final Document userEntity : userEntities) {
-      logger.info("Migrating Users - ID: " + userEntity.get("_id").toString());
+      LOGGER.info("Migrating Users - ID: " + userEntity.get("_id").toString());
       String userName = userEntity.getString("name");
       Document team = new Document();
       if (userEntity.get("quotas") != null) {
@@ -1122,7 +1127,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4015", id = "4015", author = "Tyson Lawrie")
   public void v4MigrateSystemToATeam(MongoDatabase db) throws IOException {
-    logger.info("Migrating System");
+    LOGGER.info("Migrating System");
     String teamsCollectionName = workflowCollectionPrefix + "teams";
     MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
 
@@ -1204,7 +1209,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4016", id = "4016", author = "Tyson Lawrie")
   public void v4MigrateTemplateWorkflows(MongoDatabase db) throws IOException {
-    logger.info("Migrating Templates");
+    LOGGER.info("Migrating Templates");
     String workflowsCollectionName = workflowCollectionPrefix + "workflows";
     MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
 
@@ -1233,7 +1238,7 @@ public class FlowDatabasev4ChangeLog {
     if (wfTemplateRelationships != null) {
       for (final Document eRel : wfTemplateRelationships) {
         String workflowId = eRel.get("fromRef").toString();
-        logger.info("Migrating Templates - Template ID: " + workflowId);
+        LOGGER.info("Migrating Templates - Template ID: " + workflowId);
         Document wfTemplate = workflowsCollection.find(eq("_id", new ObjectId(workflowId))).first();
         final FindIterable<Document> wfRevisions =
             workflowRevisionsCollection.find(eq("workflowRef", workflowId));
@@ -1273,7 +1278,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4017", id = "4017", author = "Tyson Lawrie")
   public void v4MigrateWorkflowSchedules(MongoDatabase db) throws IOException {
-    logger.info("Migrating Workflow Schedules");
+    LOGGER.info("Migrating Workflow Schedules");
     String origWorkflowSchedulesCollectionName = workflowCollectionPrefix + "workflows_schedules";
     MongoCollection<Document> origWorkflowSchedulesCollection =
         db.getCollection(origWorkflowSchedulesCollectionName);
@@ -1329,7 +1334,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4018", id = "4018", author = "Tyson Lawrie")
   public void v4DropLegacyTokens(MongoDatabase db) throws IOException {
-    logger.info("Drop Legacy Tokens");
+    LOGGER.info("Drop Legacy Tokens");
     String tokensCollectionName = workflowCollectionPrefix + "tokens";
     MongoCollection<Document> tokensCollection = db.getCollection(tokensCollectionName);
 
@@ -1342,7 +1347,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4019", id = "4019", author = "Tyson Lawrie")
   public void v4DropUserQuotaSettings(MongoDatabase db) throws IOException {
-    logger.info("Drop User Quota Settings");
+    LOGGER.info("Drop User Quota Settings");
     String collectionName = workflowCollectionPrefix + "settings";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
@@ -1354,7 +1359,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4020", id = "4020", author = "Tyson Lawrie")
   public void v4AdjustSettingsKeys(MongoDatabase db) throws IOException {
-    logger.info("Adjust Workspace Settings Keys");
+    LOGGER.info("Adjust Workspace Settings Keys");
     String collectionName = workflowCollectionPrefix + "settings";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
@@ -1392,7 +1397,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4021", id = "4021", author = "Tyson Lawrie")
   public void v4MigrateWorkflowShortDescription(MongoDatabase db) throws IOException {
-    logger.info("Migrating Workflow descriptions");
+    LOGGER.info("Migrating Workflow descriptions");
     String workflowsCollectionName = workflowCollectionPrefix + "workflows";
     MongoCollection<Document> collection = db.getCollection(workflowsCollectionName);
 
@@ -1415,7 +1420,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4022", id = "4022", author = "Tyson Lawrie")
   public void v4MigrateQuartzJobs(MongoDatabase db) throws IOException {
-    logger.info("Migrating Quartz Jobs");
+    LOGGER.info("Migrating Quartz Jobs");
     String collectionName = workflowCollectionPrefix + "jobs";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
@@ -1431,7 +1436,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4023", id = "4023", author = "Tyson Lawrie")
   public void loadRoles(MongoDatabase db) throws IOException {
-    logger.info("Loading Roles");
+    LOGGER.info("Loading Roles");
     final List<String> files = fileloadingService.loadFiles("flow/4023/*.json");
     for (final String file : files) {
       final Document doc = Document.parse(file);
@@ -1446,7 +1451,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4024", id = "4024", author = "Tyson Lawrie")
   public void migrateTeamRelationships(MongoDatabase db) throws IOException {
-    logger.info("Migrating Team Relationships");
+    LOGGER.info("Migrating Team Relationships");
     String teamsCollectionName = workflowCollectionPrefix + "teams";
     MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
 
@@ -1470,7 +1475,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4025", id = "4025", author = "Tyson Lawrie")
   public void v4AdjustExtensionSettings(MongoDatabase db) throws IOException {
-    logger.info("Adjust Extension Settings");
+    LOGGER.info("Adjust Extension Settings");
     String collectionName = workflowCollectionPrefix + "settings";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
@@ -1505,14 +1510,14 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4026", id = "4026", author = "Tyson Lawrie")
   public void v4MigrateWorkflowTriggers(MongoDatabase db) throws IOException {
-    logger.info("Adjust Extension Settings");
+    LOGGER.info("Adjust Extension Settings");
 
     String workflowsCollectionName = workflowCollectionPrefix + "workflows";
     MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
 
     final FindIterable<Document> workflowsEntities = workflowsCollection.find();
     for (final Document workflowsEntity : workflowsEntities) {
-      logger.info("Migrating Triggers for WorkflowId: " + workflowsEntity.get("_id"));
+      LOGGER.info("Migrating Triggers for WorkflowId: " + workflowsEntity.get("_id"));
       if (workflowsEntity.get("triggers") != null) {
         Document triggers = (Document) workflowsEntity.get("triggers");
         if (triggers.get("manual") != null) {
@@ -1553,7 +1558,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4027", id = "4027", author = "Tyson Lawrie")
   public void loadIntegrationTemplates(MongoDatabase db) throws IOException {
-    logger.info("Loading Integration Templates");
+    LOGGER.info("Loading Integration Templates");
     String collectionName = workflowCollectionPrefix + "integration_templates";
     MongoCollection<Document> collection = db.getCollection(collectionName);
     if (collection == null) {
@@ -1572,7 +1577,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4028", id = "4028", author = "Tyson Lawrie")
   public void loadManualApprovalTaskTemplateRevision(MongoDatabase db) throws IOException {
-    logger.info("Loading Task Template Revision");
+    LOGGER.info("Loading Task Template Revision");
     String collectionName = workflowCollectionPrefix + "task_template_revisions";
     MongoCollection<Document> collection = db.getCollection(collectionName);
     if (collection == null) {
@@ -1591,7 +1596,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4029", id = "4029", author = "Tyson Lawrie")
   public void v4CreateUserUniqueIndex(MongoDatabase db) throws IOException {
-    logger.info("Create Indexes");
+    LOGGER.info("Create Indexes");
     String collectionName = workflowCollectionPrefix + "users";
     MongoCollection<Document> collection = db.getCollection(collectionName);
     try {
@@ -1606,7 +1611,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4030", id = "4030", author = "Tyson Lawrie")
   public void v4ConvertTaskTemplateToParentRef(MongoDatabase db) throws IOException {
-    logger.info("Converting TaskTemplate Revision Parent References");
+    LOGGER.info("Converting TaskTemplate Revision Parent References");
     String ttrCollectionName = workflowCollectionPrefix + "task_template_revisions";
     MongoCollection<Document> ttrCollection = db.getCollection(ttrCollectionName);
     String ttCollectionName = workflowCollectionPrefix + "task_templates";
@@ -1624,12 +1629,16 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4031", id = "4031", author = "Tyson Lawrie")
   public void v4ConvertRelationships(MongoDatabase db) throws IOException {
-    logger.info("Converting Relationships");
+    LOGGER.info("Converting Relationships");
     //Original Collection
     String relCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
+    
+    //Rename new to 
+    MongoNamespace oldRelNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "relationships_old");
+    relCollection.renameCollection(oldRelNamespace);
     //New Collections
-    String relV2Name = workflowCollectionPrefix + "relationships_v2";
+    String relV2Name = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relV2Collection = db.getCollection(relV2Name);
     if (relV2Collection == null) {
       db.createCollection(relV2Name);
@@ -1738,7 +1747,7 @@ public class FlowDatabasev4ChangeLog {
           v2Node.put("type", "GLOBALTASK");
           relV2Collection.replaceOne(eq("_id", v2Node.getObjectId("_id")), v2Node);
         } else {
-          logger.error("Unable to find matching Task with slug: {}", entity.get("fromRef"));
+          LOGGER.error("Unable to find matching Task with slug: {}", entity.get("fromRef"));
         }
       } else {
         // Create Relationships to the Team
@@ -1746,7 +1755,7 @@ public class FlowDatabasev4ChangeLog {
         if (type.equals("TASKTEMPLATE")) {
           type = "TASK";
         }
-        logger.info("Attempting to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
+        LOGGER.info("Attempting to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
         Document v2FromNode = relV2Collection.find(Filters.and(eq("type", type), Filters.or(eq("ref", entity.get("fromRef")), eq("slug", entity.get("fromRef"))))).first();
         Document v2ToNode = relV2Collection.find(Filters.and(eq("type", entity.get("to")), Filters.or(eq("ref", entity.get("toRef")), eq("slug", entity.get("toRef"))))).first();
         if (v2FromNode != null && v2ToNode != null) {
@@ -1760,7 +1769,7 @@ public class FlowDatabasev4ChangeLog {
           v2FromNode.replace("connections", connections);
           relV2Collection.replaceOne(eq("_id", v2FromNode.getObjectId("_id")), v2FromNode);
         } else {
-          logger.error("Unable to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
+          LOGGER.error("Unable to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
         }
       }
     }
@@ -1771,7 +1780,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4032", id = "4032", author = "Tyson Lawrie")
   public void v4ChangeTaskTemplateToTask(MongoDatabase db) throws IOException {
-    logger.info("Change TaskTemplate to Task");
+    LOGGER.info("Change TaskTemplate to Task");
     String ttrCollectionName = workflowCollectionPrefix + "task_template_revisions";
     MongoCollection<Document> ttrCollection = db.getCollection(ttrCollectionName);
     MongoNamespace taskRevisionNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "task_revisions");
@@ -1787,7 +1796,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4033", id = "4033", author = "Tyson Lawrie")
   public void v4ConvertTRTemplateRefToTaskRef(MongoDatabase db) throws IOException {
-    logger.info("Change WorkflowTask Ref Implementation");
+    LOGGER.info("Change WorkflowTask Ref Implementation");
     String trCollectionName = workflowCollectionPrefix + "task_runs";
     MongoCollection<Document> trCollection = db.getCollection(trCollectionName);
     String tskCollectionName = workflowCollectionPrefix + "tasks";
@@ -1802,7 +1811,7 @@ public class FlowDatabasev4ChangeLog {
           entity.put("taskRef", tskEntity.get("_id").toString());
           entity.remove("templateRef");
         } else {
-          logger.error("Unable to find task with name: {}", entity.get("templateRef"));
+          LOGGER.error("Unable to find task with name: {}", entity.get("templateRef"));
         }
       }
       if (entity.get("templateVersion") != null) {
@@ -1818,7 +1827,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4034", id = "4034", author = "Tyson Lawrie")
   public void v4ConvertWorkflowTaskRef(MongoDatabase db) throws IOException {
-    logger.info("Change WorkflowTask Ref Implementation");
+    LOGGER.info("Change WorkflowTask Ref Implementation");
     String wfrCollectionName = workflowCollectionPrefix + "workflow_revisions";
     MongoCollection<Document> wfrCollection = db.getCollection(wfrCollectionName);
     String tskCollectionName = workflowCollectionPrefix + "tasks";
@@ -1834,7 +1843,7 @@ public class FlowDatabasev4ChangeLog {
             wfTask.put("taskRef", tskEntity.get("_id").toString());
             wfTask.remove("templateRef");
           } else {
-            logger.error("Unable to find task with name: {}", wfTask.get("templateRef"));
+            LOGGER.error("Unable to find task with name: {}", wfTask.get("templateRef"));
           }
         }
         if (wfTask.get("templateVersion") != null) {
@@ -1851,7 +1860,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4035", id = "4035", author = "Tyson Lawrie")
   public void v4ConvertWorkflowTemplateTaskRef(MongoDatabase db) throws IOException {
-    logger.info("Change WorkflowTask Ref Implementation");
+    LOGGER.info("Change WorkflowTask Ref Implementation");
     String wftCollectionName = workflowCollectionPrefix + "workflow_templates";
     MongoCollection<Document> wftCollection = db.getCollection(wftCollectionName);
     String tskCollectionName = workflowCollectionPrefix + "tasks";
@@ -1867,7 +1876,7 @@ public class FlowDatabasev4ChangeLog {
             wfTask.put("taskRef", tskEntity.get("_id").toString());
             wfTask.remove("templateRef");
           } else {
-            logger.error("Unable to find task with name: {}", wfTask.get("templateRef"));
+            LOGGER.error("Unable to find task with name: {}", wfTask.get("templateRef"));
           }
         }
         if (wfTask.get("templateVersion") != null) {
@@ -1884,7 +1893,7 @@ public class FlowDatabasev4ChangeLog {
    */
   @ChangeSet(order = "4036", id = "4036", author = "Tyson Lawrie")
   public void updateIntegrationTemplates(MongoDatabase db) throws IOException {
-    logger.info("Update Sleep Task Template");
+    LOGGER.info("Update Sleep Task Template");
     final List<String> taskTemplates =
         fileloadingService.loadFiles("flow/4036/*.json");
     for (final String template : taskTemplates) {
@@ -1895,14 +1904,12 @@ public class FlowDatabasev4ChangeLog {
     }
   }
   
-
-  
   /*
    * Add GitHub App Name to Integration Setting
    */
   @ChangeSet(order = "4037", id = "4037", author = "Tyson Lawrie")
   public void v4AdjustIntegrationSettings(MongoDatabase db) throws IOException {
-    logger.info("Adjust Extension Settings");
+    LOGGER.info("Adjust Extension Settings");
     String collectionName = workflowCollectionPrefix + "settings";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
@@ -1921,4 +1928,96 @@ public class FlowDatabasev4ChangeLog {
     collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")),
         setting);
   }
+  
+  /*
+   * Add Audit records for existing teams
+   */
+  @ChangeSet(order = "4038", id = "4038", author = "Tyson Lawrie")
+  public void v4InsertTeamAuditRecords(MongoDatabase db) throws IOException {
+    LOGGER.info("Add Team Audit Records");
+    String auditCollectionName = workflowCollectionPrefix + "audit";
+    MongoCollection<Document> auditCollection = db.getCollection(auditCollectionName);
+
+    String teamsCollectionName = workflowCollectionPrefix + "teams";
+    MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
+    
+    Map<String, String> teamAuditIds = new HashMap<>();
+    final FindIterable<Document> entities = teamsCollection.find();
+    for (final Document entity : entities) {
+      Document audit = new Document();
+      audit.put("scope", "TEAM");
+      audit.put("selfRef", entity.getObjectId("_id").toString());
+      audit.put("selfName", entity.get("name").toString());
+      audit.put("creationDate", entity.get("creationDate"));
+      List<Document> events = new ArrayList<>();
+      Document event = new Document();
+      event.put("type", "created");
+      event.put("date", entity.get("creationDate"));
+      events.add(event);
+      audit.put("events", events);
+      Map<String, String> data = new HashMap<>();
+      data.put("name", entity.get("name").toString());
+      audit.put("data", data);
+      InsertOneResult auditEntity = auditCollection.insertOne(audit);
+      teamAuditIds.put(entity.get("name").toString(), auditEntity.getInsertedId().asObjectId().getValue().toString());
+    }
+   
+    String wfCollectionName = workflowCollectionPrefix + "workflows";
+    MongoCollection<Document> wfCollection = db.getCollection(wfCollectionName);
+    
+    final FindIterable<Document> wfEntities = wfCollection.find();
+    for (final Document entity : wfEntities) {
+      String teamSlug = this.relationshipTeamSlug(db, entity.getObjectId("_id").toString());
+      if (teamSlug.isBlank()) {
+        LOGGER.warn("Unable to find Team Slug for Workflow: {} ({})", entity.get("name"), entity.getObjectId("_id").toString());
+      } else {
+        LOGGER.info("Team Slug: {}", teamSlug);
+        LOGGER.info("Team Audit ID: {}", teamAuditIds.get(teamSlug));
+        Document audit = new Document();
+        audit.put("scope", "WORKFLOW");
+        audit.put("selfRef", entity.getObjectId("_id").toString());
+        audit.put("parent", teamAuditIds.get(teamSlug));
+        audit.put("creationDate", entity.get("creationDate"));
+        List<Document> events = new ArrayList<>();
+        Document event = new Document();
+        event.put("type", "created");
+        event.put("date", entity.get("creationDate"));
+        events.add(event);
+        audit.put("events", events);
+        Map<String, String> data = new HashMap<>();
+        data.put("name", entity.get("name").toString());
+        audit.put("data", data);
+        auditCollection.insertOne(audit);
+      }
+    }
+  }
+  
+  private String relationshipTeamSlug(MongoDatabase db, String refOrSlug) {
+    String relCollectionName = workflowCollectionPrefix + "relationships";
+    MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
+    Bson matchStage = Aggregates.match(
+            Filters.and(
+                    Filters.eq("type", "WORKFLOW"),
+                    Filters.or(
+                            Filters.eq("slug", refOrSlug),
+                            Filters.eq("ref", refOrSlug)
+                    )
+            )
+    );
+
+    Bson graphLookupStage = Aggregates.graphLookup(
+        relCollectionName,
+            "$connections.to",
+            "connections.to",
+            "_id",
+            "children",
+            new GraphLookupOptions().restrictSearchWithMatch(Filters.eq("type", "TEAM"))
+    );
+    
+    List<Document> graph = relCollection.aggregate(Arrays.asList(matchStage, graphLookupStage)).into(new ArrayList<>());
+    List<Document> children = graph.get(0) != null && graph.get(0).get("children") != null ? (List<Document>) graph.get(0).get("children") : new ArrayList<>();
+    String slug = children.size() > 0 && children.get(0) != null && children.get(0).get("slug") != null ? (String) children.get(0).get("slug") : "";
+    return slug;
+
+}
 }
