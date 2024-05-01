@@ -1995,29 +1995,93 @@ public class FlowDatabasev4ChangeLog {
   private String relationshipTeamSlug(MongoDatabase db, String refOrSlug) {
     String relCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
-    Bson matchStage = Aggregates.match(
-            Filters.and(
-                    Filters.eq("type", "WORKFLOW"),
-                    Filters.or(
-                            Filters.eq("slug", refOrSlug),
-                            Filters.eq("ref", refOrSlug)
-                    )
-            )
-    );
+    Bson matchStage = Aggregates.match(Filters.and(Filters.eq("type", "WORKFLOW"),
+        Filters.or(Filters.eq("slug", refOrSlug), Filters.eq("ref", refOrSlug))));
 
-    Bson graphLookupStage = Aggregates.graphLookup(
-        relCollectionName,
-            "$connections.to",
-            "connections.to",
-            "_id",
-            "children",
-            new GraphLookupOptions().restrictSearchWithMatch(Filters.eq("type", "TEAM"))
-    );
-    
-    List<Document> graph = relCollection.aggregate(Arrays.asList(matchStage, graphLookupStage)).into(new ArrayList<>());
-    List<Document> children = graph.get(0) != null && graph.get(0).get("children") != null ? (List<Document>) graph.get(0).get("children") : new ArrayList<>();
-    String slug = children.size() > 0 && children.get(0) != null && children.get(0).get("slug") != null ? (String) children.get(0).get("slug") : "";
+    Bson graphLookupStage = Aggregates.graphLookup(relCollectionName, "$connections.to",
+        "connections.to", "_id", "children",
+        new GraphLookupOptions().restrictSearchWithMatch(Filters.eq("type", "TEAM")));
+
+    List<Document> graph = relCollection.aggregate(Arrays.asList(matchStage, graphLookupStage))
+        .into(new ArrayList<>());
+    List<Document> children = graph.size() > 0 && graph.get(0) != null && graph.get(0).get("children") != null
+        ? (List<Document>) graph.get(0).get("children")
+        : new ArrayList<>();
+    String slug =
+        children.size() > 0 && children.get(0) != null && children.get(0).get("slug") != null
+            ? (String) children.get(0).get("slug")
+            : "";
     return slug;
 
-}
+  }
+
+  /*
+   * Adjust Team Quota settings
+   */
+  @ChangeSet(order = "4039", id = "4039", author = "Tyson Lawrie")
+  public void v4AdjustTeamSettings(MongoDatabase db) throws IOException {
+    LOGGER.info("Adjust Team Settings");
+    String collectionName = workflowCollectionPrefix + "settings";
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+
+    Document teamSetting =
+        (Document) collection.find(eq("key", "teams")).first();
+    teamSetting.put("description", "Define default team quotas which are referenced unless overridden on the Team.");
+    teamSetting.put("name", "Team Quotas");
+    List<Document> configs = (List<Document>) teamSetting.get("config");
+    if (configs != null && !configs.isEmpty()) {
+      for (final Document config : configs) {
+        if (config.get("key").equals("max.team.concurrent.workflows")) {
+          config.replace("key", "max.workflowrun.concurrent");
+        } else if (config.get("key").equals("max.team.workflow.count")) {
+          config.replace("key", "max.workflow.count");
+        } else if (config.get("key").equals("max.team.workflow.execution.monthly")) {
+          config.replace("key", "max.workflowrun.monthly");
+          config.replace("label", "Max WorkflowRuns per month");
+        } else if (config.get("key").equals("max.team.workflow.duration")) {
+          config.replace("key", "max.workflowrun.duration");
+          config.replace("label", "Max WorkflowRun Duration");
+        } else if (config.get("key").equals("max.team.workflow.storage")) {
+          config.replace("key", "max.workflow.storage");
+          config.replace("description", "Maximum storage allowed per Workflow across runs (executions)");
+          config.replace("label", "Max Workflow Storage");
+        }
+      }
+    }
+    Document wfRunStorage = new Document();
+    wfRunStorage.put("key", "max.workflowrun.storage");
+    wfRunStorage.put("description", "Maximum storage allowed per WorkflowRun (execution)");
+    wfRunStorage.put("label", "Max WorkflowRun Storage");
+    wfRunStorage.put("type", "text");
+    wfRunStorage.put("value", "2Gi");
+    wfRunStorage.put("readOnly", false);
+    configs.add(wfRunStorage);
+    teamSetting.replace("config", configs);
+    collection.replaceOne(eq("key", "teams"), teamSetting);
+  }
+
+  /*
+   * Adjust Feature settings
+   */
+  @ChangeSet(order = "4040", id = "4040", author = "Tyson Lawrie")
+  public void v4AdjustFeatureSettings(MongoDatabase db) throws IOException {
+    LOGGER.info("Adjust feature Settings");
+    String collectionName = workflowCollectionPrefix + "settings";
+    MongoCollection<Document> collection = db.getCollection(collectionName);
+
+    Document setting =
+        (Document) collection.find(eq("key", "features")).first();
+    List<Document> configs = (List<Document>) setting.get("config");
+    if (configs != null && !configs.isEmpty()) {
+      for (final Document config : configs) {
+        if (config.get("key").equals("workflowQuotas")) {
+          config.replace("key", "teamQuotas");
+          config.replace("label", "Team Quotas");
+          config.replace("description", "Enforce Team level quotas");
+        }
+      }
+    }
+    setting.replace("config", configs);
+    collection.replaceOne(eq("key", "features"), setting);
+  }
 }
