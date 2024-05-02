@@ -1632,17 +1632,18 @@ public class FlowDatabasev4ChangeLog {
     LOGGER.info("Converting Relationships");
     //Original Collection
     String relCollectionName = workflowCollectionPrefix + "relationships";
+    String relV1CollectionName = workflowCollectionPrefix + "relationships_v1";
     MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
-    
     //Rename new to 
-    MongoNamespace oldRelNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "relationships_old");
-    RenameCollectionOptions options = new RenameCollectionOptions();
-    options.dropTarget(true);
-    relCollection.renameCollection(oldRelNamespace, options);
+    MongoNamespace v1RelNamespace = new MongoNamespace(db.getName(), relV1CollectionName);
+    relCollection.renameCollection(v1RelNamespace);
+    //Drop old collection
+    MongoCollection<Document> tempCollection = db.getCollection(relCollectionName);
+    tempCollection.drop();
     //New Collections
-    String relV2Name = workflowCollectionPrefix + "relationships";
-    db.createCollection(relV2Name);
-    MongoCollection<Document>relV2Collection = db.getCollection(relV2Name);
+    db.createCollection(relCollectionName);
+    MongoCollection<Document>relV2Collection = db.getCollection(relCollectionName);
+    MongoCollection<Document>relV1Collection = db.getCollection(relV1CollectionName);
     
     // Loop through Users, Teams, Workflows, WorkflowRuns and create Nodes.    
     // Create Team Nodes
@@ -1737,7 +1738,7 @@ public class FlowDatabasev4ChangeLog {
     
     // Loop through and match to the nodes and add paths
     // Assumes the nodes all exist
-    final FindIterable<Document> relEntities = relCollection.find();
+    final FindIterable<Document> relEntities = relV1Collection.find();
     for (final Document entity : relEntities) {
       if (entity.get("from").toString().equals("TASKTEMPLATE") && entity.get("to").toString().equals("GLOBAL")) {
         // Global Task Templates become GLOBALTASK  
