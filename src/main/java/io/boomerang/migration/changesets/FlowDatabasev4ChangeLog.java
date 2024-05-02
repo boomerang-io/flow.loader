@@ -1645,6 +1645,9 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document>relV2Collection = db.getCollection(relCollectionName);
     MongoCollection<Document>relV1Collection = db.getCollection(relV1CollectionName);
     
+
+    LOGGER.info("Creating Team Nodes");
+    
     // Loop through Users, Teams, Workflows, WorkflowRuns and create Nodes.    
     // Create Team Nodes
     String teamCollectionName = workflowCollectionPrefix + "teams";
@@ -1660,6 +1663,9 @@ public class FlowDatabasev4ChangeLog {
       node.put("slug", entity.get("name").toString());
       relV2Collection.insertOne(node);
     }
+    
+
+    LOGGER.info("Creating User Nodes");
     
     // Create User Nodes
     String usersCollectionName = workflowCollectionPrefix + "users";
@@ -1690,6 +1696,7 @@ public class FlowDatabasev4ChangeLog {
       node.put("slug", entity.get("name").toString());
       relV2Collection.insertOne(node);
     }
+    LOGGER.info("Creating Workflow Nodes");
     
     // Create Workflow Nodes
     String wfCollectionName = workflowCollectionPrefix + "workflows";
@@ -1705,6 +1712,7 @@ public class FlowDatabasev4ChangeLog {
       node.put("slug", entity.get("name").toString());
       relV2Collection.insertOne(node);
     }
+    LOGGER.info("Creating WorkflowRun Nodes");
     
     // Create WorkflowRun Nodes
     String wfRunCollectionName = workflowCollectionPrefix + "workflow_runs";
@@ -1720,7 +1728,8 @@ public class FlowDatabasev4ChangeLog {
       node.put("slug", ""); //WORKFLOWRUNS don't have a slug currently
       relV2Collection.insertOne(node);
     }
-    
+
+    LOGGER.info("Creating ApproverGroups Nodes");
     // Create ApproverGroup Nodes
     String agCollectionName = workflowCollectionPrefix + "approver_groups";
     MongoCollection<Document> agCollection = db.getCollection(agCollectionName);
@@ -1735,7 +1744,8 @@ public class FlowDatabasev4ChangeLog {
       node.put("slug", entity.get("name").toString());
       relV2Collection.insertOne(node);
     }
-    
+
+    LOGGER.info("Creating Connections in Nodes");
     // Loop through and match to the nodes and add paths
     // Assumes the nodes all exist
     final FindIterable<Document> relEntities = relV1Collection.find();
