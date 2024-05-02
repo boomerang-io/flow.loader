@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -29,6 +28,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.GraphLookupOptions;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.RenameCollectionOptions;
 import com.mongodb.client.result.InsertOneResult;
 import io.boomerang.migration.FileLoadingService;
 import io.boomerang.migration.SpringContextBridge;
@@ -1636,14 +1636,13 @@ public class FlowDatabasev4ChangeLog {
     
     //Rename new to 
     MongoNamespace oldRelNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "relationships_old");
-    relCollection.renameCollection(oldRelNamespace);
+    RenameCollectionOptions options = new RenameCollectionOptions();
+    options.dropTarget(true);
+    relCollection.renameCollection(oldRelNamespace, options);
     //New Collections
     String relV2Name = workflowCollectionPrefix + "relationships";
-    MongoCollection<Document> relV2Collection = db.getCollection(relV2Name);
-    if (relV2Collection == null) {
-      db.createCollection(relV2Name);
-    }
-    relV2Collection = db.getCollection(relV2Name);
+    db.createCollection(relV2Name);
+    MongoCollection<Document>relV2Collection = db.getCollection(relV2Name);
     
     // Loop through Users, Teams, Workflows, WorkflowRuns and create Nodes.    
     // Create Team Nodes
