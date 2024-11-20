@@ -2,7 +2,7 @@ FROM eclipse-temurin:17-jdk-alpine
 ARG BMRG_TAG
 ENV JAVA_OPTS=""
 ENV BMRG_HOME=/opt/boomerang
-ENV BMRG_SVC=loader
+ENV BMRG_SVC=loader-$BMRG_TAG
 
 WORKDIR $BMRG_HOME
 ADD target/$BMRG_SVC.jar service.jar
