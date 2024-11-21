@@ -15,20 +15,19 @@ import org.springframework.util.StreamUtils;
 @Component
 public class FileLoadingService {
 
-    @Autowired
-    private ResourceLoader resourceLoader;
+	@Autowired
+	private ResourceLoader resourceLoader;
 
-    public List<String> loadFiles(String pattern) throws IOException {
+	public List<String> loadFiles(String pattern) throws IOException {
 
-        final List<String> files = new LinkedList<>();
+		final List<String> files = new LinkedList<>();
 
-        final Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader)
-                .getResources(pattern);
-        for (final Resource resource : resources) {
-            final String json = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
-            files.add(json);
-        }
+		final Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(pattern);
+		for (final Resource resource : resources) {
+			final String json = StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
+			files.add(json);
+		}
 
-        return files;
-    }
+		return files;
+	}
 }
