@@ -1624,6 +1624,7 @@ public class FlowDatabasev4ChangeLog {
       ttrCollection.replaceOne(eq("_id", ttrEntity.getObjectId("_id")), ttrEntity);
     }
   }
+
   /*
    * Convert Relationships from Single Collection to separate collections
    */
@@ -1656,7 +1657,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : teamEntities) {
       Document node = new Document();
       node.put("creationDate", new Date());
-      node.put("type", "TEAM");
+      node.put("type", "team");
       node.put("data", new HashMap<>());
       node.put("connections", new ArrayList<>());
       node.put("ref", entity.getObjectId("_id").toString());
@@ -1674,7 +1675,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : userEntities) {
       Document node = new Document();
       node.put("creationDate", new Date());
-      node.put("type", "USER");
+      node.put("type", "user");
       node.put("data", new HashMap<>());
       node.put("connections", new ArrayList<>());
       node.put("ref", entity.getObjectId("_id").toString());
@@ -1689,7 +1690,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : ttEntities) {
       Document node = new Document();
       node.put("creationDate", new Date());
-      node.put("type", "TASK");
+      node.put("type", "task");
       node.put("data", new HashMap<>());
       node.put("connections", new ArrayList<>());
       node.put("ref", entity.getObjectId("_id").toString());
@@ -1705,7 +1706,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : wfEntities) {
       Document node = new Document();
       node.put("creationDate", new Date());
-      node.put("type", "WORKFLOW");
+      node.put("type", "workflow");
       node.put("data", new HashMap<>());
       node.put("connections", new ArrayList<>());
       node.put("ref", entity.getObjectId("_id").toString());
@@ -1721,7 +1722,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : wfRunEntities) {
       Document node = new Document();
       node.put("creationDate", new Date());
-      node.put("type", "WORKFLOWRUN");
+      node.put("type", "workflowrun");
       node.put("data", new HashMap<>());
       node.put("connections", new ArrayList<>());
       node.put("ref", entity.getObjectId("_id").toString());
@@ -1737,7 +1738,7 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : agEntities) {
       Document node = new Document();
       node.put("creationDate", new Date());
-      node.put("type", "APPROVERGROUP");
+      node.put("type", "approvergroup");
       node.put("data", new HashMap<>());
       node.put("connections", new ArrayList<>());
       node.put("ref", entity.getObjectId("_id").toString());
@@ -1750,11 +1751,11 @@ public class FlowDatabasev4ChangeLog {
     // Assumes the nodes all exist
     final FindIterable<Document> relEntities = relV1Collection.find();
     for (final Document entity : relEntities) {
-      if (entity.get("from").toString().equals("TASKTEMPLATE") && entity.get("to").toString().equals("GLOBAL")) {
+      if (entity.get("from").toString().equals("tasktemplate") && entity.get("to").toString().equals("GLOBAL")) {
         // Global Task Templates become GLOBALTASK  
         Document v2Node = relV2Collection.find(eq("slug", entity.get("fromRef"))).first();
         if (v2Node != null) {
-          v2Node.put("type", "GLOBALTASK");
+          v2Node.put("type", "globaltask");
           relV2Collection.replaceOne(eq("_id", v2Node.getObjectId("_id")), v2Node);
         } else {
           LOGGER.error("Unable to find matching Task with slug: {}", entity.get("fromRef"));
@@ -1762,8 +1763,8 @@ public class FlowDatabasev4ChangeLog {
       } else {
         // Create Relationships to the Team
         String type = entity.get("from").toString();
-        if (type.equals("TASKTEMPLATE")) {
-          type = "TASK";
+        if (type.equals("tasktemplate")) {
+          type = "task";
         }
         LOGGER.info("Attempting to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
         Document v2FromNode = relV2Collection.find(Filters.and(eq("type", type), Filters.or(eq("ref", entity.get("fromRef")), eq("slug", entity.get("fromRef"))))).first();
@@ -2093,5 +2094,117 @@ public class FlowDatabasev4ChangeLog {
     }
     setting.replace("config", configs);
     collection.replaceOne(eq("key", "features"), setting);
+  }
+
+
+  /*
+   * Convert Relationships into Nodes and Edges
+   */
+  @ChangeSet(order = "4041", id = "4041", author = "Tyson Lawrie")
+  public void v4ConvertRelationshipsToNodesAndEdges(MongoDatabase db) throws IOException {
+    LOGGER.info("Converting Relationships");
+    String relCollectionName = workflowCollectionPrefix + "relationships";
+    String relNodeCollectionName = workflowCollectionPrefix + "rel_nodes";
+    String relEdgeCollectionName = workflowCollectionPrefix + "rel_edges";
+    String workflowRunCollectionName = workflowCollectionPrefix + "workflow_runs";
+    //Original Collection
+    MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
+    //New Collections
+    db.createCollection(relNodeCollectionName);
+    MongoCollection<Document>relNodeCollection = db.getCollection(relNodeCollectionName);
+    db.createCollection(relEdgeCollectionName);
+    MongoCollection<Document>relEdgeCollection = db.getCollection(relEdgeCollectionName);
+    //Reference Collections
+    MongoCollection<Document>workflowRunCollection = db.getCollection(workflowRunCollectionName);
+
+    //Add Root Node
+    Document root = new Document();
+    root.put("_id", "root:root");
+    root.put("creationDate", new Date());
+    root.put("type", "root");
+    root.put("ref", "root");
+    root.put("slug", "root");
+    root.put("data", new HashMap<>());
+    relNodeCollection.insertOne(root);
+
+    // Assumes the nodes all exist
+    final FindIterable<Document> relEntities = relCollection.find();
+    for (final Document entity : relEntities) {
+      if (entity.get("type").toString().toLowerCase().equals("global") || entity.get("type").toString().toLowerCase().equals("integration")) {
+        LOGGER.info("Skipping node: {}({})", entity.get("type").toString().toLowerCase(), entity.get("_id").toString());
+        continue;
+      } else if (entity.get("type").toString().toLowerCase().equals("task")) {
+        entity.put("type", "teamtask");
+      } else {
+        entity.put("type", entity.get("type").toString().toLowerCase());
+      }
+      entity.put("_id",
+          entity.get("type").toString().toLowerCase() + ":" + entity.get("ref").toString());
+      List<Document> connections = (List<Document>) entity.get("connections");
+      if (connections != null && !connections.isEmpty()) {
+        for (final Document connection : connections) {
+          Document toNode = (Document) relCollection.find(
+              eq("_id", new ObjectId(connection.get("to").toString()))).first();
+          if (toNode != null && !toNode.isEmpty()) {
+            Document edge = new Document();
+            edge.put("creationDate", new Date());
+            if (entity.get("type").toString().toLowerCase().equals("user")) {
+              edge.put("from", entity.get("_id").toString());
+              edge.put("label", "memberOf");
+              edge.put("to", "team:" + toNode.get("ref").toString());
+            } else if (entity.get("type").toString().toLowerCase().equals("workflow")) {
+              edge.put("from", "team:" + toNode.get("ref").toString());
+              edge.put("label", "hasWorkflow");
+              edge.put("to", entity.get("_id").toString());
+            } else if (entity.get("type").toString().toLowerCase().equals("workflowrun")) {
+              edge.put("from", "team:" + toNode.get("ref").toString());
+              edge.put("label", "hasWorkflowRun");
+              edge.put("to", entity.get("_id").toString());
+            } else if (entity.get("type").toString().toLowerCase().equals("approvergroup")) {
+              edge.put("from", "team:" + toNode.get("ref").toString());
+              edge.put("label", "hasApproverGroup");
+              edge.put("to", entity.get("_id").toString());
+            } else if (entity.get("type").toString().toLowerCase().equals("teamtask")) {
+              edge.put("from", "team:" + toNode.get("ref").toString());
+              edge.put("label", "hasTask");
+              edge.put("to", entity.get("_id").toString());
+            }
+            edge.put("data", connection.get("data"));
+            relEdgeCollection.insertOne(edge);
+          }
+        }
+      }
+      entity.remove("connections");
+      if (entity.get("type").toString().toLowerCase().equals("user")) {
+        Document edge = new Document();
+        edge.put("creationDate", new Date());
+        edge.put("from", "root:root");
+        edge.put("label", "contains");
+        edge.put("to", entity.get("_id").toString());
+        edge.put("data", new HashMap<>());
+        relEdgeCollection.insertOne(edge);
+      } else if (entity.get("type").toString().toLowerCase().equals("team")) {
+        Document edge = new Document();
+        edge.put("creationDate", new Date());
+        edge.put("from", "root:root");
+        edge.put("label", "contains");
+        edge.put("to", entity.get("_id").toString());
+        edge.put("data", new HashMap<>());
+        relEdgeCollection.insertOne(edge);
+      } else if (entity.get("type").toString().toLowerCase().equals("globaltask")) {
+        entity.put("type",
+            "task");
+        entity.put("_id",
+            "task:" + entity.get("ref").toString());
+        Document edge = new Document();
+        edge.put("creationDate", new Date());
+        edge.put("from", "root:root");
+        edge.put("label", "hasTask");
+        edge.put("to", entity.get("_id").toString());
+        edge.put("data", new HashMap<>());
+        relEdgeCollection.insertOne(edge);
+      }
+      relNodeCollection.insertOne(entity);
+    }
   }
 }

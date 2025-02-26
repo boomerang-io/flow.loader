@@ -1,7 +1,5 @@
 # Flow Loader
 
-> Note: this service only works with Java 11
-
 Every migration starts with creating a ChangeSet (annotated with @ChangeSet). It contains the following attributes:
 
 
