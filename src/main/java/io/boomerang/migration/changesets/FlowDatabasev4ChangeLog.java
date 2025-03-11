@@ -1,21 +1,5 @@
 package io.boomerang.migration.changesets;
 
-import static com.mongodb.client.model.Filters.eq;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.DuplicateKeyException;
@@ -23,15 +7,22 @@ import com.mongodb.MongoNamespace;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Aggregates;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.GraphLookupOptions;
-import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.Indexes;
-import com.mongodb.client.model.RenameCollectionOptions;
+import com.mongodb.client.model.*;
 import com.mongodb.client.result.InsertOneResult;
 import io.boomerang.migration.FileLoadingService;
 import io.boomerang.migration.SpringContextBridge;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+import static com.mongodb.client.model.Filters.eq;
 
 @ChangeLog
 public class FlowDatabasev4ChangeLog {
@@ -64,7 +55,7 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrates tasks_locks to task_locks to match the v4 collection naming
-   * 
+   *
    * We have to use document migration to a new collection as Azure CosmosDB doesn't support
    * renaming collections
    */
@@ -109,7 +100,7 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Partially migrates workflow activity so that insights and activity works at a high level.
-   * 
+   *
    * Unable to migrate Workflow Activity Storage to WorkflowRun Workspaces as they werent stored in
    * the old model
    */
@@ -260,7 +251,7 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrates workflow activity approvals to workflow actions.
-   * 
+   *
    */
   @ChangeSet(order = "4003", id = "4003", author = "Tyson Lawrie")
   public void v4MigrateWorkflowActions(MongoDatabase db) throws IOException {
@@ -412,8 +403,8 @@ public class FlowDatabasev4ChangeLog {
           spec.put("script", revision.get("script"));
           newTaskTemplateRevisionEntity.put("spec", spec);
 
-          LOGGER.info("Inserting template revision: " + newTaskTemplateEntity.get("name").toString()
-              + "@" + revision.get("version").toString());
+          LOGGER.info("Inserting template revision: " + newTaskTemplateEntity.get("name")
+              .toString() + "@" + revision.get("version").toString());
           ObjectId newId = new ObjectId();
           newTaskTemplateRevisionEntity.put("_id", newId);
           taskTemplateRevisionsCollection.insertOne(newTaskTemplateRevisionEntity);
@@ -425,7 +416,7 @@ public class FlowDatabasev4ChangeLog {
   /*
    * Migrates workflows and workflows_revisions to v4 collections and structure Extremely complex
    * migration!
-   * 
+   *
    */
   @ChangeSet(order = "4005", id = "4005", author = "Tyson Lawrie")
   public void v4MigrateWorkflowsAndRevisions(MongoDatabase db) throws IOException {
@@ -459,7 +450,7 @@ public class FlowDatabasev4ChangeLog {
     final FindIterable<Document> workflowsEntities = workflowsCollection.find();
     for (final Document workflowsEntity : workflowsEntities) {
       LOGGER.info("Migrating WorkflowId: " + workflowsEntity.get("_id"));
-      
+
       // Remove legacy tokens
       workflowsEntity.remove("tokens");
 
@@ -560,8 +551,8 @@ public class FlowDatabasev4ChangeLog {
             task.put("name", dagTask.getString("label"));
 
             // Set Template Ref - need to find task template name
-            Document taskTemplateEntity = taskTemplatesCollection
-                .find(eq("_id", new ObjectId(dagTask.get("templateId").toString()))).first();
+            Document taskTemplateEntity = taskTemplatesCollection.find(
+                eq("_id", new ObjectId(dagTask.get("templateId").toString()))).first();
             task.put("templateRef", taskTemplateEntity.getString("name"));
             task.replace("templateVersion", (Integer) dagTask.get("templateVersion"));
             task.remove("templateId");
@@ -591,11 +582,12 @@ public class FlowDatabasev4ChangeLog {
           List<Document> dependencies = (List<Document>) dagTask.get("dependencies");
           if (dependencies != null) {
             for (final Document dependency : dependencies) {
-              dependency.put("decisionCondition",
-                  dependency.get("switchCondition") != null ? dependency.get("switchCondition")
-                      : "");
-              Document dependentTask = dagTasksRef.stream()
-                  .filter(e -> e.get("taskId").equals(dependency.get("taskId"))).findFirst().get();
+              dependency.put("decisionCondition", dependency.get("switchCondition") != null ?
+                  dependency.get("switchCondition") :
+                  "");
+              Document dependentTask =
+                  dagTasksRef.stream().filter(e -> e.get("taskId").equals(dependency.get("taskId")))
+                      .findFirst().get();
               // Start / End nodes did not have labels in v3. Cannot be dependent on End node.
               if (dependentTask.getString("type").equals("start")) {
                 dependency.put("taskRef", "start");
@@ -660,7 +652,7 @@ public class FlowDatabasev4ChangeLog {
   /*
    * MongoDB supports sorting without indexes, it does recommend them. Cosmos needs them and can't
    * automatic sort without them.
-   * 
+   *
    * Ref: https://www.mongodb.com/docs/manual/tutorial/sort-results-with-indexes/ Ref:
    * https://mongodb.github.io/mongo-java-driver/3.5/driver/tutorials/indexes/#compound-indexes Ref:
    * https://learn.microsoft.com/en-us/azure/cosmos-db/index-policy#order-by-queries-on-multiple-
@@ -696,7 +688,7 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Creates the Relationship collection.
-   * 
+   *
    * While the prior v4 loaders do reference this collection, it was introduced after the loader had
    * been used by the community Hence we do safe check creation.
    */
@@ -715,7 +707,7 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Creates additional indexes for the TaskRun & WorkflowRun Query.
-   * 
+   *
    * While the prior v4 loaders do reference this collection, it was introduced after the loader had
    * been used by the community Hence we do safe check creation.
    */
@@ -745,7 +737,7 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Creates additional indexes for the TaskRun & WorkflowRun Query.
-   * 
+   *
    * While the prior v4 loaders do reference this collection, it was introduced after the loader had
    * been used by the community Hence we do safe check creation.
    */
@@ -792,10 +784,10 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrate Teams
-   * 
+   *
    * Need to check if Teams collection exists as for IBM Services Essentials it may not with the
    * change to internalised teams.
-   * 
+   *
    */
   @ChangeSet(order = "4011", id = "4011", author = "Tyson Lawrie")
   public void v4MigrateTeams(MongoDatabase db) throws IOException {
@@ -894,9 +886,9 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrate Relationships in case prior loaders were run in early Beta versions
-   * 
+   *
    * - Add creationDate - Change relationship string
-   * 
+   *
    */
   @ChangeSet(order = "4012", id = "4012", author = "Tyson Lawrie")
   public void v4MigrateRelationships(MongoDatabase db) throws IOException {
@@ -909,8 +901,8 @@ public class FlowDatabasev4ChangeLog {
       if (relationshipEntity.get("creationDate") == null) {
         relationshipEntity.put("creationDate", new Date());
       }
-      if (relationshipEntity.get("relationship") != null
-          && "belongs-to".equals(relationshipEntity.get("relationship").toString())) {
+      if (relationshipEntity.get("relationship") != null && "belongs-to".equals(
+          relationshipEntity.get("relationship").toString())) {
         relationshipEntity.put("type", "BELONGSTO");
         relationshipEntity.remove("relationship");
       }
@@ -942,9 +934,9 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrate Changelogs
-   * 
+   *
    * - Remove userName (PI) - Rename userId to Author
-   * 
+   *
    */
   @ChangeSet(order = "4013", id = "4013", author = "Tyson Lawrie")
   public void v4MigrateChangelog(MongoDatabase db) throws IOException {
@@ -992,10 +984,10 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrate Users
-   * 
+   *
    * - Each User needs to have a uniquely named team - Migrate users teams list to Relationships -
    * Any previous Workflow Relationship to a User, needs to be to the new Team
-   * 
+   *
    */
   @ChangeSet(order = "4014", id = "4014", author = "Tyson Lawrie")
   public void v4MigrateUsersToTeam(MongoDatabase db) throws IOException {
@@ -1119,10 +1111,10 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrate System to new System Team
-   * 
+   *
    * - Create new "system" team. Will mark it as never be able to delete. - Change relationship
    * string
-   * 
+   *
    * Note: this needs to happen after migrating Teams and Users
    */
   @ChangeSet(order = "4015", id = "4015", author = "Tyson Lawrie")
@@ -1200,12 +1192,12 @@ public class FlowDatabasev4ChangeLog {
 
   /*
    * Migrate Template Workflows to new entity
-   * 
+   *
    * - Create new "system" team. Will mark it as never be able to delete. - Change relationship
    * string
-   * 
+   *
    * Note: this needs to happen after migrating Teams and Users
-   * 
+   *
    */
   @ChangeSet(order = "4016", id = "4016", author = "Tyson Lawrie")
   public void v4MigrateTemplateWorkflows(MongoDatabase db) throws IOException {
@@ -1252,8 +1244,8 @@ public class FlowDatabasev4ChangeLog {
           revision.put("creationDate", wfTemplate.get("creationDate"));
           revision.put("icon", wfTemplate.get("icon"));
           // Migrate shortDescription to description if description is empty
-          if (wfTemplate.get("description") != null
-              && !wfTemplate.get("description").toString().isEmpty()) {
+          if (wfTemplate.get("description") != null && !wfTemplate.get("description").toString()
+              .isEmpty()) {
             revision.put("description", wfTemplate.get("description"));
           } else {
             revision.put("description", wfTemplate.get("shortDescription"));
@@ -1461,15 +1453,16 @@ public class FlowDatabasev4ChangeLog {
 
     final FindIterable<Document> teamRelationships = relationshipsCollection.find(eq("to", "TEAM"));
     for (final Document rel : teamRelationships) {
-      Document team = (Document) teamsCollection
-          .find(eq("_id", new ObjectId(rel.get("toRef").toString()))).first();
+      Document team =
+          (Document) teamsCollection.find(eq("_id", new ObjectId(rel.get("toRef").toString())))
+              .first();
       if (team != null) {
         rel.replace("toRef", team.get("name"));
         relationshipsCollection.replaceOne(eq("_id", rel.getObjectId("_id")), rel);
       }
     }
   }
-  
+
   /*
    * Adjust Extension setting to Integration Setting
    */
@@ -1501,10 +1494,9 @@ public class FlowDatabasev4ChangeLog {
     ghPrivateKeyConfig.put("readOnly", false);
     configs.add(ghPrivateKeyConfig);
     setting.replace("config", configs);
-    collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")),
-        setting);
+    collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")), setting);
   }
-  
+
   /*
    * Migrate Triggers
    */
@@ -1552,7 +1544,7 @@ public class FlowDatabasev4ChangeLog {
       }
     }
   }
-  
+
   /*
    * Load Integration Templates
    */
@@ -1571,7 +1563,7 @@ public class FlowDatabasev4ChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   /*
    * Load Integration Templates
    */
@@ -1590,7 +1582,7 @@ public class FlowDatabasev4ChangeLog {
       collection.insertOne(doc);
     }
   }
-  
+
   /*
    * Create a unqiue index for a User
    */
@@ -1605,7 +1597,7 @@ public class FlowDatabasev4ChangeLog {
 
     }
   }
-  
+
   /*
    * Convert TaskTemplate to parentRef
    */
@@ -1643,12 +1635,12 @@ public class FlowDatabasev4ChangeLog {
     tempCollection.drop();
     //New Collections
     db.createCollection(relCollectionName);
-    MongoCollection<Document>relV2Collection = db.getCollection(relCollectionName);
-    MongoCollection<Document>relV1Collection = db.getCollection(relV1CollectionName);
-    
+    MongoCollection<Document> relV2Collection = db.getCollection(relCollectionName);
+    MongoCollection<Document> relV1Collection = db.getCollection(relV1CollectionName);
+
 
     LOGGER.info("Creating Team Nodes");
-    
+
     // Loop through Users, Teams, Workflows, WorkflowRuns and create Nodes.    
     // Create Team Nodes
     String teamCollectionName = workflowCollectionPrefix + "teams";
@@ -1664,10 +1656,10 @@ public class FlowDatabasev4ChangeLog {
       node.put("slug", entity.get("name").toString());
       relV2Collection.insertOne(node);
     }
-    
+
 
     LOGGER.info("Creating User Nodes");
-    
+
     // Create User Nodes
     String usersCollectionName = workflowCollectionPrefix + "users";
     MongoCollection<Document> usersCollection = db.getCollection(usersCollectionName);
@@ -1682,7 +1674,7 @@ public class FlowDatabasev4ChangeLog {
       node.put("slug", entity.get("email").toString());
       relV2Collection.insertOne(node);
     }
-    
+
     // Create TaskTemplate Nodes
     String ttCollectionName = workflowCollectionPrefix + "task_templates";
     MongoCollection<Document> ttCollection = db.getCollection(ttCollectionName);
@@ -1698,7 +1690,7 @@ public class FlowDatabasev4ChangeLog {
       relV2Collection.insertOne(node);
     }
     LOGGER.info("Creating Workflow Nodes");
-    
+
     // Create Workflow Nodes
     String wfCollectionName = workflowCollectionPrefix + "workflows";
     MongoCollection<Document> wfCollection = db.getCollection(wfCollectionName);
@@ -1714,7 +1706,7 @@ public class FlowDatabasev4ChangeLog {
       relV2Collection.insertOne(node);
     }
     LOGGER.info("Creating WorkflowRun Nodes");
-    
+
     // Create WorkflowRun Nodes
     String wfRunCollectionName = workflowCollectionPrefix + "workflow_runs";
     MongoCollection<Document> wfRunCollection = db.getCollection(wfRunCollectionName);
@@ -1751,7 +1743,8 @@ public class FlowDatabasev4ChangeLog {
     // Assumes the nodes all exist
     final FindIterable<Document> relEntities = relV1Collection.find();
     for (final Document entity : relEntities) {
-      if (entity.get("from").toString().equals("tasktemplate") && entity.get("to").toString().equals("GLOBAL")) {
+      if (entity.get("from").toString().equals("tasktemplate") && entity.get("to").toString()
+          .equals("GLOBAL")) {
         // Global Task Templates become GLOBALTASK  
         Document v2Node = relV2Collection.find(eq("slug", entity.get("fromRef"))).first();
         if (v2Node != null) {
@@ -1766,9 +1759,13 @@ public class FlowDatabasev4ChangeLog {
         if (type.equals("tasktemplate")) {
           type = "task";
         }
-        LOGGER.info("Attempting to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
-        Document v2FromNode = relV2Collection.find(Filters.and(eq("type", type), Filters.or(eq("ref", entity.get("fromRef")), eq("slug", entity.get("fromRef"))))).first();
-        Document v2ToNode = relV2Collection.find(Filters.and(eq("type", entity.get("to")), Filters.or(eq("ref", entity.get("toRef")), eq("slug", entity.get("toRef"))))).first();
+        LOGGER.info("Attempting to find node of type: {}, and ref/slug: {}", type,
+            entity.get("fromRef"));
+        Document v2FromNode = relV2Collection.find(Filters.and(eq("type", type),
+                Filters.or(eq("ref", entity.get("fromRef")), eq("slug", entity.get("fromRef")))))
+            .first();
+        Document v2ToNode = relV2Collection.find(Filters.and(eq("type", entity.get("to")),
+            Filters.or(eq("ref", entity.get("toRef")), eq("slug", entity.get("toRef"))))).first();
         if (v2FromNode != null && v2ToNode != null) {
           Document connection = new Document();
           connection.put("creationDate", new Date());
@@ -1780,12 +1777,13 @@ public class FlowDatabasev4ChangeLog {
           v2FromNode.replace("connections", connections);
           relV2Collection.replaceOne(eq("_id", v2FromNode.getObjectId("_id")), v2FromNode);
         } else {
-          LOGGER.error("Unable to find node of type: {}, and ref/slug: {}", type, entity.get("fromRef"));
+          LOGGER.error("Unable to find node of type: {}, and ref/slug: {}", type,
+              entity.get("fromRef"));
         }
       }
     }
   }
-  
+
   /*
    * Change TaskTemplate to Task
    */
@@ -1794,14 +1792,16 @@ public class FlowDatabasev4ChangeLog {
     LOGGER.info("Change TaskTemplate to Task");
     String ttrCollectionName = workflowCollectionPrefix + "task_template_revisions";
     MongoCollection<Document> ttrCollection = db.getCollection(ttrCollectionName);
-    MongoNamespace taskRevisionNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "task_revisions");
+    MongoNamespace taskRevisionNamespace =
+        new MongoNamespace(db.getName(), workflowCollectionPrefix + "task_revisions");
     ttrCollection.renameCollection(taskRevisionNamespace);
     String ttCollectionName = workflowCollectionPrefix + "task_templates";
     MongoCollection<Document> ttCollection = db.getCollection(ttCollectionName);
-    MongoNamespace taskNamespace = new MongoNamespace(db.getName(), workflowCollectionPrefix + "tasks");
+    MongoNamespace taskNamespace =
+        new MongoNamespace(db.getName(), workflowCollectionPrefix + "tasks");
     ttCollection.renameCollection(taskNamespace);
   }
-  
+
   /*
    * Change templateRef to taskRef in TaskRuns
    */
@@ -1832,7 +1832,7 @@ public class FlowDatabasev4ChangeLog {
       trCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
     }
   }
-  
+
   /*
    * Change TaskTemplate to Task in Workflows
    */
@@ -1848,8 +1848,10 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : entities) {
       List<Document> wfTasks = (List<Document>) entity.get("tasks");
       for (final Document wfTask : wfTasks) {
-        if (wfTask.get("templateRef") != null && (!wfTask.get("name").toString().equals("start") || !wfTask.get("name").toString().equals("end"))) {
-          Document tskEntity = (Document) tskCollection.find(eq("name", wfTask.get("templateRef"))).first();
+        if (wfTask.get("templateRef") != null && (!wfTask.get("name").toString()
+            .equals("start") || !wfTask.get("name").toString().equals("end"))) {
+          Document tskEntity =
+              (Document) tskCollection.find(eq("name", wfTask.get("templateRef"))).first();
           if (tskEntity != null) {
             wfTask.put("taskRef", tskEntity.get("_id").toString());
             wfTask.remove("templateRef");
@@ -1865,7 +1867,7 @@ public class FlowDatabasev4ChangeLog {
       wfrCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
     }
   }
-  
+
   /*
    * Change TaskTemplate to Task in WorkflowTemplate
    */
@@ -1881,8 +1883,10 @@ public class FlowDatabasev4ChangeLog {
     for (final Document entity : entities) {
       List<Document> wfTasks = (List<Document>) entity.get("tasks");
       for (final Document wfTask : wfTasks) {
-        if (wfTask.get("templateRef") != null && (!wfTask.get("name").toString().equals("start") || !wfTask.get("name").toString().equals("end"))) {
-          Document tskEntity = (Document) tskCollection.find(eq("name", wfTask.get("templateRef"))).first();
+        if (wfTask.get("templateRef") != null && (!wfTask.get("name").toString()
+            .equals("start") || !wfTask.get("name").toString().equals("end"))) {
+          Document tskEntity =
+              (Document) tskCollection.find(eq("name", wfTask.get("templateRef"))).first();
           if (tskEntity != null) {
             wfTask.put("taskRef", tskEntity.get("_id").toString());
             wfTask.remove("templateRef");
@@ -1898,15 +1902,14 @@ public class FlowDatabasev4ChangeLog {
       wftCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
     }
   }
-  
+
   /*
    * Update Integration Template
    */
   @ChangeSet(order = "4036", id = "4036", author = "Tyson Lawrie")
   public void updateIntegrationTemplates(MongoDatabase db) throws IOException {
     LOGGER.info("Update Sleep Task Template");
-    final List<String> taskTemplates =
-        fileloadingService.loadFiles("flow/4036/*.json");
+    final List<String> taskTemplates = fileloadingService.loadFiles("flow/4036/*.json");
     for (final String template : taskTemplates) {
       final Document doc = Document.parse(template);
       final MongoCollection<Document> collection =
@@ -1914,7 +1917,7 @@ public class FlowDatabasev4ChangeLog {
       collection.replaceOne(eq("name", doc.get("name")), doc);
     }
   }
-  
+
   /*
    * Add GitHub App Name to Integration Setting
    */
@@ -1936,10 +1939,9 @@ public class FlowDatabasev4ChangeLog {
     ghAppNameConfig.put("readOnly", false);
     configs.add(ghAppNameConfig);
     setting.replace("config", configs);
-    collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")),
-        setting);
+    collection.replaceOne(eq("_id", new ObjectId("62a7bec0a6166d30aff64a5b")), setting);
   }
-  
+
   /*
    * Add Audit records for existing teams
    */
@@ -1951,7 +1953,7 @@ public class FlowDatabasev4ChangeLog {
 
     String teamsCollectionName = workflowCollectionPrefix + "teams";
     MongoCollection<Document> teamsCollection = db.getCollection(teamsCollectionName);
-    
+
     Map<String, String> teamAuditIds = new HashMap<>();
     final FindIterable<Document> entities = teamsCollection.find();
     for (final Document entity : entities) {
@@ -1970,17 +1972,19 @@ public class FlowDatabasev4ChangeLog {
       data.put("name", entity.get("name").toString());
       audit.put("data", data);
       InsertOneResult auditEntity = auditCollection.insertOne(audit);
-      teamAuditIds.put(entity.get("name").toString(), auditEntity.getInsertedId().asObjectId().getValue().toString());
+      teamAuditIds.put(entity.get("name").toString(),
+          auditEntity.getInsertedId().asObjectId().getValue().toString());
     }
-   
+
     String wfCollectionName = workflowCollectionPrefix + "workflows";
     MongoCollection<Document> wfCollection = db.getCollection(wfCollectionName);
-    
+
     final FindIterable<Document> wfEntities = wfCollection.find();
     for (final Document entity : wfEntities) {
       String teamSlug = this.relationshipTeamSlug(db, entity.getObjectId("_id").toString());
       if (teamSlug.isBlank()) {
-        LOGGER.warn("Unable to find Team Slug for Workflow: {} ({})", entity.get("name"), entity.getObjectId("_id").toString());
+        LOGGER.warn("Unable to find Team Slug for Workflow: {} ({})", entity.get("name"),
+            entity.getObjectId("_id").toString());
       } else {
         LOGGER.info("Team Slug: {}", teamSlug);
         LOGGER.info("Team Audit ID: {}", teamAuditIds.get(teamSlug));
@@ -2002,26 +2006,28 @@ public class FlowDatabasev4ChangeLog {
       }
     }
   }
-  
+
   private String relationshipTeamSlug(MongoDatabase db, String refOrSlug) {
     String relCollectionName = workflowCollectionPrefix + "relationships";
     MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
     Bson matchStage = Aggregates.match(Filters.and(Filters.eq("type", "WORKFLOW"),
         Filters.or(Filters.eq("slug", refOrSlug), Filters.eq("ref", refOrSlug))));
 
-    Bson graphLookupStage = Aggregates.graphLookup(relCollectionName, "$connections.to",
-        "connections.to", "_id", "children",
-        new GraphLookupOptions().restrictSearchWithMatch(Filters.eq("type", "TEAM")));
+    Bson graphLookupStage =
+        Aggregates.graphLookup(relCollectionName, "$connections.to", "connections.to", "_id",
+            "children",
+            new GraphLookupOptions().restrictSearchWithMatch(Filters.eq("type", "TEAM")));
 
     List<Document> graph = relCollection.aggregate(Arrays.asList(matchStage, graphLookupStage))
         .into(new ArrayList<>());
-    List<Document> children = graph.size() > 0 && graph.get(0) != null && graph.get(0).get("children") != null
-        ? (List<Document>) graph.get(0).get("children")
-        : new ArrayList<>();
+    List<Document> children =
+        graph.size() > 0 && graph.get(0) != null && graph.get(0).get("children") != null ?
+            (List<Document>) graph.get(0).get("children") :
+            new ArrayList<>();
     String slug =
-        children.size() > 0 && children.get(0) != null && children.get(0).get("slug") != null
-            ? (String) children.get(0).get("slug")
-            : "";
+        children.size() > 0 && children.get(0) != null && children.get(0).get("slug") != null ?
+            (String) children.get(0).get("slug") :
+            "";
     return slug;
 
   }
@@ -2035,9 +2041,9 @@ public class FlowDatabasev4ChangeLog {
     String collectionName = workflowCollectionPrefix + "settings";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
-    Document teamSetting =
-        (Document) collection.find(eq("key", "teams")).first();
-    teamSetting.put("description", "Define default team quotas which are referenced unless overridden on the Team.");
+    Document teamSetting = (Document) collection.find(eq("key", "teams")).first();
+    teamSetting.put("description",
+        "Define default team quotas which are referenced unless overridden on the Team.");
     teamSetting.put("name", "Team Quotas");
     List<Document> configs = (List<Document>) teamSetting.get("config");
     if (configs != null && !configs.isEmpty()) {
@@ -2054,7 +2060,8 @@ public class FlowDatabasev4ChangeLog {
           config.replace("label", "Max WorkflowRun Duration");
         } else if (config.get("key").equals("max.team.workflow.storage")) {
           config.replace("key", "max.workflow.storage");
-          config.replace("description", "Maximum storage allowed per Workflow across runs (executions)");
+          config.replace("description",
+              "Maximum storage allowed per Workflow across runs (executions)");
           config.replace("label", "Max Workflow Storage");
         }
       }
@@ -2080,8 +2087,7 @@ public class FlowDatabasev4ChangeLog {
     String collectionName = workflowCollectionPrefix + "settings";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
-    Document setting =
-        (Document) collection.find(eq("key", "features")).first();
+    Document setting = (Document) collection.find(eq("key", "features")).first();
     List<Document> configs = (List<Document>) setting.get("config");
     if (configs != null && !configs.isEmpty()) {
       for (final Document config : configs) {
@@ -2111,11 +2117,11 @@ public class FlowDatabasev4ChangeLog {
     MongoCollection<Document> relCollection = db.getCollection(relCollectionName);
     //New Collections
     db.createCollection(relNodeCollectionName);
-    MongoCollection<Document>relNodeCollection = db.getCollection(relNodeCollectionName);
+    MongoCollection<Document> relNodeCollection = db.getCollection(relNodeCollectionName);
     db.createCollection(relEdgeCollectionName);
-    MongoCollection<Document>relEdgeCollection = db.getCollection(relEdgeCollectionName);
+    MongoCollection<Document> relEdgeCollection = db.getCollection(relEdgeCollectionName);
     //Reference Collections
-    MongoCollection<Document>workflowRunCollection = db.getCollection(workflowRunCollectionName);
+    MongoCollection<Document> workflowRunCollection = db.getCollection(workflowRunCollectionName);
 
     //Add Root Node
     Document root = new Document();
@@ -2129,82 +2135,244 @@ public class FlowDatabasev4ChangeLog {
 
     // Assumes the nodes all exist
     final FindIterable<Document> relEntities = relCollection.find();
-    for (final Document entity : relEntities) {
-      if (entity.get("type").toString().toLowerCase().equals("global") || entity.get("type").toString().toLowerCase().equals("integration")) {
-        LOGGER.info("Skipping node: {}({})", entity.get("type").toString().toLowerCase(), entity.get("_id").toString());
+    for (final Document node : relEntities) {
+      node.put("type", node.get("type").toString().toLowerCase());
+      if (node.get("type").toString().equals("global") || node.get("type").toString()
+          .equals("integration")) {
+        //Dont migrate legacy Global or Integration nodes
+        LOGGER.info("Skipping node: {}({})", node.get("type").toString(),
+            node.get("_id").toString());
         continue;
-      } else if (entity.get("type").toString().toLowerCase().equals("task")) {
-        entity.put("type", "teamtask");
-      } else {
-        entity.put("type", entity.get("type").toString().toLowerCase());
+      } else if (node.get("type").toString().equals("task")) {
+        //Migrate Team Tasks to TEAMTASK type
+        node.put("type", "teamtask");
       }
-      entity.put("_id",
-          entity.get("type").toString().toLowerCase() + ":" + entity.get("ref").toString());
-      List<Document> connections = (List<Document>) entity.get("connections");
-      if (connections != null && !connections.isEmpty()) {
-        for (final Document connection : connections) {
-          Document toNode = (Document) relCollection.find(
-              eq("_id", new ObjectId(connection.get("to").toString()))).first();
-          if (toNode != null && !toNode.isEmpty()) {
-            Document edge = new Document();
-            edge.put("creationDate", new Date());
-            if (entity.get("type").toString().toLowerCase().equals("user")) {
-              edge.put("from", entity.get("_id").toString());
-              edge.put("label", "memberOf");
-              edge.put("to", "team:" + toNode.get("ref").toString());
-            } else if (entity.get("type").toString().toLowerCase().equals("workflow")) {
-              edge.put("from", "team:" + toNode.get("ref").toString());
-              edge.put("label", "hasWorkflow");
-              edge.put("to", entity.get("_id").toString());
-            } else if (entity.get("type").toString().toLowerCase().equals("workflowrun")) {
-              edge.put("from", "team:" + toNode.get("ref").toString());
-              edge.put("label", "hasWorkflowRun");
-              edge.put("to", entity.get("_id").toString());
-            } else if (entity.get("type").toString().toLowerCase().equals("approvergroup")) {
-              edge.put("from", "team:" + toNode.get("ref").toString());
-              edge.put("label", "hasApproverGroup");
-              edge.put("to", entity.get("_id").toString());
-            } else if (entity.get("type").toString().toLowerCase().equals("teamtask")) {
-              edge.put("from", "team:" + toNode.get("ref").toString());
-              edge.put("label", "hasTask");
-              edge.put("to", entity.get("_id").toString());
+      node.put("_id", node.get("type").toString() + ":" + node.get("ref").toString());
+      if (node.get("type").toString().equals("user") || node.get("type").toString()
+          .equals("workflow") || node.get("type").toString().equals("approvergroup") || node.get(
+          "type").toString().equals("teamtask")) {
+        List<Document> connections = (List<Document>) node.get("connections");
+        if (connections != null && !connections.isEmpty()) {
+          for (final Document connection : connections) {
+            Document toNode = (Document) relCollection.find(
+                eq("_id", new ObjectId(connection.get("to").toString()))).first();
+            if (toNode != null && !toNode.isEmpty()) {
+              Document edge = new Document();
+              edge.put("creationDate", new Date());
+              if (node.get("type").toString().equals("user")) {
+                edge.put("from", node.get("_id").toString());
+                edge.put("label", "memberOf");
+                edge.put("to", "team:" + toNode.get("ref").toString());
+              } else if (node.get("type").toString().equals("workflow")) {
+                edge.put("from", "team:" + toNode.get("ref").toString());
+                edge.put("label", "hasWorkflow");
+                edge.put("to", node.get("_id").toString());
+              } else if (node.get("type").toString().equals("approvergroup")) {
+                edge.put("from", "team:" + toNode.get("ref").toString());
+                edge.put("label", "hasApproverGroup");
+                edge.put("to", node.get("_id").toString());
+              } else if (node.get("type").toString().equals("teamtask")) {
+                edge.put("from", "team:" + toNode.get("ref").toString());
+                edge.put("label", "hasTask");
+                edge.put("to", node.get("_id").toString());
+              }
+              edge.put("data", connection.get("data"));
+              edge.put("_class", "io.boomerang.core.entity.RelationshipEdgeEntity");
+              relEdgeCollection.insertOne(edge);
             }
-            edge.put("data", connection.get("data"));
-            relEdgeCollection.insertOne(edge);
           }
         }
+      } else if (node.get("type").toString().equals("workflowrun")) {
+        Document wfRunEntity = (Document) workflowRunCollection.find(
+            eq("_id", new ObjectId(node.get("ref").toString()))).first();
+        if (wfRunEntity != null) {
+          Document edge = new Document();
+          edge.put("creationDate", new Date());
+          edge.put("from", "workflow:" + wfRunEntity.get("workflowRef").toString());
+          edge.put("label", "hasWorkflowRun");
+          edge.put("to", node.get("_id").toString());
+          edge.put("data", new HashMap<>());
+          edge.put("_class", "io.boomerang.core.entity.RelationshipEdgeEntity");
+          relEdgeCollection.insertOne(edge);
+        } else {
+          LOGGER.error("Unable to find worfklowRun with ref: {}", node.get("ref"));
+        }
       }
-      entity.remove("connections");
-      if (entity.get("type").toString().toLowerCase().equals("user")) {
+      node.remove("connections");
+      if (node.get("type").toString().equals("user")) {
+        //Link Node to Root Node
         Document edge = new Document();
         edge.put("creationDate", new Date());
         edge.put("from", "root:root");
         edge.put("label", "contains");
-        edge.put("to", entity.get("_id").toString());
+        edge.put("to", node.get("_id").toString());
         edge.put("data", new HashMap<>());
         relEdgeCollection.insertOne(edge);
-      } else if (entity.get("type").toString().toLowerCase().equals("team")) {
+      } else if (node.get("type").toString().equals("team")) {
+        //Link Node to Root Node
         Document edge = new Document();
         edge.put("creationDate", new Date());
         edge.put("from", "root:root");
         edge.put("label", "contains");
-        edge.put("to", entity.get("_id").toString());
+        edge.put("to", node.get("_id").toString());
         edge.put("data", new HashMap<>());
         relEdgeCollection.insertOne(edge);
-      } else if (entity.get("type").toString().toLowerCase().equals("globaltask")) {
-        entity.put("type",
-            "task");
-        entity.put("_id",
-            "task:" + entity.get("ref").toString());
+      } else if (node.get("type").toString().equals("globaltask")) {
+        //Link Node to Root Node and set type to Task
+        node.put("type", "task");
+        node.put("_id", "task:" + node.get("ref").toString());
         Document edge = new Document();
         edge.put("creationDate", new Date());
         edge.put("from", "root:root");
         edge.put("label", "hasTask");
-        edge.put("to", entity.get("_id").toString());
+        edge.put("to", node.get("_id").toString());
         edge.put("data", new HashMap<>());
         relEdgeCollection.insertOne(edge);
+      } else if (node.get("type").toString().equals("workflow") || node.get("type").toString()
+          .equals("workflowrun")) {
+        //Clean up certain Nodes. Workflow and WorkflowRun will use ref as slug
+        node.put("slug", node.get("ref").toString());
       }
-      relNodeCollection.insertOne(entity);
+      node.put("_class", "io.boomerang.core.entity.RelationshipNodeEntity");
+      relNodeCollection.insertOne(node);
+    }
+  }
+
+  /*
+   * Combine Workflow Revision Param and Config
+   */
+  @ChangeSet(order = "4042", id = "4042", author = "Tyson Lawrie")
+  public void v4CombineWorkflowRevisionParamAndConfig(MongoDatabase db) throws IOException {
+    LOGGER.info("Combining Workflow Revision Config and Params");
+    String wfRevisionCollectionName = workflowCollectionPrefix + "workflow_revisions";
+    MongoCollection<Document> wfRevisionCollection = db.getCollection(wfRevisionCollectionName);
+
+    final FindIterable<Document> entities = wfRevisionCollection.find();
+    for (final Document revision : entities) {
+      List<Document> configs = (List<Document>) revision.get("config");
+      List<Document> params = (List<Document>) revision.get("params");
+      List<Document> newParams = new LinkedList<>();
+
+      //Loop through and add config to params
+      if (configs != null && !configs.isEmpty()) {
+        for (final Document config : configs) {
+          Document param = config;
+          param.put("name", config.get("key"));
+          param.remove("key");
+          if (param.get("values") != null && !param.get("values").toString().isEmpty()) {
+            param.put("value", param.get("values"));
+            param.remove("values");
+          }
+          if (params != null && !params.isEmpty()) {
+            //Deal with duplicate in Params
+            Optional<Document> optParam = params.stream().filter(
+                p -> p.get("name") != null && p.get("name").toString()
+                    .equals(param.get("name").toString())).findFirst();
+            if (optParam.isPresent()) {
+              params.remove(optParam.get());
+              //Merge defaultValue
+              if (optParam.get().get("defaultValue") != null && !optParam.get().get("defaultValue")
+                  .toString().isEmpty()) {
+                param.put("defaultValue", optParam.get().get("defaultValue"));
+              }
+              //Merge description
+              if (optParam.get().get("description") != null && !optParam.get().get("description")
+                  .toString().isEmpty()) {
+                param.put("description", optParam.get().get("description"));
+              }
+            }
+          }
+          newParams.add(param);
+        }
+      }
+      //Add any remaining params that weren't in config
+      if (params != null && !params.isEmpty()) {
+        for (final Document p : params) {
+          Document param = new Document();
+          param.put("name", p.get("name"));
+          param.put("label", p.get("name"));
+          param.put("type",
+              "string"); //This may create some wrong types but end users can go in and adjust
+          param.put("description", p.get("description"));
+          param.put("defaultValue", p.get("defaultValue"));
+          newParams.add(param);
+        }
+      }
+      revision.put("params", newParams);
+      revision.remove("config");
+      wfRevisionCollection.replaceOne(eq("_id", revision.getObjectId("_id")), revision);
+    }
+  }
+
+  /*
+   * Combine Task Revision Param and Config
+   */
+  @ChangeSet(order = "4043", id = "4043", author = "Tyson Lawrie")
+  public void v4CombineTaskRevisionConifgAndParams(MongoDatabase db) throws IOException {
+    LOGGER.info("Combining Task Revision Config and Params");
+    String tskRevisionCollectionName = workflowCollectionPrefix + "task_revisions";
+    MongoCollection<Document> tskRevisionCollection = db.getCollection(tskRevisionCollectionName);
+
+    final FindIterable<Document> entities = tskRevisionCollection.find();
+    for (final Document revision : entities) {
+      List<Document> configs = (List<Document>) revision.get("config");
+      Document spec = (Document) revision.get("spec");
+      List<Document> params = new LinkedList<>();
+      if (spec != null && !spec.isEmpty()) {
+        params = (List<Document>) spec.get("params");
+      }
+      List<Document> newParams = new LinkedList<>();
+
+      //Loop through and add config to params
+      if (configs != null && !configs.isEmpty()) {
+        for (final Document config : configs) {
+          //Set new param to the config AbstractParam
+          Document param = config;
+          param.put("name", config.get("key"));
+          param.remove("key");
+          //Combine Values
+          if (param.get("values") != null && !param.get("values").toString().isEmpty()) {
+            param.put("value", param.get("values"));
+            param.remove("values");
+          }
+          if (params != null && !params.isEmpty()) {
+            Optional<Document> optParam = params.stream().filter(
+                p -> p.get("name") != null && p.get("name").toString()
+                    .equals(param.get("name").toString())).findFirst();
+            if (optParam.isPresent()) {
+              params.remove(optParam.get());
+              //Merge defaultValue
+              if (optParam.get().get("defaultValue") != null && !optParam.get().get("defaultValue")
+                  .toString().isEmpty()) {
+                param.put("defaultValue", optParam.get().get("defaultValue"));
+              }
+              //Merge description
+              if (optParam.get().get("description") != null && !optParam.get().get("description")
+                  .toString().isEmpty()) {
+                param.put("description", optParam.get().get("description"));
+              }
+            }
+          }
+          newParams.add(param);
+        }
+      }
+      //Add any remaining params that weren't in config
+      if (params != null && !params.isEmpty()) {
+        for (final Document p : params) {
+          Document param = new Document();
+          param.put("name", p.get("name"));
+          param.put("label", p.get("name"));
+          param.put("type",
+              "string"); //This may create some wrong types but end users can go in and adjust
+          param.put("description", p.get("description"));
+          param.put("defaultValue", p.get("defaultValue"));
+          newParams.add(param);
+        }
+      }
+      spec.put("params", newParams);
+      revision.put("spec", spec);
+      revision.remove("config");
+      tskRevisionCollection.replaceOne(eq("_id", revision.getObjectId("_id")), revision);
     }
   }
 }
