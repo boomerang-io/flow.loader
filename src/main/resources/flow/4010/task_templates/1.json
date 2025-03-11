@@ -6,7 +6,7 @@
     "labels" : {},
     "annotations" : {
         "boomerang#io/generation" : "3",
-        "boomerang#io/kind" : "TaskTemplate"
+        "boomerang#io/kind" : "Task"
     },
     "creationDate" : ISODate("2020-01-09T00:01:00.000Z"),
     "type" : "sleep"
