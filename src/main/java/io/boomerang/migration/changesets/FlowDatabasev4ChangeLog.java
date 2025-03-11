@@ -2375,4 +2375,64 @@ public class FlowDatabasev4ChangeLog {
       tskRevisionCollection.replaceOne(eq("_id", revision.getObjectId("_id")), revision);
     }
   }
+
+  /*
+   * Change Team Parameters
+   */
+  @ChangeSet(order = "4044", id = "4044", author = "Tyson Lawrie")
+  public void v4TransformTeamParameters(MongoDatabase db) throws IOException {
+    LOGGER.info("Transform Team Parameters");
+    String teamCollectionName = workflowCollectionPrefix + "teams";
+    MongoCollection<Document> teamCollection = db.getCollection(teamCollectionName);
+
+    final FindIterable<Document> entities = teamCollection.find();
+    for (final Document team : entities) {
+      List<Document> parameters = (List<Document>) team.get("parameters");
+      if (parameters != null && !parameters.isEmpty()) {
+        for (final Document param : parameters) {
+          //Set param name to the param key
+          if (param.get("key") != null && !param.get("key").toString().isEmpty()) {
+            param.put("name", param.get("key"));
+          }
+          param.remove("key");
+          //Combine Values
+          if (param.get("values") != null && !param.get("values").toString().isEmpty()) {
+            param.put("value", param.get("values"));
+            param.remove("values");
+          }
+        }
+      }
+      team.put("parameters", parameters);
+      teamCollection.replaceOne(eq("_id", team.getObjectId("_id")), team);
+    }
+  }
+
+  /*
+   * Change Global Parameters
+   */
+  @ChangeSet(order = "4045", id = "4045", author = "Tyson Lawrie")
+  public void v4TransformGlobalParameters(MongoDatabase db) throws IOException {
+    LOGGER.info("Transform Global Parameters");
+    String globalParamsCollectionName = workflowCollectionPrefix + "global_params";
+    String parametersCollectionName = workflowCollectionPrefix + "parameters";
+    MongoCollection<Document> globalParamsCollection = db.getCollection(globalParamsCollectionName);
+    MongoNamespace parametersNamespace = new MongoNamespace(db.getName(), parametersCollectionName);
+    globalParamsCollection.renameCollection(parametersNamespace);
+    MongoCollection<Document> parametersCollection = db.getCollection(parametersCollectionName);
+
+    final FindIterable<Document> entities = parametersCollection.find();
+    for (final Document param : entities) {
+      //Set param name to the param key
+      if (param.get("key") != null && !param.get("key").toString().isEmpty()) {
+        param.put("name", param.get("key"));
+      }
+      param.remove("key");
+      //Combine Values
+      if (param.get("values") != null && !param.get("values").toString().isEmpty()) {
+        param.put("value", param.get("values"));
+        param.remove("values");
+      }
+      parametersCollection.replaceOne(eq("_id", param.getObjectId("_id")), param);
+    }
+  }
 }
