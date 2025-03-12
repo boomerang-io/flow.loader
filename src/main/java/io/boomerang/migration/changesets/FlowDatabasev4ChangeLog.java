@@ -2416,11 +2416,13 @@ public class FlowDatabasev4ChangeLog {
     String globalParamsCollectionName = workflowCollectionPrefix + "global_params";
     String parametersCollectionName = workflowCollectionPrefix + "parameters";
     MongoCollection<Document> globalParamsCollection = db.getCollection(globalParamsCollectionName);
-    MongoNamespace parametersNamespace = new MongoNamespace(db.getName(), parametersCollectionName);
-    globalParamsCollection.renameCollection(parametersNamespace);
     MongoCollection<Document> parametersCollection = db.getCollection(parametersCollectionName);
+    if (parametersCollection == null) {
+      db.createCollection(parametersCollectionName);
+    }
+    parametersCollection = db.getCollection(parametersCollectionName);
 
-    final FindIterable<Document> entities = parametersCollection.find();
+    final FindIterable<Document> entities = globalParamsCollection.find();
     for (final Document param : entities) {
       //Set param name to the param key
       if (param.get("key") != null && !param.get("key").toString().isEmpty()) {
@@ -2432,7 +2434,8 @@ public class FlowDatabasev4ChangeLog {
         param.put("value", param.get("values"));
         param.remove("values");
       }
-      parametersCollection.replaceOne(eq("_id", param.getObjectId("_id")), param);
+      parametersCollection.insertOne(param);
     }
+    globalParamsCollection.drop();
   }
 }
