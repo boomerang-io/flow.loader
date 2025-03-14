@@ -2443,7 +2443,7 @@ public class FlowDatabasev4ChangeLog {
   /*
    * Combine Workflow Template Params and Config
    */
-  @ChangeSet(order = "4042", id = "4042", author = "Tyson Lawrie")
+  @ChangeSet(order = "4046", id = "4046", author = "Tyson Lawrie")
   public void v4CombineWorkflowTemplateParamAndConfig(MongoDatabase db) throws IOException {
     LOGGER.info("Combining Workflow Template Config and Params");
     String wfTemplateCollectionName = workflowCollectionPrefix + "workflow_templates";
