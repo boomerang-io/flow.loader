@@ -2438,4 +2438,71 @@ public class FlowDatabasev4ChangeLog {
     }
     globalParamsCollection.drop();
   }
+
+
+  /*
+   * Combine Workflow Template Params and Config
+   */
+  @ChangeSet(order = "4042", id = "4042", author = "Tyson Lawrie")
+  public void v4CombineWorkflowTemplateParamAndConfig(MongoDatabase db) throws IOException {
+    LOGGER.info("Combining Workflow Template Config and Params");
+    String wfTemplateCollectionName = workflowCollectionPrefix + "workflow_templates";
+    MongoCollection<Document> wfTemplateCollection = db.getCollection(wfTemplateCollectionName);
+
+    final FindIterable<Document> entities = wfTemplateCollection.find();
+    for (final Document revision : entities) {
+      List<Document> configs = (List<Document>) revision.get("config");
+      List<Document> params = (List<Document>) revision.get("params");
+      List<Document> newParams = new LinkedList<>();
+
+      //Loop through and add config to params
+      if (configs != null && !configs.isEmpty()) {
+        for (final Document config : configs) {
+          Document param = config;
+          param.put("name", config.get("key"));
+          param.remove("key");
+          if (param.get("values") != null && !param.get("values").toString().isEmpty()) {
+            param.put("value", param.get("values"));
+            param.remove("values");
+          }
+          if (params != null && !params.isEmpty()) {
+            //Deal with duplicate in Params
+            Optional<Document> optParam = params.stream().filter(
+                p -> p.get("name") != null && p.get("name").toString()
+                    .equals(param.get("name").toString())).findFirst();
+            if (optParam.isPresent()) {
+              params.remove(optParam.get());
+              //Merge defaultValue
+              if (optParam.get().get("defaultValue") != null && !optParam.get().get("defaultValue")
+                  .toString().isEmpty()) {
+                param.put("defaultValue", optParam.get().get("defaultValue"));
+              }
+              //Merge description
+              if (optParam.get().get("description") != null && !optParam.get().get("description")
+                  .toString().isEmpty()) {
+                param.put("description", optParam.get().get("description"));
+              }
+            }
+          }
+          newParams.add(param);
+        }
+      }
+      //Add any remaining params that weren't in config
+      if (params != null && !params.isEmpty()) {
+        for (final Document p : params) {
+          Document param = new Document();
+          param.put("name", p.get("name"));
+          param.put("label", p.get("name"));
+          param.put("type",
+              "string"); //This may create some wrong types but end users can go in and adjust
+          param.put("description", p.get("description"));
+          param.put("defaultValue", p.get("defaultValue"));
+          newParams.add(param);
+        }
+      }
+      revision.put("params", newParams);
+      revision.remove("config");
+      wfTemplateCollection.replaceOne(eq("_id", revision.getObjectId("_id")), revision);
+    }
+  }
 }
