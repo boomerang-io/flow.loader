@@ -2,5 +2,7 @@
   "type": "team",
   "name": "reader",
   "description": "",
-  "permissions": ["**/{principal}/Read"]
+  "permissions": [
+    "**/read"
+  ]
 }

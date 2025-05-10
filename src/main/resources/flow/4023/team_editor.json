@@ -3,8 +3,8 @@
   "name": "editor",
   "description": "",
   "permissions": [
-    "**/{principal}/Read",
-    "**/{principal}/Write",
-    "**/{principal}/Action"
+    "**/read",
+    "**/write",
+    "**/action"
   ]
 }
