@@ -1,8 +1,9 @@
 {
-    "name" : "Slack",
-    "type" : "slack",
-    "description" : "Send a message to Slack",
-    "icon" : "https://assets-global.website-files.com/621c8d7ad9e04933c4e51ffb/622b2930098c680e60fe39f7_mark.png",
-    "instructions" : "",
-    "link" : ""
+  "name": "Slack",
+  "type": "slack",
+  "description": "Send a message to Slack",
+  "icon": "https://assets-global.website-files.com/621c8d7ad9e04933c4e51ffb/622b2930098c680e60fe39f7_mark.png",
+  "instructions": "",
+  "link": "",
+  "status": "inactive"
 }
