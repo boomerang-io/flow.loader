@@ -2505,4 +2505,77 @@ public class FlowDatabasev4ChangeLog {
       wfTemplateCollection.replaceOne(eq("_id", revision.getObjectId("_id")), revision);
     }
   }
+
+  /*
+   * Migrate Workflows to use slug based name and displayName along with updates to Relationship Nodes to have the correct slug reference.
+   *
+   * Note: Teams need to make sure they have no Workflows named the same thing.
+   */
+  @ChangeSet(order = "4047", id = "4047", author = "Tyson Lawrie")
+  public void v4MigrateWorkflowsName(MongoDatabase db) throws IOException {
+    LOGGER.info("Migrating Workflows");
+    String workflowsCollectionName = workflowCollectionPrefix + "workflows";
+    MongoCollection<Document> workflowsCollection = db.getCollection(workflowsCollectionName);
+
+    String relNodeCollectionName = workflowCollectionPrefix + "rel_nodes";
+    MongoCollection<Document> relNodeCollection = db.getCollection(relNodeCollectionName);
+
+    final FindIterable<Document> entities = workflowsCollection.find();
+    for (final Document entity : entities) {
+      String workflowId = entity.get("_id").toString();
+      // Move Name to DisplayName and make Name a slug
+      entity.put("displayName", entity.get("name"));
+      entity.put("name", entity.get("name").toString().trim().toLowerCase().replace(' ', '-'));
+      workflowsCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
+
+      //Update Relationship with new name slug
+      Document nodeEntity =
+          (Document) relNodeCollection.find(eq("_id", "workflow:" + workflowId)).first();
+      if (nodeEntity != null) {
+        nodeEntity.put("slug", entity.get("name"));
+        relNodeCollection.replaceOne(eq("_id", "workflow:" + workflowId), nodeEntity);
+      } else {
+        LOGGER.error("Unable to find relationship node with _id: {}", "workflow:" + workflowId);
+      }
+    }
+  }
+
+
+  /*
+   * Convert Workflow Revisions with Tasks of RunWorkflow or RunScheduledWorkflow to have param of WorkflowRef instead of WorkflowId
+   */
+  @ChangeSet(order = "4048", id = "4048", author = "Tyson Lawrie")
+  public void v4MigrateWorkflowRevisionParams(MongoDatabase db) throws IOException {
+    LOGGER.info(
+        "Migrating WorkflowId Param to WorkflowRef for Run Workflow and Run Scheduled Workflow Task");
+    String wfRevisionCollectionName = workflowCollectionPrefix + "workflow_revisions";
+    MongoCollection<Document> wfRevisionCollection = db.getCollection(wfRevisionCollectionName);
+
+    Bson filter = Filters.elemMatch("tasks", Filters.or(Filters.regex("type", "^runworkflow$", "i"),
+        Filters.regex("type", "^runscheduledworkflow$", "i")));
+    final FindIterable<Document> entities = wfRevisionCollection.find(filter);
+    for (final Document entity : entities) {
+      LOGGER.info("Found Workflow Revision with RunWorkflow or RunScheduledWorkflow task: {}",
+          entity.toString());
+      List<Document> tasks = (List<Document>) entity.get("tasks");
+      if (tasks != null && !tasks.isEmpty()) {
+        for (final Document task : tasks) {
+          if (task.get("type") != null && (task.get("type").toString()
+              .equalsIgnoreCase("runworkflow") || task.get("type").toString()
+              .equalsIgnoreCase("runscheduledworkflow"))) {
+            List<Document> params = (List<Document>) task.get("params");
+            if (params != null && !params.isEmpty()) {
+              for (final Document param : params) {
+                if (param.get("name") != null && param.get("name").toString()
+                    .equalsIgnoreCase("workflowId")) {
+                  param.put("name", "workflowRef");
+                }
+              }
+            }
+          }
+        }
+      }
+      wfRevisionCollection.replaceOne(eq("_id", entity.getObjectId("_id")), entity);
+    }
+  }
 }
