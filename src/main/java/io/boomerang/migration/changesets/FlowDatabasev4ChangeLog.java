@@ -1413,7 +1413,7 @@ public class FlowDatabasev4ChangeLog {
   @ChangeSet(order = "4022", id = "4022", author = "Tyson Lawrie")
   public void v4MigrateQuartzJobs(MongoDatabase db) throws IOException {
     LOGGER.info("Migrating Quartz Jobs");
-    String collectionName = workflowCollectionPrefix + "jobs";
+    String collectionName = workflowCollectionPrefix + "quartz";
     MongoCollection<Document> collection = db.getCollection(collectionName);
 
     final FindIterable<Document> entities = collection.find();
