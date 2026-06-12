@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jre-alpine
 ARG BMRG_TAG
 ENV JAVA_OPTS=""
 ENV BMRG_HOME=/opt/boomerang
@@ -7,7 +7,9 @@ ENV BMRG_SVC=loader-$BMRG_TAG
 WORKDIR $BMRG_HOME
 ADD target/$BMRG_SVC.jar service.jar
 RUN sh -c 'touch /service.jar'
-RUN apk add --upgrade expat
+RUN apk upgrade --no-cache \
+    && apk add --no-cache --upgrade expat \
+    && if apk info -e binutils; then apk del --no-network binutils; fi
 
 # Create user, chown, and chmod. 
 # OpenShift requires that a numeric user is used in the USER declaration instead of the user name
