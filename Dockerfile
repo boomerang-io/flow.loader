@@ -8,6 +8,7 @@ WORKDIR $BMRG_HOME
 ADD target/$BMRG_SVC.jar service.jar
 RUN sh -c 'touch /service.jar'
 RUN apk upgrade --no-cache \
+    && apk add --no-cache --upgrade openssl=3.5.7-r0 \
     && apk add --no-cache --upgrade expat \
     && if apk info -e binutils; then apk del --no-network binutils; fi
 
