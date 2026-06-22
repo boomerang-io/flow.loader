@@ -20,6 +20,8 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<!-- CVE-2026-41851 fix: force patched Spring Framework line -->
+		<spring-framework.version>6.2.19</spring-framework.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
