@@ -27,6 +27,15 @@
 	</dependencyManagement>
 	<dependencies>
 		<dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>5.0.6</version>
+        </dependency>
+		<dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>                <version>4.0.6</version>
+        </dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 			<exclusions>
@@ -77,7 +86,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<forceJavacCompilerUse>true</forceJavacCompilerUse>
-					<release>${java.version}</release>
+					<release>${maven.compiler.source}</release>
 				</configuration>
 			</plugin>
 			<plugin>
