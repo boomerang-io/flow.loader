@@ -1,3 +1,14 @@
+> [!IMPORTANT]
+> ## 🔧 v3 maintenance only
+> This repository is the data loader of **Boomerang Flow v3**. It is kept for v3 security and compatibility fixes —
+> IBM maintains that line on the `essentials_v3_stable` and `cve_fix` branches. v4 development here has ended.
+>
+> **Boomerang Flow v5 is a monorepo**: migrations and seeding continue as [`service-loader`](https://github.com/boomerang-io/flow/tree/feat-v5/service-loader) (Flamingock, run as a pre-deploy Job; it upgrades a v3 database in place).
+> New bugs and features go to [boomerang-io/flow issues](https://github.com/boomerang-io/flow/issues/new/choose);
+> only v3-line fixes belong here.
+
+---
+
 # Flow Loader
 
 Every migration starts with creating a ChangeSet (annotated with @ChangeSet). It contains the following attributes:
