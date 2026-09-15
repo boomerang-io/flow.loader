@@ -20,8 +20,6 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<!-- CVE-2026-41851 fix: force patched Spring Framework line -->
-		<spring-framework.version>6.2.19</spring-framework.version>
 		<log4j2.version>2.25.4</log4j2.version>
 	</properties>
 	<dependencyManagement>
@@ -75,16 +73,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-			<version>5.0.6</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-commons</artifactId>
-			<version>4.0.6</version>
 		</dependency>
 	</dependencies>
 	<build>
