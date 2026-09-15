@@ -20,6 +20,7 @@
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<spring-framework.version>7.0.9</spring-framework.version>
 		<log4j2.version>2.25.4</log4j2.version>
 	</properties>
 	<dependencyManagement>
@@ -39,6 +40,24 @@
 			<version>5.4.0</version>
 		</dependency>
 
+		 <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+            <version>5.0.6</version>
+        </dependency>
+        <!-- Fixes CVE-2026-41695 & CVE-2026-41716 (DoS) -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
+            <version>4.0.6</version>
+        </dependency>
+        <!-- Fixes driver vulnerabilities -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>5.11.1</version>
+        </dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
