@@ -11,7 +11,7 @@
 
 	<groupId>net.boomerangplatform</groupId>
 	<artifactId>loader</artifactId>
-	<version>1.0.0</version>
+	<version>${version.name}</version>
 	<packaging>jar</packaging>
 	<name>loader</name>
 	<url>http://maven.apache.org</url>
