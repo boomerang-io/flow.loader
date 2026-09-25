@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>4.0.6</version>
+		<version>4.0.7</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>net.boomerangplatform</groupId>
 	<artifactId>loader</artifactId>
-	<version>${version.name}</version>
+	<version>1.0.0</version>
 	<packaging>jar</packaging>
 	<name>loader</name>
 	<url>http://maven.apache.org</url>
@@ -21,7 +21,7 @@
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<spring-framework.version>7.0.9</spring-framework.version>
-		<log4j2.version>2.25.4</log4j2.version>
+		<log4j2.version>2.25.5</log4j2.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -57,6 +57,11 @@
             <artifactId>mongodb-driver-sync</artifactId>
             <version>5.11.1</version>
         </dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongodb-driver-core</artifactId>
+			<version>5.11.1</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
