@@ -14,11 +14,11 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>net.boomerangplatform</groupId>
-	<artifactId>loader</artifactId>
+	<!-- <groupId>net.boomerangplatform</groupId>
+	<artifactId>loader</artifactId> -->
 	<version>${version.name}</version>
-	<packaging>jar</packaging>
-	<name>loader</name>
+	<!--<packaging>jar</packaging>
+	<name>loader</name> -->
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
