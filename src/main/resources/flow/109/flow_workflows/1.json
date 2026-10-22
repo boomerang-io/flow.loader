@@ -1,0 +1,50 @@
+{
+    "_id": ObjectId("62be6a3266ff43491f09d2e7"),
+    "properties": [
+        {
+            "jsonPath": "",
+            "description": "",
+            "key": "planet",
+            "label": "Planet name",
+            "type": "text",
+            "required": true,
+            "defaultValue": "Kamino",
+            "readOnly": false
+        }
+    ],
+    "description": "Workflow example that uses HTTP Call to look for Star Wars planets, their characteristics and the movies where they appeared. ",
+    "icon": "bot",
+    "name": "Looking through planets with HTTP Call ",
+    "shortDescription": "Searching for Star Wars planets",
+    "status": "active",
+    "triggers": {
+        "manual": {
+            "enable": true
+        },
+        "scheduler": {
+            "enable": false
+        },
+        "webhook": {
+            "token": "",
+            "enable": false
+        },
+        "custom": {
+            "topic": "",
+            "enable": false
+        }
+    },
+    "storage": {
+        "activity": {
+            "enabled": true,
+            "size": 1,
+            "mountPath": "/tekton/results"
+        },
+        "workflow": {
+            "enabled": false,
+            "size": 1,
+            "mountPath": ""
+        }
+    },
+    "scope": "template",
+    "_class": "io.boomerang.mongo.entity.WorkflowEntity"
+}

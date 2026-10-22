@@ -1,0 +1,86 @@
+{
+    "parent" : "manual-approval",
+    "displayName" : "Manual Approval",
+    "description" : "Pauses workflow until approval is actioned. If no approver group is specified then this task can be approved by anyone in the team, and only requires 1 approval.",
+    "category" : "Workflow",
+    "icon" : "Edit",
+    "version" : 2,
+    "changelog" : {
+        "author" : "659f58f05a1f506d09f92aa9",
+        "reason" : "Updated Task Template",
+        "date" : ISODate("2024-02-22T23:16:25.886Z")
+    },
+    "spec" : {
+        "arguments" : [ 
+            "approval"
+        ],
+        "command" : [],
+        "params" : [ 
+            {
+                "name" : "approverGroupId",
+                "type" : "string",
+                "description" : ""
+            }, 
+            {
+                "name" : "numberOfApprovals",
+                "type" : "string",
+                "description" : "",
+                "defaultValue" : ""
+            }
+        ],
+        "envs" : [],
+        "image" : "",
+        "results" : [ 
+            {
+                "description" : "The status of the approval task, can be approved or rejected.",
+                "name" : "approvalStatus"
+            }, 
+            {
+                "description" : "Date and time of the action",
+                "name" : "approvalDate"
+            }, 
+            {
+                "description" : "Username of the approver",
+                "name" : "approvalUserName"
+            }, 
+            {
+                "description" : "Email address of the approver",
+                "name" : "approvalUserEmail"
+            }, 
+            {
+                "description" : "Additional comments added by the approver",
+                "name" : "approvalComments"
+            }
+        ],
+        "script" : "",
+        "workingDir" : "",
+        "additionalProperties" : {}
+    },
+    "config" : [ 
+        {
+            "key" : "approverGroupId",
+            "description" : "",
+            "label" : "Approver Group (optional)",
+            "type" : "select",
+            "options" : [
+            ],
+            "required" : false,
+            "placeholder" : "",
+            "helpertext" : "Limit the approvers to the members in this group",
+            "readOnly" : false
+        }, 
+        {
+            "key" : "numberOfApprovals",
+            "description" : "",
+            "label" : "Number of Approvals (optional)",
+            "type" : "number",
+            "required" : false,
+            "placeholder" : "",
+            "helpertext" : "Only respected if Approver Group is specified",
+            "defaultValue" : "",
+            "readOnly" : false,
+            "minValueLength": 1
+        }
+    ],
+    "_class" : "io.boomerang.data.entity.TaskTemplateRevisionEntity"
+}

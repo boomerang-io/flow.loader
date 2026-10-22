@@ -1,0 +1,10 @@
+{
+  "type": "team",
+  "name": "editor",
+  "description": "",
+  "permissions": [
+    "**/read",
+    "**/write",
+    "**/action"
+  ]
+}

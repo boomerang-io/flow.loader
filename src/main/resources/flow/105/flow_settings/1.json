@@ -1,0 +1,43 @@
+{
+    "_id" : ObjectId("62b0f1f5a6166d30af05fa5d"),
+    "config" : [ 
+        {
+            "description" : "The name to appear in the header (and throughout the App) that appears to the right of the Platform Name or Logo.",
+            "key" : "appName",
+            "label" : "App Name",
+            "type" : "text",
+            "value" : "Flow",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "The overall platform name. This only appears if the logo is set to not appear.",
+            "key" : "platformName",
+            "label" : "Platform Name",
+            "type" : "text",
+            "value" : "Boomerang",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "Whether to display the platforms Logo or use the Platform Name.",
+            "key" : "displayLogo",
+            "label" : "Display Platform Logo",
+            "type" : "boolean",
+            "value" : "true",
+            "readOnly" : false
+        }, 
+        {
+            "description" : "A URL for retrieving the Platform Logo.",
+            "key" : "logoURL",
+            "label" : "Logo URL",
+            "type" : "text",
+            "value" : "",
+            "readOnly" : false
+        }
+    ],
+    "description" : "Configure the customizations to this particular instance of Flow and maximise the experience for your users.",
+    "key" : "customizations",
+    "lastModiifed" : ISODate("2022-06-15T12:07:48.123Z"),
+    "name" : "Configure Customizations",
+    "type" : "ValuesList",
+    "_class" : "io.boomerang.mongo.entity.FlowSettingsEntity"
+}

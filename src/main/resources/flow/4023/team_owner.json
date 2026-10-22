@@ -1,0 +1,8 @@
+{
+  "type": "team",
+  "name": "owner",
+  "description": "",
+  "permissions": [
+    "**/**"
+  ]
+}

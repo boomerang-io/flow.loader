@@ -1,0 +1,50 @@
+{
+    "_id": ObjectId("62be6a3e66ff43491f09d2e9"),
+    "properties": [
+        {
+            "jsonPath": "",
+            "description": "",
+            "key": "query",
+            "label": "query",
+            "type": "textarea",
+            "required": true,
+            "defaultValue": "DBQuery.shellBatchSize = 1000;db.getCollection('my_collection').find({'timestamp':{$gt: ISODate('2022-01-01 00:00:00.000Z')}}).batchSize(1000)",
+            "readOnly": false
+        }
+    ],
+    "description": "This is a workflow example that runs a MongoDB query and then simultaneously sends the results as an attached file on an email and prints out the results for an easy verification.",
+    "icon": "bot",
+    "name": "MongoDB email query results",
+    "shortDescription": "Sending the mongodb query results as an attachement of an email.",
+    "status": "active",
+    "triggers": {
+        "manual": {
+            "enable": true
+        },
+        "scheduler": {
+            "enable": false
+        },
+        "webhook": {
+            "token": "",
+            "enable": false
+        },
+        "custom": {
+            "topic": "",
+            "enable": false
+        }
+    },
+    "storage": {
+        "activity": {
+            "enabled": true,
+            "size": 1,
+            "mountPath": "/tekton/results"
+        },
+        "workflow": {
+            "enabled": false,
+            "size": 1,
+            "mountPath": "/tekton/results"
+        }
+    },
+    "scope": "template",
+    "_class": "io.boomerang.mongo.entity.WorkflowEntity"
+}
